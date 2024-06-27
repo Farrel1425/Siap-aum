@@ -8,9 +8,9 @@
     <meta content="ie=edge"
           http-equiv="X-UA-Compatible">
     <title>{{ config('app.name') }}</title>
-    {{-- <link href="{{ asset('assets/images/favicon.png') }}"
+    <link href="{{ asset('assets/images/logo.png') }}"
           rel="shortcut icon"
-          type="image/x-icon"> --}}
+          type="image/x-icon">
     @vite(['resources/sass/app.scss'])
     <link href="{{ asset('assets/vendors/iconsax/style.css') }}"
           rel="stylesheet">
@@ -35,12 +35,16 @@
 </head>
 
 <body>
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
     {{-- <script src="{{ asset('assets/js/initTheme.js') }}"></script> --}}
     <div id="app">
         <div id="sidebar">
             @include('layouts.dashboard.partials.sidebar')
         </div>
-        <div class="layout-navbar navbar-fixed position-relative" id="main">
+        <div class="layout-navbar navbar-fixed position-relative"
+             id="main">
             @include('layouts.dashboard.partials.header')
             <div id="main-content">
                 @yield('content')
@@ -81,6 +85,12 @@
     @vite(['resources/js/app.js'])
     @include('components.toastr')
 
+
+    <script>
+        $(window).on('load', function() {
+            $('.loader-container').fadeOut();
+        });
+    </script>
 </body>
 
 </html>

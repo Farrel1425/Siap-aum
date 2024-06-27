@@ -106,8 +106,12 @@
 // - 2.20 Placeholder
 @import "./components/placeholders";
 
+// Loader
+@import "./components/loader";
+
 // - 4.0 Layout
 @import "./layouts/dashboard-base.scss";
 
 // - 5.0 Utilities
-@import "./utilities"
+@import "./utilities";
+
