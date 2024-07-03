@@ -1,7 +1,5 @@
 import './bootstrap';
-import './dashboard/sidebar'
-import './dashboard/footer'
-import './landing'
+import './components/loading'
 
 
 import Swal from 'sweetalert2';

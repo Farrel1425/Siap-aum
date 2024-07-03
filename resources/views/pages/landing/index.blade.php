@@ -22,9 +22,17 @@
             langsung
             ke kantor DPMPTSP Kabupaten Buleleng.
         </p>
-        <a class="fw-bold btn btn-outline-danger"
-           href="{{ route('login') }}">
-            <span class="isax-bold isax-login me-2"></span>Login
-        </a>
+        @auth
+            <a class="fw-bold btn btn-outline-danger"
+               href="{{ route('dashboard') }}">
+                <span class="isax-bold isax-login me-2"></span>Dashboard
+            </a>
+        @else
+            <a class="fw-bold btn btn-outline-danger"
+               href="{{ route('login.index') }}">
+                <span class="isax-bold isax-login me-2"></span>Login
+            </a>
+        @endauth
+
     </div>
 @endsection

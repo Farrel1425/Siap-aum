@@ -82,15 +82,8 @@
     <script src="{{ asset('assets/vendors/flatpickr/id.js') }}"></script>
     {{-- @yield('content') --}}
     @stack('scripts')
-    @vite(['resources/js/app.js'])
+    @vite(['resources/js/app.js', 'resources/js/dashboard/dashboard.js'])
     @include('components.toastr')
-
-
-    <script>
-        $(window).on('load', function() {
-            $('.loader-container').fadeOut();
-        });
-    </script>
 </body>
 
 </html>

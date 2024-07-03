@@ -41,7 +41,7 @@
                                 {{-- <h6 class="mb-0 text-main">{{ auth()->user()->name ?? auth()->user()->email }}</h6>
                                 <p class="mb-0 text-sm text-main">{{ auth()->user()->hasRole('administrator') ? 'Administrator' : 'Operator' }}</p> --}}
                                 <h6 class="mb-0 text-main">Kambing Terbang</h6>
-                                <p class="mb-0 text-sm text-main">Administrator</p>
+                                <p class="mb-0 text-sm text-main">{{ auth()->user()->role->nama }}</p>
                             </div>
                             <div class="user-img d-flex align-items-center">
                                 <div class="avatar avatar-md border">

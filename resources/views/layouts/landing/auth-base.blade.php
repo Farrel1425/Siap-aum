@@ -11,20 +11,29 @@
     @vite(['resources/sass/app.scss'])
     <link href="{{ asset('assets/vendors/iconsax/style.css') }}"
           rel="stylesheet">
-          <link rel="shortcut icon" href="{{ asset('assets/images/logo.png') }}" type="image/x-icon">
+    <link href="{{ asset('assets/images/logo.png') }}"
+          rel="shortcut icon"
+          type="image/x-icon">
+    {!! ReCaptcha::htmlScriptTagJsApi() !!}
 </head>
 
 <body id="app">
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
     <section class="header">
         <div class="row h-100">
             <div class="col-md-6 h-100 position-relative">
-                <a href="/" class="back-button text-decoration-none rounded-circle position-relative bg-danger text-white py-3 px-3"><span class="isax-bold isax-arrow-left"></span></a>
+                <a class="back-button text-decoration-none rounded-circle position-relative bg-danger text-white py-3 px-3"
+                   href="/"><span class="isax-bold isax-arrow-left"></span></a>
                 @yield('content-header')
             </div>
         </div>
     </section>
-    @vite(['resources/js/app.js'])
+    @stack('scripts')
+    @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])
     <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+    @include('components.toastr')
 </body>
 
 </html>

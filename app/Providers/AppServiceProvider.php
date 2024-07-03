@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Blade::directive('role', function ($expression) {
+            return "<?php if(auth()->check() && auth()->user()->hasRole($expression)): ?>";
+        });
+
+        Blade::directive('endrole', function ($expression) {
+            return "<?php endif; ?>";
+        });
     }
 }

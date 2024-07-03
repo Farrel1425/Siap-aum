@@ -18,6 +18,8 @@ export default defineConfig({
             input: [
                 'resources/sass/app.scss',
                 'resources/js/app.js',
+                'resources/js/landing/landing.js',
+                'resources/js/dashboard/dashboard.js'
             ],
             refresh: true,
         }),

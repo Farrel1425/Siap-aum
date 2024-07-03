@@ -13,13 +13,13 @@
         <div class="text-center my-3 w-75">
             <h3 class="title text-main">Selamat Datang</h3>
             <p class="caption text-main">Masuk ke akun anda</p>
-            <form action="" method="POST">
+            <form action="{{ route('login.store') }}" method="POST">
                 @csrf
-                <x-landing.input-text placeholder="Username"/>
-                <x-landing.input-password placeholder="Password" />
+                <x-landing.input-email placeholder="Email" name="email"/>
+                <x-landing.input-password placeholder="Password" name="password" />
                 <a href="" class="fw-bold d-block mb-2 text-danger text-end">Lupa Password?</a>
                 <button type="submit" class="btn btn-danger d-block w-100 fw-bold">Masuk</button>
-                <p class="mt-2 text-main">Belum Punya Akun? <a href="" class="text-danger">Daftar Akun</a></p>
+                <p class="mt-2 text-main">Belum Punya Akun? <a href="{{ route('register.index') }}" class="text-danger">Daftar Akun</a></p>
             </form>
         </div>
     </div>

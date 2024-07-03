@@ -14,6 +14,9 @@
 </head>
 
 <body id="app">
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
     <section class="header">
         <div class="row h-100">
             <div class="col-md-6 h-100 position-relative">
@@ -22,7 +25,8 @@
             </div>
         </div>
     </section>
-    @vite(['resources/js/app.js'])
+    <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
+    @vite(['resources/js/app.js','resources/js/landing/landing.js'])
 </body>
 
 </html>
