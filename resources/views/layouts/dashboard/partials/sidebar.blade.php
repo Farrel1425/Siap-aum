@@ -12,7 +12,7 @@
         <ul class="menu">
             <li class="sidebar-title">Menu</li>
 
-            <li class="sidebar-item {{ request()->routeIs('dashboard*') || auth()->user()->is_public ? 'active' : '' }}">
+            <li class="sidebar-item {{ (request()->routeIs('dashboard*') || auth()->user()->is_public) && !request()->routeIs('profile*') ? 'active' : '' }}">
                 <a class="sidebar-link"
                    href="{{ route('dashboard') }}">
                     <i class="isax isax-element-4"></i>

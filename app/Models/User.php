@@ -20,8 +20,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'telepon',
+        'nik',
+        'jenis_kelamin',
+        'is_filled_data_register',
         'password',
-        'role_id'
+        'role_id',
     ];
 
     /**
@@ -64,5 +68,9 @@ class User extends Authenticatable
     public function hasRole($role)
     {
         return $this->role->nama == $role;
+    }
+    public function getPhotoProfileAttribute()
+    {
+        return 'https://ui-avatars.com/api/?name=' . $this->email . '&background=random&color=fff';
     }
 }

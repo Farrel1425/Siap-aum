@@ -19,7 +19,8 @@ export default defineConfig({
                 'resources/sass/app.scss',
                 'resources/js/app.js',
                 'resources/js/landing/landing.js',
-                'resources/js/dashboard/dashboard.js'
+                'resources/js/dashboard/dashboard.js',
+                'resources/js/pages/register.js'
             ],
             refresh: true,
         }),

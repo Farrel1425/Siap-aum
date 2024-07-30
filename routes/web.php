@@ -54,12 +54,14 @@ Route::middleware(['guest'])->group(function () {
 
 // auth
 Route::middleware(['auth'])->group(function () {
+    // My Profile
+    Route::get('profile', [AuthenticationController::class, 'profile'])->name('profile.index');
+    Route::put('profile', [AuthenticationController::class, 'updateProfile'])->name('profile.update');
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ADMINISTRATOR
     Route::middleware(['role:administrator'])->group(function () {
-
     });
 
     // VERIFIKATOR
