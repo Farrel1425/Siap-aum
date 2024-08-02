@@ -20,13 +20,22 @@
     <section class="header">
         <div class="row h-100">
             <div class="col-md-6 h-100 position-relative">
-                @include('layouts.landing.partials.navbar')
-                @yield('content-header')
+                <div class="d-none d-md-block">
+                    @include('layouts.landing.partials.navbar-dekstop')
+                </div>
+                <div class="d-md-none">
+                    @include('layouts.landing.partials.navbar-mobile')
+                </div>
+                <div class="d-md-none image-main-mobile">
+                </div>
+                <div class="d-flex">
+                    @yield('content-header')
+                </div>
             </div>
         </div>
     </section>
     <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
-    @vite(['resources/js/app.js','resources/js/landing/landing.js'])
+    @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])
 </body>
 
 </html>

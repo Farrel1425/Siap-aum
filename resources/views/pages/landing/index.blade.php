@@ -2,15 +2,15 @@
 
 @section('content-header')
     <div class="content-header">
-        <div class="d-flex align-items-center gap-3 flex-row-reverse">
-            <img alt=""
-                 class="img-logo"
-                 src="{{ asset('assets/images/logo-siajaib.png') }}">
+        <div class="d-flex justify-content-center align-items-center gap-3 flex-row mt-3 mt-md-0">
             <img alt=""
                  class="img-logo"
                  src="{{ asset('assets/images/logo-kabupaten.png') }}">
+            <img alt=""
+                 class="img-logo"
+                 src="{{ asset('assets/images/logo-siajaib.png') }}">
         </div>
-        <p class="text-center my-3">
+        <p class="text-center my-3 main-description">
             <span class="fw-bold">SI AJAIB</span> adalah portal pelayanan perizinan online berbasis
             website yang dikembangkan oleh
             Pemerintah Kabupaten Buleleng yang bertujuan untuk memenuhi kebutuhan masyarakat dalam
@@ -33,6 +33,5 @@
                 <span class="isax-bold isax-login me-2"></span>Login
             </a>
         @endauth
-
     </div>
 @endsection
