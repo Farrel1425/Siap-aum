@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -58,12 +60,17 @@ class User extends Authenticatable
 
     public function getIsAdminAttribute()
     {
-        return $this->hasRole('Administrator');
+        return $this->hasRole(RoleEnum::ADMIN->value);
     }
 
     public function getIsPublicAttribute()
     {
-        return $this->hasRole('Public');
+        return $this->hasRole(RoleEnum::PUBLIC->value);
+    }
+
+    public function getIsVerifikatorAttribute()
+    {
+        return $this->hasRole(RoleEnum::VERIFIKATOR->value);
     }
 
     public function hasRole($role)

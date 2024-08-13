@@ -12,8 +12,11 @@ class DashboardController extends Controller
             return view('pages.admin.dashboard.index');
         }else if (auth()->user()->is_public){
             return view('pages.public.dashboard.index');
+        }else if (auth()->user()->is_verifikator){
+            return view('pages.verifikator.dashboard.index');
         }else{
-            abort(401);
+            auth()->logout();
+            return redirect()->route('login')->with('error', 'Anda tidak memiliki akses, silahkan login kembali');
         }
     }
 }
