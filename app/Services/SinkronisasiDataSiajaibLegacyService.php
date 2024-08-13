@@ -1,0 +1,612 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Role;
+use App\Models\User;
+use App\Models\JenisIzin;
+use App\Models\Kuesioner;
+use App\Models\Permohonan;
+use App\Models\AlurJenisIzin;
+use App\Models\FormJenisIzin;
+use App\Models\KuesionerOpsi;
+use App\Models\AlurPermohonan;
+use App\Models\FormPermohonan;
+use App\Models\BerkasJenisIzin;
+use App\Models\BerkasPermohonan;
+use App\Models\KuesionerJawaban;
+use App\Models\PembayaranReklame;
+use App\Models\RegistrasiReklame;
+use Illuminate\Support\Facades\DB;
+use App\Models\KuesionerPertanyaan;
+use Illuminate\Support\Facades\Log;
+use App\Models\KelengkapanJenisIzin;
+use App\Models\KelengkapanPermohonan;
+
+class SinkronisasiDataSiajaibLegacyService
+{
+    public function __construct()
+    {
+        // // USERS
+        // $start = microtime(true);
+        // Log::info('Start Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
+        // Log::info('==================================================================');
+        // Log::info('Start Sinkronisasi Data Users');
+        // $start = microtime(true);
+        // $this->sinkronRoles();
+        // Log::info('Finish Sinkronisasi Data Users : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronUsers();
+        // Log::info('Finish Sinkronisasi Data Users : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+
+        // // JENIS IZIN
+        // Log::info('Start Sinkronisasi Data Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronJenizIzin();
+        // Log::info('Finish Sinkronisas Data Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Form Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronFormJenisIzin();
+        // Log::info('Finish Sinkronisas Data Form Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Berkas Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronBerkasJenisIzin();
+        // Log::info('Finish Sinkronisas Data Berkas Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Alur Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronKelengkapanJenisIzin();
+        // Log::info('Finish Sinkronisas Data Alur Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kelengkapan Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronAlurJenisIzin();
+        // Log::info('Finish Sinkronisas Data Kelengkapan Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+
+        // // PERMOHONAN
+        // Log::info('Start Sinkronisasi Data Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronPermohonan();
+        // Log::info('Finish Sinkronisas Data Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Form Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronFormPermohonan();
+        // Log::info('Finish Sinkronisas Data Form Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Berkas Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronBerkasPermohonan();
+        // Log::info('Finish Sinkronisas Data Berkas Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Alur Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronAlurPermohonan();
+        // Log::info('Finish Sinkronisas Data Alur Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kelengkapan Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronKelengkapanPermohonan();
+        // Log::info('Finish Sinkronisas Data Kelengkapan Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+
+        //Kuesioner
+        Log::info('Start Sinkronisasi Data Kuesioner');
+        $start = microtime(true);
+        $this->sinkronKuesioner();
+        Log::info('Finish Sinkronisas Data Kuesioner : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+        Log::info('Start Sinkronisasi Data Kuesioner Pertanyaan');
+        $start = microtime(true);
+        $this->sinkronKuesionerPertanyaan();
+        Log::info('Finish Sinkronisas Data Kuesioner Pertanyaan : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+        Log::info('Start Sinkronisasi Data Kuesioner Opsi');
+        $start = microtime(true);
+        $this->sinkronKuesionerOpsi();
+        Log::info('Finish Sinkronisas Data Kuesioner Opsi : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+        Log::info('Start Sinkronisasi Data Kuesioner Jawaban');
+        $start = microtime(true);
+        $this->sinkronKuesionerJawaban();
+        Log::info('Finish Sinkronisas Data Kuesioner Jawaban : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+
+        // Reklame
+        Log::info('Start Sinkronisasi Data Reklame');
+        $start = microtime(true);
+        $this->sinkronRegistrasiReklame();
+        Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+        Log::info('Start Sinkronisasi Data Pembayaran Reklame');
+        $start = microtime(true);
+        $this->sinkronPembayaranReklame();
+        Log::info('Finish Sinkronisas Data Pembayaran Reklame : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+
+
+        Log::info('Finish Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
+        Log::info('==================================================================');
+    }
+
+    private function sinkronRoles()
+    {
+        $rolesLegacy = DB::connection('siajaib_legacy')->table('roles')->get();
+
+        foreach ($rolesLegacy as $role) {
+            $role = [
+                'id' => $role->id,
+                'nama' => $role->nama_role,
+                'created_at' => $role->created_at,
+                'updated_at' => $role->updated_at,
+            ];
+
+            // insert or update data with id
+            Role::upsert($role, ['id']);
+        }
+    }
+    private function sinkronUsers()
+    {
+        $usersLegacy = DB::connection('siajaib_legacy')->table('users')->get();
+
+        foreach ($usersLegacy as $user) {
+            $user = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password,
+                'telepon' => $user->telepon,
+                'nik' => $user->nik,
+                'jenis_kelamin' => $user->jenis_kelamin,
+                'alamat' => $user->alamat,
+                'role_id' => $user->id_role,
+                'email_verified_at' => $user->email_verified_at,
+                'is_filled_data_register' => true,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ];
+
+            // insert or update data with id
+            User::upsert($user, ['id']);
+        }
+    }
+
+    private function sinkronJenizIzin()
+    {
+        $jenisIzinLegacy = DB::connection('siajaib_legacy')->table('jenis_izin')->get();
+
+        foreach ($jenisIzinLegacy as $jenisIzin) {
+            // remove base url from template_surat
+            if ($jenisIzin->template_surat) {
+                $jenisIzin->template_surat = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $jenisIzin->template_surat);
+            }
+            $jenisIzin = [
+                'id' => $jenisIzin->id,
+                'nama' => $jenisIzin->nama_jenis,
+                'deskripsi' => $jenisIzin->deskripsi,
+                'template_surat' => $jenisIzin->template_surat,
+                'created_at' => $jenisIzin->created_at,
+                'updated_at' => $jenisIzin->updated_at,
+            ];
+
+            // insert or update data with id
+            JenisIzin::upsert($jenisIzin, ['id']);
+        }
+    }
+
+    private function sinkronFormJenisIzin()
+    {
+        $formJenisIzinLegacy = DB::connection('siajaib_legacy')->table('detail_form')->get();
+
+        foreach ($formJenisIzinLegacy as $formJenisIzin) {
+            // generate urutan based on id, different id, then reset
+            $urutan[$formJenisIzin->id_jenis_izin] = $urutan[$formJenisIzin->id_jenis_izin] ?? 0;
+            $urutan[$formJenisIzin->id_jenis_izin]++;
+            $formJenisIzin = [
+                'id' => $formJenisIzin->id,
+                'jenis_izin_id' => $formJenisIzin->id_jenis_izin,
+                'label' => $formJenisIzin->label,
+                'tipe' => $formJenisIzin->id_form_type == 1 ? 'text' : 'date',
+                'kode_isian' => $formJenisIzin->kode_isian,
+                'urutan' => $urutan[$formJenisIzin->id_jenis_izin],
+                'created_at' => $formJenisIzin->created_at,
+                'updated_at' => $formJenisIzin->updated_at,
+            ];
+
+            // insert or update data with id
+            FormJenisIzin::upsert($formJenisIzin, ['id']);
+        }
+    }
+
+    private function sinkronBerkasJenisIzin()
+    {
+        $berkasJenisIzinLegacy = DB::connection('siajaib_legacy')->table('berkas_jenis_izin')->get();
+
+        foreach ($berkasJenisIzinLegacy as $berkasJenisIzin) {
+            $urutan[$berkasJenisIzin->id_jenis_izin] = $urutan[$berkasJenisIzin->id_jenis_izin] ?? 0;
+            $urutan[$berkasJenisIzin->id_jenis_izin]++;
+            $berkasJenisIzin = [
+                'id' => $berkasJenisIzin->id,
+                'jenis_izin_id' => $berkasJenisIzin->id_jenis_izin,
+                'nama' => $berkasJenisIzin->nama_berkas,
+                'is_required' => $berkasJenisIzin->required,
+                'urutan' => $urutan[$berkasJenisIzin->id_jenis_izin],
+                'created_at' => $berkasJenisIzin->created_at,
+                'updated_at' => $berkasJenisIzin->updated_at,
+            ];
+
+            // insert or update data with id
+            BerkasJenisIzin::upsert($berkasJenisIzin, ['id']);
+        }
+    }
+
+    private function sinkronAlurJenisIzin()
+    {
+        $alurJenisIzinLegacy = DB::connection('siajaib_legacy')->table('alur')->get();
+
+        foreach ($alurJenisIzinLegacy as $alurJenisIzin) {
+            $alurJenisIzin = [
+                'id' => $alurJenisIzin->id,
+                'jenis_izin_id' => $alurJenisIzin->id_jenis_izin,
+                'verifikator_id' => $alurJenisIzin->id_user,
+                'jenis_verifikator' => $alurJenisIzin->upload,
+                'urutan' => $alurJenisIzin->no_urut,
+                'created_at' => $alurJenisIzin->created_at,
+                'updated_at' => $alurJenisIzin->updated_at,
+            ];
+
+            // insert or update data with id
+            AlurJenisIzin::upsert($alurJenisIzin, ['id']);
+        }
+    }
+
+    private function sinkronKelengkapanJenisIzin()
+    {
+        $kelengkapanJenisIzinLegacy = DB::connection('siajaib_legacy')->table('kelengkapan_izin')->get();
+
+        foreach ($kelengkapanJenisIzinLegacy as $kelengkapanJenisIzin) {
+            $urutan[$kelengkapanJenisIzin->id_jenis_izin] = $urutan[$kelengkapanJenisIzin->id_jenis_izin] ?? 0;
+            $urutan[$kelengkapanJenisIzin->id_jenis_izin]++;
+            $kelengkapanJenisIzin = [
+                'id' => $kelengkapanJenisIzin->id,
+                'jenis_izin_id' => $kelengkapanJenisIzin->id_jenis_izin,
+                'label' => $kelengkapanJenisIzin->label,
+                'tipe' => $kelengkapanJenisIzin->id_form_type == 1 ? 'text' : 'date',
+                'kode_isian' => $kelengkapanJenisIzin->kode_isian,
+                'urutan' => $urutan[$kelengkapanJenisIzin->id_jenis_izin],
+                'created_at' => $kelengkapanJenisIzin->created_at,
+                'updated_at' => $kelengkapanJenisIzin->updated_at,
+            ];
+
+            // insert or update data with id
+            KelengkapanJenisIzin::upsert($kelengkapanJenisIzin, ['id']);
+        }
+    }
+
+    private function sinkronPermohonan()
+    {
+        $permohonanLegacy = DB::connection('siajaib_legacy')->table('permohonan')->get();
+
+        foreach ($permohonanLegacy as $permohonan) {
+            if ($permohonan->surat_kuasa) {
+                $permohonan->surat_kuasa = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $permohonan->surat_kuasa);
+            }
+
+            if ($permohonan->surat_permohonan_rekomendasi) {
+                $permohonan->surat_permohonan_rekomendasi = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $permohonan->surat_permohonan_rekomendasi);
+            }
+
+            if ($permohonan->surat_rekomendasi) {
+                $permohonan->surat_rekomendasi = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $permohonan->surat_rekomendasi);
+            }
+
+            if ($permohonan->template_pdf) {
+                $permohonan->template_pdf = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $permohonan->template_pdf);
+            }
+
+            switch ($permohonan->status) {
+                case 'Permohonan Baru':
+                    $permohonan->status = 'permohonan_baru';
+                    break;
+                case 'Selesai':
+                    $permohonan->status = 'selesai';
+                    break;
+                case 'Revisi':
+                    $permohonan->status = 'revisi';
+                    break;
+                case 'Verifikasi Ulang':
+                    $permohonan->status = 'verifikasi_ulang';
+                    break;
+                case 'Tidak Aktif':
+                    $permohonan->status = 'expired';
+                    break;
+                case 'Verifikasi':
+                    $permohonan->status = 'verifikasi';
+                    break;
+                default:
+                    $permohonan->status = 'pending';
+                    break;
+            }
+
+            $permohonan = [
+                'id' => $permohonan->id,
+                'user_id' => $permohonan->id_user,
+                'jenis_izin_id' => $permohonan->id_jenis_izin,
+                'nama_jenis_izin' => $permohonan->nama_jenis_izin,
+                'deskripsi_jenis_izin' => $permohonan->deskripsi_jenis_izin,
+                'nomor_registrasi' => $permohonan->no_registrasi,
+                'surat_kuasa_filepath' => $permohonan->surat_kuasa,
+                'nama' => $permohonan->nama,
+                'nik' => $permohonan->nik,
+                'npwp' => $permohonan->npwp,
+                'tempat_lahir' => $permohonan->tempat_lahir,
+                'surat_permohonan_rekomendasi_filepath' => $permohonan->surat_permohonan_rekomendasi,
+                'surat_rekomendasi_filepath' => $permohonan->surat_rekomendasi,
+                'template_surat_filepath' => $permohonan->template_pdf,
+                'status' => $permohonan->status,
+                'is_expired' => $permohonan->deleted_at ? true : false,
+                'created_at' => $permohonan->created_at,
+                'updated_at' => $permohonan->updated_at,
+                'deleted_at' => $permohonan->deleted_at,
+            ];
+
+            // insert or update data with id
+            Permohonan::upsert($permohonan, ['id']);
+        }
+    }
+
+    private function sinkronFormPermohonan()
+    {
+        $formPermohonanLegacy = DB::connection('siajaib_legacy')->table('detail_permohonan')->get();
+
+        foreach ($formPermohonanLegacy as $formPermohonan) {
+            $uruatan[$formPermohonan->id_permohonan] = $uruatan[$formPermohonan->id_permohonan] ?? 0;
+            $uruatan[$formPermohonan->id_permohonan]++;
+            $formPermohonan = [
+                'id' => $formPermohonan->id,
+                'permohonan_id' => $formPermohonan->id_permohonan,
+                'label' => $formPermohonan->label,
+                'tipe' => $formPermohonan->form_type == 1 ? 'text' : 'date',
+                'kode_isian' => $formPermohonan->kode_isian,
+                'value' => $formPermohonan->value,
+                'urutan' => $uruatan[$formPermohonan->id_permohonan],
+                'created_at' => $formPermohonan->created_at,
+                'updated_at' => $formPermohonan->updated_at,
+            ];
+
+            // insert or update data with id
+            FormPermohonan::upsert($formPermohonan, ['id']);
+        }
+    }
+
+    private function sinkronBerkasPermohonan()
+    {
+        $berkasPermohonanLegacy = DB::connection('siajaib_legacy')
+            ->table('berkas_permohonan')
+            ->selectRaw('berkas_permohonan.*')
+            ->join('permohonan', 'berkas_permohonan.id_permohonan', '=', 'permohonan.id')
+            ->where('permohonan.deleted_at', null)
+            ->orderBy('berkas_permohonan.id_permohonan')
+            ->chunk(1000, function ($berkasPermohonanLegacy) {
+                foreach ($berkasPermohonanLegacy as $berkasPermohonan) {
+                    $urutan[$berkasPermohonan->id_permohonan] = $urutan[$berkasPermohonan->id_permohonan] ?? 0;
+                    $urutan[$berkasPermohonan->id_permohonan]++;
+                    if ($berkasPermohonan->file) {
+                        $berkasPermohonan->file = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $berkasPermohonan->file);
+                    }
+                    $berkasPermohonans = [
+                        'id' => $berkasPermohonan->id,
+                        'permohonan_id' => $berkasPermohonan->id_permohonan,
+                        'nama' => $berkasPermohonan->nama_berkas,
+                        'is_required' => $berkasPermohonan->required,
+                        'urutan' => $urutan[$berkasPermohonan->id_permohonan],
+                        'filepath' => $berkasPermohonan->file,
+                        'is_valid' => 1,
+                        'created_at' => $berkasPermohonan->created_at,
+                        'updated_at' => $berkasPermohonan->updated_at,
+                    ];
+
+                    // insert or update data with id
+                    BerkasPermohonan::upsert($berkasPermohonans, ['id']);
+                }
+            });
+
+        // Change status validasi berkas where status invalid exist
+        $berkasPermohonanLegacy = DB::connection('siajaib_legacy')
+            ->table('berkas_permohonan')
+            ->selectRaw('validasi_berkas.id_berkas as id')
+            ->join('permohonan', 'berkas_permohonan.id_permohonan', '=', 'permohonan.id')
+            ->join('validasi_berkas', 'berkas_permohonan.id', '=', 'validasi_berkas.id_berkas')
+            ->where('permohonan.deleted_at', null)
+            ->where('validasi_berkas.status_valid', 0)
+            ->orderBy('validasi_berkas.id_berkas')
+            ->get()
+            ->unique();
+
+        foreach ($berkasPermohonanLegacy as $berkasPermohonan) {
+            BerkasPermohonan::where('id', $berkasPermohonan->id)->update(['is_valid' => 0]);
+        }
+    }
+
+    private function sinkronAlurPermohonan()
+    {
+        $alurPermohonanLegacy = DB::connection('siajaib_legacy')->table('alur_permohonan')->get();
+
+        foreach ($alurPermohonanLegacy as $alurPermohonan) {
+            $urutan[$alurPermohonan->id_permohonan] = $urutan[$alurPermohonan->id_permohonan] ?? 0;
+            $urutan[$alurPermohonan->id_permohonan]++;
+            $alurPermohonan = [
+                'id' => $alurPermohonan->id,
+                'permohonan_id' => $alurPermohonan->id_permohonan,
+                'verifikator_id' => $alurPermohonan->id_user,
+                'jenis_verifikator' => $alurPermohonan->upload,
+                'urutan' => $urutan[$alurPermohonan->id_permohonan],
+                'created_at' => $alurPermohonan->created_at,
+                'updated_at' => $alurPermohonan->updated_at,
+            ];
+
+            // insert or update data with id
+            AlurPermohonan::upsert($alurPermohonan, ['id']);
+        }
+    }
+
+    private function sinkronKelengkapanPermohonan()
+    {
+        $kelengkapanPermohonanLegacy = DB::connection('siajaib_legacy')->table('kelengkapan_permohonan')->get();
+
+        foreach ($kelengkapanPermohonanLegacy as $kelengkapanPermohonan) {
+            $urutan[$kelengkapanPermohonan->id_permohonan] = $urutan[$kelengkapanPermohonan->id_permohonan] ?? 0;
+            $urutan[$kelengkapanPermohonan->id_permohonan]++;
+            $kelengkapanPermohonan = [
+                'id' => $kelengkapanPermohonan->id,
+                'permohonan_id' => $kelengkapanPermohonan->id_permohonan,
+                'label' => $kelengkapanPermohonan->label,
+                'tipe' => $kelengkapanPermohonan->id_form_type == 1 ? 'text' : 'date',
+                'kode_isian' => $kelengkapanPermohonan->kode_isian,
+                'value' => $kelengkapanPermohonan->value,
+                'urutan' => $urutan[$kelengkapanPermohonan->id_permohonan],
+                'created_at' => $kelengkapanPermohonan->created_at,
+                'updated_at' => $kelengkapanPermohonan->updated_at,
+            ];
+
+            // insert or update data with id
+            KelengkapanPermohonan::upsert($kelengkapanPermohonan, ['id']);
+        }
+    }
+
+    private function sinkronKuesioner()
+    {
+        $kuesionerLegacy = DB::connection('siajaib_legacy')->table('kuisioner')->whereNull('id_skm')->get();
+
+        foreach ($kuesionerLegacy as $kuesioner) {
+            $kuesioner = [
+                'id' => $kuesioner->id,
+                'permohonan_id' => $kuesioner->id_permohonan,
+                'jenis_kelamin' => $kuesioner->jenis_kelamin == 'L' ? 1 : 0,
+                'pendidikan' => $kuesioner->pendidikan,
+                'pekerjaan' => $kuesioner->pekerjaan,
+                'jenis_layanan' => $kuesioner->jenis_layanan,
+                'created_at' => $kuesioner->created_at,
+                'updated_at' => $kuesioner->updated_at,
+            ];
+
+            // insert or update data with id
+            Kuesioner::upsert($kuesioner, ['id']);
+        }
+    }
+
+    private function sinkronKuesionerPertanyaan()
+    {
+        $kuesionerPertanyaanLegacy = DB::connection('siajaib_legacy')->table('kuisioner_pertanyaan')->get();
+
+        foreach ($kuesionerPertanyaanLegacy as $kuesionerPertanyaan) {
+            $kuesionerPertanyaan = [
+                'id' => $kuesionerPertanyaan->id,
+                'pertanyaan' => $kuesionerPertanyaan->pertanyaan,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            // insert or update data with id
+            KuesionerPertanyaan::upsert($kuesionerPertanyaan, ['id']);
+        }
+    }
+
+    private function sinkronKuesionerOpsi()
+    {
+        $kuesionerOpsiLegacy = DB::connection('siajaib_legacy')->table('kuisioner_opsi')->get();
+
+        $remove_char = ['a. ', 'b. ', 'c. ', 'd. ', 'e. '];
+
+        foreach ($kuesionerOpsiLegacy as $kuesionerOpsi) {
+            $kuesionerOpsi = [
+                'id' => $kuesionerOpsi->id,
+                'kuesioner_pertanyaan_id' => $kuesionerOpsi->id_pertanyaan,
+                'opsi' => str_replace($remove_char, '', $kuesionerOpsi->opsi),
+                'point' => $kuesionerOpsi->point,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            // insert or update data with id
+            KuesionerOpsi::upsert($kuesionerOpsi, ['id']);
+        }
+    }
+
+    private function sinkronKuesionerJawaban()
+    {
+        $kuesionerJawabanLegacy = DB::connection('siajaib_legacy')
+            ->table('kuisioner_jawaban')
+            ->join('kuisioner', 'kuisioner_jawaban.id_kuisioner', '=', 'kuisioner.id')
+            ->whereNull('kuisioner.id_skm')
+            ->get();
+
+        foreach ($kuesionerJawabanLegacy as $kuesionerJawaban) {
+            $kuesionerJawaban = [
+                'id' => $kuesionerJawaban->id,
+                'kuesioner_id' => $kuesionerJawaban->id_kuisioner,
+                'kuesioner_opsi_id' => $kuesionerJawaban->id_opsi,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            // insert or update data with id
+            KuesionerJawaban::upsert($kuesionerJawaban, ['id']);
+        }
+    }
+
+    private function sinkronRegistrasiReklame()
+    {
+        $registrasiReklameLegacy = DB::connection('siajaib_legacy')->table('registrasi_reklame')->get();
+
+        foreach ($registrasiReklameLegacy as $registrasiReklame) {
+            $registrasiReklame = [
+                'id' => $registrasiReklame->id,
+                'user_id' => $registrasiReklame->id_user,
+                'nomor_registrasi' => $registrasiReklame->no_reg,
+                'nama' => $registrasiReklame->nama_reg,
+                'nik' => $registrasiReklame->nik_reg,
+                'npwp' => $registrasiReklame->npwp_reg,
+                'nama_perusahaan' => $registrasiReklame->nama_perusahaan,
+                'alamat_perusahaan' => $registrasiReklame->alamat_perusahaan,
+                'nomor_telepon' => $registrasiReklame->no_telp,
+                'created_at' => $registrasiReklame->created_at,
+                'updated_at' => $registrasiReklame->updated_at,
+            ];
+
+            // insert or update data with id
+            RegistrasiReklame::upsert($registrasiReklame, ['id']);
+        }
+    }
+
+    private function sinkronPembayaranReklame()
+    {
+        $pembayaranReklameLegacy = DB::connection('siajaib_legacy')->table('reklame_pembayaran')->get();
+
+        foreach ($pembayaranReklameLegacy as $pembayaranReklame) {
+            if ($pembayaranReklame->fileskpd) {
+                $pembayaranReklame->fileskpd = str_replace('https://api-siajaib.bulelengkab.go.id/storage/app/', '', $pembayaranReklame->fileskpd);
+            }
+
+            $pembayaranReklame = [
+                'id' => $pembayaranReklame->id,
+                'permohonan_id' => $pembayaranReklame->id_permohonan,
+                'nomor_skpd' => $pembayaranReklame->no_skpd,
+                'is_lunas' => $pembayaranReklame->statuslunas,
+                'skpd_filepath' => $pembayaranReklame->fileskpd,
+                'nominal' => $pembayaranReklame->nominal,
+                'created_at' => $pembayaranReklame->created_at,
+                'updated_at' => $pembayaranReklame->updated_at,
+            ];
+
+            // insert or update data with id
+            PembayaranReklame::upsert($pembayaranReklame, ['id']);
+        }
+    }
+}

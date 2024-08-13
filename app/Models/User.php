@@ -23,6 +23,7 @@ class User extends Authenticatable
         'telepon',
         'nik',
         'jenis_kelamin',
+        'alamat',
         'is_filled_data_register',
         'password',
         'role_id',
