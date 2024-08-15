@@ -30,7 +30,7 @@
                         <span>Permohonan</span>
                     </a>
                 </li>
-                <li class="sidebar-item has-sub actives">
+                <li class="sidebar-item has-sub {{ request()->routeIs('admin.master-data.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-folder-2"></i>
@@ -42,9 +42,9 @@
                                href="#">
                                 User</a>
                         </li>
-                        <li class="submenu-item actives">
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.jenis-izin.index') ? 'active' : '' }}">
                             <a class="submenu-link"
-                               href="#">
+                               href="{{ route('admin.master-data.jenis-izin.index') }}">
                                 Jenis Ijin</a>
                         </li>
                     </ul>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\AuthenticationController;
 
 /*
@@ -61,16 +62,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ADMINISTRATOR
-    Route::middleware(['role:administrator'])->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
+        // Master Data
+        Route::prefix('master-data')->name('master-data.')->group(function () {
+            // Jenis Izin
+            Route::prefix('jenis-izin')->name('jenis-izin.')->group(function () {
+                Route::get('/', [JenisIzinController::class, 'index'])->name('index');
+                // Route::post('/', [JenisIzinController::class, 'store'])->name('store');
+                // Route::get('/{id}', [JenisIzinController::class, 'show'])->name('show');
+                // Route::put('/{id}', [JenisIzinController::class, 'update'])->name('update');
+                // Route::delete('/{id}', [JenisIzinController::class, 'destroy'])->name('destroy');
+
+                // Table
+                Route::get('/table', [JenisIzinController::class, 'jenisIzinTable'])->name('table');
+            });
+        });
     });
 
     // VERIFIKATOR
-    Route::middleware(['role:verifikator'])->group(function () {
-    });
+    Route::middleware(['role:verifikator'])->group(function () {});
 
-    // OPERATOR
-    Route::middleware(['role:public', 'is_filled_data_register'])->group(function () {
-    });
+    // PUBLIC
+    Route::middleware(['role:public', 'is_filled_data_register'])->group(function () {});
 
 
     // Profile
