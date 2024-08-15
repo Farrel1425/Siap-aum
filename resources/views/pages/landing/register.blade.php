@@ -1,6 +1,6 @@
 @extends('layouts.landing.auth-base')
 
-@section('content-header')
+{{-- @section('content-header')
     <div class="content-header">
         <div class="d-flex align-items-center gap-3 flex-row-reverse">
             <img alt=""
@@ -85,6 +85,48 @@
             </div>
         </div>
     </div>
+@endsection --}}
+
+@section('content')
+    <x-landing.hero showBackButton="true">
+        <div class="content-header">
+            <div class="d-flex align-items-center gap-3 flex-row-reverse">
+                <img alt=""
+                     class="img-logo-auth"
+                     src="{{ asset('assets/images/logo-siajaib.png') }}">
+                <img alt=""
+                     class="img-logo-auth"
+                     src="{{ asset('assets/images/logo-kabupaten.png') }}">
+            </div>
+            <div class="text-center my-3 w-100 auth-header">
+                <h3 class="title text-main">Daftar Akun</h3>
+                <p class="caption text-main">Masuk ke akun anda</p>
+                <input id="route_otp"
+                       type="hidden"
+                       value="{{ route('register.otp.generate') }}">
+                <input id="route_register"
+                       type="hidden"
+                       value="{{ route('register.store') }}">
+                <input id="csrf_token"
+                       type="hidden"
+                       value="{{ csrf_token() }}">
+                <x-landing.input-email :required=True
+                                       name="email"
+                                       placeholder="Email" />
+                <x-landing.input-password :required=True
+                                          name="password"
+                                          placeholder="Password" />
+                <x-landing.input-password :required=True
+                                          name="password_verify"
+                                          placeholder="Masukkan password kembali" />
+                <button class="btn btn-danger d-block w-100 fw-bold"
+                        id="generate_otp"
+                        type="button">Daftar</button>
+                <p class="mt-2 text-main">Sudah Punya Akun? <a class="text-danger"
+                       href="{{ route('login.index') }}">Masuk</a></p>
+            </div>
+        </div>
+    </x-landing.hero>
 @endsection
 
 @vite(['resources/js/pages/register.js'])
