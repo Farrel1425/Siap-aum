@@ -8,9 +8,9 @@ enum StatusValidasiEnum: string
     case REVISI = 'revisi';
     case VALID = 'valid';
 
-    public function deskripsi(string $status): string
+    public function deskripsi(): string
     {
-        return match ($status) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::REVISI => 'Revisi',
             self::VALID => 'Valid',

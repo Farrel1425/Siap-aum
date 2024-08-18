@@ -12,11 +12,11 @@ enum JenisVerifikatorEnum: string
 
     public function deskripsi(): string
     {
-        return match ($this->value) {
-            self::FO => "Fungsi Organisasi",
-            self::OPD => "Organisasi Perangkat Daerah",
-            self::BO => "Bendahara Organisasi",
-            self::JF => "Jabatan Fungsional",
+        return match ($this) {
+            self::FO => "Verifikator FO",
+            self::OPD => "Verifikator OPD",
+            self::BO => "Verifikator BO",
+            self::JF => "Vefikator JF",
             self::PENANDATANGAN => "Penandatangan",
         };
     }

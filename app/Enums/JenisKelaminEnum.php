@@ -7,9 +7,9 @@ enum JenisKelaminEnum: int
     case LAKI_LAKI = 1;
     case PEREMPUAN = 0;
 
-    public static function deskripsi(int $value): string
+    public function deskripsi(): string
     {
-        return match ($value) {
+        return match ($this) {
             self::LAKI_LAKI => 'Laki-laki',
             self::PEREMPUAN => 'Perempuan',
             default => 'Tidak diketahui',

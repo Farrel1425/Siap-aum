@@ -2,14 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\JenisIzin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class JenisIzinController extends Controller
 {
     public function index(Request $request)
     {
         return view('pages.admin.master-data.jenis-izin.index');
+    }
+
+    public function create(Request $request)
+    {
+        return view('pages.admin.master-data.jenis-izin.create');
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
     }
 
     public function jenisIzinTable(Request $request)

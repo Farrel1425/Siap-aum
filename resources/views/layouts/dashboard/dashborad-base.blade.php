@@ -30,6 +30,9 @@
     {{-- daterangepicker --}}
     <link href="{{ asset('assets/vendors/daterangepicker/daterangepicker.css') }}"
           rel="stylesheet">
+    {{-- trixeditor --}}
+    <link href="https://cdn.jsdelivr.net/npm/trix@2.1.5/dist/trix.min.css"
+          rel="stylesheet">
 
     @stack('styles')
 </head>
@@ -80,6 +83,8 @@
     {{-- flatpickr --}}
     <script src="{{ asset('assets/vendors/flatpickr/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/flatpickr/id.js') }}"></script>
+    {{-- trix editor --}}
+    <script src="https://cdn.jsdelivr.net/npm/trix@2.1.5/dist/trix.umd.min.js"></script>
     {{-- @yield('content') --}}
     @stack('scripts')
     @vite(['resources/js/app.js', 'resources/js/dashboard/dashboard.js'])

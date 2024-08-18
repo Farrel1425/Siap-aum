@@ -60,17 +60,17 @@ class User extends Authenticatable
 
     public function getIsAdminAttribute()
     {
-        return $this->hasRole(RoleEnum::ADMIN->value);
+        return $this->hasRole(RoleEnum::ADMIN->deskripsi());
     }
 
     public function getIsPublicAttribute()
     {
-        return $this->hasRole(RoleEnum::PUBLIC->value);
+        return $this->hasRole(RoleEnum::PUBLIC->deskripsi());
     }
 
     public function getIsVerifikatorAttribute()
     {
-        return $this->hasRole(RoleEnum::VERIFIKATOR->value);
+        return $this->hasRole(RoleEnum::VERIFIKATOR->deskripsi());
     }
 
     public function hasRole($role)

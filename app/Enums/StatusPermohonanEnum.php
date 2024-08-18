@@ -12,9 +12,9 @@ enum StatusPermohonanEnum: string
     case EXPIRED = 'expired';
     case VERIFIKASI = 'verifikasi';
 
-    public function deskripsi(string $status): string
+    public function deskripsi(): string
     {
-        return match ($status) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::PERMOHONAN_BARU => 'Permohonan Baru',
             self::SELESAI => 'Selesai',

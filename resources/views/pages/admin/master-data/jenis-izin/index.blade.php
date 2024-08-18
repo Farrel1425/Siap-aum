@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last d-flex align-items-center">
                     <h2 class="d-inline mb-0">Jenis Ijin</h2>
-                    <a href="#" class="ms-4 btn btn-primary rounded"><i class="isax isax-element-plus"></i> Tambah</a>
+                    <a href="{{ route('admin.master-data.jenis-izin.create') }}" class="ms-4 btn btn-primary rounded"><i class="isax isax-element-plus"></i> Tambah</a>
                 </div>
             </div>
         </div>
