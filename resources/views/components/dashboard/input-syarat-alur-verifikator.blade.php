@@ -147,7 +147,7 @@
                 $(row).addClass('bg-white');
                 $(row).find('td').eq(0).addClass('text-start').css('width', '5%');
                 $(row).find('td').eq(1).addClass('text-start').css('width', '50%');
-                $(row).find('td').eq(2).addClass('text-start').css('width', '30%');
+                $(row).find('td').eq(2).addClass('text-start').css('width', '40%');
                 $(row).find('td').eq(3).css('width', '15%');
 
                 // set value
@@ -160,6 +160,9 @@
                     width: '100%'
                 });
                 $('#jenis_verifikator_' + newCounter).val(jenis_verifikator).trigger('change');
+
+                // clear select2
+                $('#verifikator_data').val(null).trigger('change');
             }
         }
 

@@ -30,7 +30,7 @@
                                                        label="Nama"
                                                        name="nama"
                                                        placeholder="Masukkan nama jenis ijin"
-                                                       value="{{ $jenis_izin->nama }}" />
+                                                       value="{{ old('nama', $jenis_izin->nama) }}" />
                     </div>
                 </div>
                 <div class="card mb-3">
@@ -39,7 +39,7 @@
                                                            id="deskripsi"
                                                            label="Masukkan deskripsi syarat ijin"
                                                            name="deskripsi"
-                                                           value="{{ $jenis_izin->deskripsi }}" />
+                                                           value="{{ old('deskripsi', $jenis_izin->deskripsi) }}" />
                     </div>
                 </div>
                 <hr>

@@ -25,7 +25,97 @@ class JenisIzinController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $request->validate([
+            'nama' => 'required|string|unique:jenis_izins,nama',
+            'deskripsi' => 'required|string',
+            'syarat_form' => 'required',
+            'syarat_form.*.nama' => 'required',
+            'syarat_form.*.kode_isian' => 'required',
+            'syarat_form.*.tipe_form' => 'required|in:text,date',
+            'syarat_berkas' => 'required',
+            'syarat_berkas.*.nama' => 'required',
+            'syarat_berkas.*.is_required' => 'required|in:0,1',
+            'alur_verifikator' => 'required',
+            'alur_verifikator.*.id' => 'required',
+            'alur_verifikator.*.jenis_verifikator' => 'required|in:0,1,2,3,4',
+            'syarat_kelengkapan' => 'required',
+            'syarat_kelengkapan.*.nama' => 'required',
+            'syarat_kelengkapan.*.kode_isian' => 'required',
+            'syarat_kelengkapan.*.tipe_form' => 'required|in:text,date',
+            'template_laporan' => 'required|mimes:doc,docx|max:4096',
+        ]);
+
+        // unique between kode isian from input user
+        $all_kode_isian = array_merge(
+            $request->syarat_form,
+            $request->syarat_kelengkapan
+        );
+
+        // check if kode isian is unique
+        $kode_isian = array_column($all_kode_isian, 'kode_isian');
+        if (count($kode_isian) !== count(array_unique($kode_isian))) {
+            return redirect()->back()->with('error', 'Kode isian pada syarat form dan kelengkapan harus unik')->withInput();
+        }
+
+        DB::beginTransaction();
+        try {
+            $jenis_izin = new JenisIzin();
+            $jenis_izin->nama = $request->nama;
+            $jenis_izin->deskripsi = $request->deskripsi;
+
+            $file = $request->file('template_laporan');
+            $path = $file->storeAs('file_templateword', $file->getClientOriginalName(), 'public');
+
+            $jenis_izin->template_surat = $path;
+
+            $jenis_izin->save();
+
+            // Form Jenis Izin
+            foreach ($request->syarat_form as $key => $form) {
+                $jenis_izin->formJenisIzin()->create([
+                    'label' => $form['nama'],
+                    'kode_isian' => $form['kode_isian'],
+                    'tipe' => $form['tipe_form'],
+                    'urutan' => $key + 1,
+                ]);
+            }
+
+            // Berkas Jenis Izin
+            foreach ($request->syarat_berkas as $key => $berkas) {
+                $jenis_izin->berkasJenisIzin()->create([
+                    'nama' => $berkas['nama'],
+                    'is_required' => $berkas['is_required'],
+                    'urutan' => $key + 1,
+                ]);
+            }
+
+            // Alur Jenis Izin
+            foreach ($request->alur_verifikator as $key => $verifikator) {
+                $jenis_izin->alurJenisIzin()->create([
+                    'verifikator_id' => $verifikator['id'],
+                    'jenis_verifikator' => $verifikator['jenis_verifikator'],
+                    'urutan' => $key + 1,
+                ]);
+            }
+
+            // Kelengkapan Jenis Izin
+            foreach ($request->syarat_kelengkapan as $key => $kelengkapan) {
+                $jenis_izin->kelengkapanJenisIzin()->create([
+                    'label' => $kelengkapan['nama'],
+                    'kode_isian' => $kelengkapan['kode_isian'],
+                    'tipe' => $kelengkapan['tipe_form'],
+                    'urutan' => $key + 1,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.master-data.jenis-izin.index')->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Kesalahan pada server. Hubungi Administrator')->withInput();
+        }
     }
 
     public function show(Request $request, $id)
@@ -139,7 +229,7 @@ class JenisIzinController extends Controller
             $jenis_izin->nama = $request->nama;
             $jenis_izin->deskripsi = $request->deskripsi;
 
-            if($request->template_laporan){
+            if ($request->template_laporan) {
                 $request->validate([
                     'template_laporan' => 'required|mimes:doc,docx|max:4096',
                 ]);
@@ -158,7 +248,7 @@ class JenisIzinController extends Controller
                     'label' => $form['nama'],
                     'kode_isian' => $form['kode_isian'],
                     'tipe' => $form['tipe_form'],
-                    'urutan' => $key+1,
+                    'urutan' => $key + 1,
                 ]);
             }
 
@@ -168,7 +258,7 @@ class JenisIzinController extends Controller
                 $jenis_izin->berkasJenisIzin()->create([
                     'nama' => $berkas['nama'],
                     'is_required' => $berkas['is_required'],
-                    'urutan' => $key+1,
+                    'urutan' => $key + 1,
                 ]);
             }
 
@@ -178,7 +268,7 @@ class JenisIzinController extends Controller
                 $jenis_izin->alurJenisIzin()->create([
                     'verifikator_id' => $verifikator['id'],
                     'jenis_verifikator' => $verifikator['jenis_verifikator'],
-                    'urutan' => $key+1,
+                    'urutan' => $key + 1,
                 ]);
             }
 
@@ -189,7 +279,7 @@ class JenisIzinController extends Controller
                     'label' => $kelengkapan['nama'],
                     'kode_isian' => $kelengkapan['kode_isian'],
                     'tipe' => $kelengkapan['tipe_form'],
-                    'urutan' => $key+1,
+                    'urutan' => $key + 1,
                 ]);
             }
 

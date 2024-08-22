@@ -28,7 +28,8 @@
                                                        id="nama"
                                                        label="Nama"
                                                        name="nama"
-                                                       placeholder="Masukkan nama jenis ijin" />
+                                                       placeholder="Masukkan nama jenis ijin"
+                                                       value="{{ old('nama') }}" />
                     </div>
                 </div>
                 <div class="card mb-3">
@@ -37,7 +38,7 @@
                                                            id="deskripsi"
                                                            label="Masukkan deskripsi syarat ijin"
                                                            name="deskripsi"
-                                                           value="" />
+                                                           value="{{ old('deskripsi') }}" />
                     </div>
                 </div>
                 <hr>
@@ -76,6 +77,33 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {});
+        $(document).ready(function() {
+            @if ($old_values = old('syarat_berkas'))
+                @foreach ($old_values as $key => $value)
+                    tambahDataBerkas('{{ $value['nama'] }}', '{{ $value['is_required'] }}');
+                @endforeach
+            @endif
+
+            @if ($old_values = old('syarat_form'))
+                @foreach ($old_values as $key => $value)
+                    tambahDataForm('{{ $value['nama'] }}', '{{ $value['kode_isian'] }}',
+                        '{{ $value['tipe_form'] }}');
+                @endforeach
+            @endif
+
+            @if ($old_values = old('alur_verifikator'))
+                @foreach ($old_values as $key => $value)
+                    tambahAlurVerifikator('{{ $value['nama'] }}', '{{ $value['id'] }}',
+                        '{{ $value['jenis_verifikator'] }}');
+                @endforeach
+            @endif
+
+            @if ($old_values = old('syarat_kelengkapan'))
+                @foreach ($old_values as $key => $value)
+                    tambahDataKelengkapan('{{ $value['nama'] }}', '{{ $value['kode_isian'] }}',
+                        '{{ $value['tipe_form'] }}');
+                @endforeach
+            @endif
+        });
     </script>
 @endpush
