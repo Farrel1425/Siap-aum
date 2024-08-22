@@ -7,8 +7,8 @@ enum JenisVerifikatorEnum: string
     case FO = "0";
     case OPD = "1";
     case BO = "2";
-    case JF = "3";
-    case PENANDATANGAN = "4";
+    case JF = "4";
+    case PENANDATANGAN = "3";
 
     public function deskripsi(): string
     {

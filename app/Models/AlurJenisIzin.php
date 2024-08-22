@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\JenisIzin;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AlurJenisIzin extends Model
 {
@@ -15,4 +17,14 @@ class AlurJenisIzin extends Model
         'jenis_verifikator',
         'urutan',
     ];
+
+    public function jenisIzin()
+    {
+        return $this->belongsTo(JenisIzin::class);
+    }
+
+    public function verifikator()
+    {
+        return $this->belongsTo(User::class, 'verifikator_id');
+    }
 }

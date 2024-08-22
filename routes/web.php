@@ -78,8 +78,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [JenisIzinController::class, 'index'])->name('index');
                 Route::get('/create', [JenisIzinController::class, 'create'])->name('create');
                 Route::post('/', [JenisIzinController::class, 'store'])->name('store');
-                // Route::get('/{id}', [JenisIzinController::class, 'show'])->name('show');
-                // Route::put('/{id}', [JenisIzinController::class, 'update'])->name('update');
+                Route::get('/{id}', [JenisIzinController::class, 'show'])->name('show');
+                Route::put('/{id}', [JenisIzinController::class, 'update'])->name('update');
                 // Route::delete('/{id}', [JenisIzinController::class, 'destroy'])->name('destroy');
 
             });

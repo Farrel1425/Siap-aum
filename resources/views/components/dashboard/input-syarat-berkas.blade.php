@@ -10,44 +10,6 @@
         </tr>
     </thead>
     <tbody>
-        {{-- <tr class="bg-white">
-            <td class="text-start"
-                width="5%">
-                <p class="d-none counter">1</p>
-                <i class="isax isax-textalign-justifycenter fs-4"></i>
-            </td>
-            <td class="text-start"
-                width="80%">
-                <div class="form-group mb-0 row align-items-center">
-                    <div class="col-2">
-                        <label class="col-form-label fw-bold text-sm"
-                               for="nama_berkas_1">Nama Berkas</label>
-                    </div>
-                    <div class="col-9">
-                        <input class="form-control"
-                               id="nama_berkas_1"
-                               name="syarat_berkas[]['nama']"
-                               placeholder="Masukkan nama berkas"
-                               type="text" required>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="form-check form-switch">
-                    <input type="hidden"
-                           name="syarat_berkas[]['is_required']"
-                           data-id="syarat_berkas_1"
-                           value="0">
-                    <input checked
-                           class="form-check-input"
-                           id="syarat_berkas_1"
-                           type="checkbox">
-                    <label class="form-check-label"
-                           for="syarat_berkas_1">Wajib</label>
-                </div>
-            </td>
-            <td width="10%"><i class="isax isax-trash fs-4 delete-data"></i></td>
-        </tr> --}}
     </tbody>
 </table>
 <button class="btn btn-primary btn-sm"
@@ -150,18 +112,5 @@
                 $('#syarat_berkas_' + newCounter).prev().val(0);
             }
         }
-
-        // function consoleLogInputBerkas() {
-        //     var data = [];
-        //     $('#syarat-berkas-table tbody tr').each(function() {
-        //         var nama = $(this).find('input[name^="syarat_berkas"]').val();
-        //         var is_required = $(this).find('input[name^="syarat_berkas"]').prop('checked');
-        //         data.push({
-        //             nama: nama,
-        //             is_required: is_required
-        //         });
-        //     });
-        //     console.log(data);
-        // }
     </script>
 @endpush

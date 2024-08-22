@@ -39,7 +39,6 @@
 
         .alur-verifikator input,
         .alur-verifikator select {
-            width: 100% !important;
             font-size: 0.775rem !important;
         }
 
@@ -69,8 +68,6 @@
             });
 
             $('#alur-verifikator-table tbody').on('click', '.delete-data', function() {
-                // var table = $('#alur-verifikator-table').DataTable();
-                // table.row($(this).parents('tr')).remove().draw();
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
                     text: "Data yang dihapus tidak dapat dikembalikan!",
@@ -101,7 +98,7 @@
                         return {
                             search: params.term,
                             page: params.page || 1,
-                            except: $("input[name='alur_verifikator[][id]']")
+                            except: $('#alur-verifikator-table tbody tr').find('input[name*="[id]"]')
                                 .map(function() {
                                     return $(this).val();
                                 }).get()
@@ -144,7 +141,7 @@
                     '">Jenis Verifikator</label></div><div class="col-8"><select class="form-select" id="jenis_verifikator_' +
                     newCounter +
                     '" name="alur_verifikator[' + newCounter +
-                    '][jenis_verifikator]" required><option></option><option value="0">Verifikator FO</option><option value="1">Verifikator OPD</option><option value="2">Verifikator BO</option><option value="3">Verifikator JF</option><option value="4">Penandatangan</option></select></div></div>',
+                    '][jenis_verifikator]" required><option></option><option value="0">Verifikator FO</option><option value="1">Verifikator OPD</option><option value="2">Verifikator BO</option><option value="4">Verifikator JF</option><option value="3">Penandatangan</option></select></div></div>',
                     '<i class="isax isax-trash fs-4 delete-data"></i>'
                 ]).draw(false).node();
                 $(row).addClass('bg-white');
@@ -155,14 +152,14 @@
 
                 // set value
                 $('#nama_verifikator_' + newCounter).val(nama_verifikator);
-                $('#nama_' + newCounter).text(nama_verifikator);
+                // $('#nama_' + newCounter).text(nama_verifikator);
                 $('#id_verifikator_' + newCounter).val(id_verifikator);
                 $('#jenis_verifikator_' + newCounter).select2({
                     placeholder: 'Pilih Jenis Verifikator',
                     theme: 'bootstrap-5',
                     width: '100%'
                 });
-                $('#jenis_verifikator_' + newCounter).val(jenis_verifikator);
+                $('#jenis_verifikator_' + newCounter).val(jenis_verifikator).trigger('change');
             }
         }
 
@@ -171,22 +168,6 @@
             var id_verifikator = $('#verifikator_data').val();
             var jenis_verifikator = $('#verifikator_data').select2('data')[0].jenis_verifikator;
             tambahAlurVerifikator(nama_verifikator, id_verifikator, jenis_verifikator);
-            $('#verifikator_data').val(null).trigger('change');
         }
-
-        // function consoleLogInpuAlur() {
-        //     var data = [];
-        //     $('#alur-verifikator-table tbody tr').each(function() {
-        //         var nama = $(this).find('input[name^="alur_verifikator[][nama]"]').val();
-        //         var id = $(this).find('input[name^="alur_verifikator[][id]"]').val();
-        //         var jenis_verifikator = $(this).find('select[name^="alur_verifikator"]').val();
-        //         data.push({
-        //             nama: nama,
-        //             jenis_verifikator: jenis_verifikator,
-        //             id: id
-        //         });
-        //     });
-        //     console.log(data);
-        // }
     </script>
 @endpush

@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\JenisIzin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Enums\JenisVerifikatorEnum;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class JenisIzinController extends Controller
 {
@@ -22,6 +26,183 @@ class JenisIzinController extends Controller
     public function store(Request $request)
     {
         dd($request->all());
+    }
+
+    public function show(Request $request, $id)
+    {
+        $jenis_izin = JenisIzin::with([
+            'alurJenisIzin' => function ($q) {
+                return $q->orderBy('urutan')->with('verifikator');
+            },
+            'formJenisIzin' => function ($q) {
+                return $q->orderBy('urutan');
+            },
+            'berkasJenisIzin' => function ($q) {
+                return $q->orderBy('urutan');
+            },
+            'kelengkapanJenisIzin' => function ($q) {
+                return $q->orderBy('urutan');
+            },
+        ])->findOrFail($id);
+
+        $jenis_izin->formJenisIzin = $jenis_izin->formJenisIzin->map(function ($formJenisIzin) {
+            return collect([
+                'id' => $formJenisIzin->id,
+                'nama' => $formJenisIzin->label,
+                'tipe_form' => $formJenisIzin->tipe,
+                'kode_isian' => $formJenisIzin->kode_isian,
+                'urutan' => $formJenisIzin->urutan,
+            ]);
+        });
+        $jenis_izin->berkasJenisIzin = $jenis_izin->berkasJenisIzin->map(function ($berkasJenisIzin) {
+            return collect([
+                'id' => $berkasJenisIzin->id,
+                'nama' => $berkasJenisIzin->nama,
+                'is_required' => $berkasJenisIzin->is_required,
+                'urutan' => $berkasJenisIzin->urutan,
+            ]);
+        });
+        $jenis_izin->alurJenisIzin = $jenis_izin->alurJenisIzin->map(function ($alurJenisIzin) {
+            return collect([
+                'id' => $alurJenisIzin->verifikator->id,
+                'nama' => $alurJenisIzin->verifikator->name,
+                'jenis_verifikator' => $alurJenisIzin->jenis_verifikator,
+                'jenis' => JenisVerifikatorEnum::tryFrom($alurJenisIzin->jenis_verifikator)->deskripsi(),
+                'urutan' => $alurJenisIzin->urutan,
+            ]);
+        });
+        $jenis_izin->kelengkapanJenisIzin = $jenis_izin->kelengkapanJenisIzin->map(function ($kelengkapanJenisIzin) {
+            return collect([
+                'id' => $kelengkapanJenisIzin->id,
+                'nama' => $kelengkapanJenisIzin->label,
+                'tipe_form' => $kelengkapanJenisIzin->tipe,
+                'kode_isian' => $kelengkapanJenisIzin->kode_isian,
+                'urutan' => $kelengkapanJenisIzin->urutan,
+            ]);
+        });
+
+        return view('pages.admin.master-data.jenis-izin.show', compact('jenis_izin'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required|string',
+            'deskripsi' => 'required|string',
+            'syarat_form.*' => 'required',
+            'syarat_form.*.nama' => 'required',
+            'syarat_form.*.kode_isian' => 'required',
+            'syarat_form.*.tipe_form' => 'required|in:text,date',
+            'syarat_berkas.*' => 'required',
+            'syarat_berkas.*.nama' => 'required',
+            'syarat_berkas.*.is_required' => 'required|in:0,1',
+            'alur_verifikator.*' => 'required',
+            'alur_verifikator.*.id' => 'required',
+            'alur_verifikator.*.jenis_verifikator' => 'required|in:0,1,2,3,4',
+            'syarat_kelengkapan.*' => 'required',
+            'syarat_kelengkapan.*.nama' => 'required',
+            'syarat_kelengkapan.*.kode_isian' => 'required',
+            'syarat_kelengkapan.*.tipe_form' => 'required|in:text,date',
+        ]);
+
+        // unique between kode isian from input user
+        $all_kode_isian = array_merge(
+            $request->syarat_form,
+            $request->syarat_kelengkapan
+        );
+
+        // check if kode isian is unique
+        $kode_isian = array_column($all_kode_isian, 'kode_isian');
+        if (count($kode_isian) !== count(array_unique($kode_isian))) {
+            return redirect()->back()->with('error', 'Kode isian pada syarat form dan kelengkapan harus unik')->withInput();
+        }
+
+
+        $jenis_izin = JenisIzin::with([
+            'alurJenisIzin' => function ($q) {
+                return $q->orderBy('urutan')->with('verifikator');
+            },
+            'formJenisIzin' => function ($q) {
+                return $q->orderBy('urutan');
+            },
+            'berkasJenisIzin' => function ($q) {
+                return $q->orderBy('urutan');
+            },
+            'kelengkapanJenisIzin' => function ($q) {
+                return $q->orderBy('urutan');
+            },
+        ])->findOrFail($id);
+
+
+        DB::beginTransaction();
+        try {
+            $jenis_izin->nama = $request->nama;
+            $jenis_izin->deskripsi = $request->deskripsi;
+
+            if($request->template_laporan){
+                $request->validate([
+                    'template_laporan' => 'required|mimes:doc,docx|max:4096',
+                ]);
+
+                Storage::disk('public')->delete($jenis_izin->template_surat);
+                $file = $request->file('template_laporan');
+                $path = $file->storeAs('file_templateword', $file->getClientOriginalName(), 'public');
+
+                $jenis_izin->template_surat = $path;
+            }
+
+            // Form Jenis Izin
+            $jenis_izin->formJenisIzin()->delete();
+            foreach ($request->syarat_form as $key => $form) {
+                $jenis_izin->formJenisIzin()->create([
+                    'label' => $form['nama'],
+                    'kode_isian' => $form['kode_isian'],
+                    'tipe' => $form['tipe_form'],
+                    'urutan' => $key+1,
+                ]);
+            }
+
+            // Berkas Jenis Izin
+            $jenis_izin->berkasJenisIzin()->delete();
+            foreach ($request->syarat_berkas as $key => $berkas) {
+                $jenis_izin->berkasJenisIzin()->create([
+                    'nama' => $berkas['nama'],
+                    'is_required' => $berkas['is_required'],
+                    'urutan' => $key+1,
+                ]);
+            }
+
+            // Alur Jenis Izin
+            $jenis_izin->alurJenisIzin()->delete();
+            foreach ($request->alur_verifikator as $key => $verifikator) {
+                $jenis_izin->alurJenisIzin()->create([
+                    'verifikator_id' => $verifikator['id'],
+                    'jenis_verifikator' => $verifikator['jenis_verifikator'],
+                    'urutan' => $key+1,
+                ]);
+            }
+
+            // Kelengkapan Jenis Izin
+            $jenis_izin->kelengkapanJenisIzin()->delete();
+            foreach ($request->syarat_kelengkapan as $key => $kelengkapan) {
+                $jenis_izin->kelengkapanJenisIzin()->create([
+                    'label' => $kelengkapan['nama'],
+                    'kode_isian' => $kelengkapan['kode_isian'],
+                    'tipe' => $kelengkapan['tipe_form'],
+                    'urutan' => $key+1,
+                ]);
+            }
+
+            $jenis_izin->save();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Kesalahan pada server. Hubungi Administrator')->withInput();
+        }
+
+        return redirect()->route('admin.master-data.jenis-izin.index')->with('success', 'Data berhasil diubah');
     }
 
     public function jenisIzinTable(Request $request)
@@ -61,8 +242,8 @@ class JenisIzinController extends Controller
                 ->get()
                 ->map(function ($jenisIzin) {
                     // $action = '<a href="' . route('admin.jenis-izin.show', $jenisIzin->id) . '" class="btn btn-sm btn-primary"><i class="isax isax-trash"></i></a>';
-                    $action = '<a href="#"><i class="isax-bold isax-brush-1"></i></a>';
-                    $action .= '<a href="#"><i class="isax-bold isax-trash"></i></a>';
+                    $action = '<a href="' . route('admin.master-data.jenis-izin.show', $jenisIzin->id) . '"><i class="isax-bold isax-brush-1"></i></a>';
+                    // $action .= '<a href="#"><i class="isax-bold isax-trash"></i></a>';
                     return [
                         'id' => $jenisIzin->id,
                         'nama' => $jenisIzin->nama,

@@ -17,7 +17,7 @@
                id="{{ $name }}"
                name="{{ $name }}"
                type="hidden"
-               value="{{ $value }}">
+               value="{!! $value !!}">
         <trix-editor input="{{ $name }}"></trix-editor>
     </div>
     @error($name)

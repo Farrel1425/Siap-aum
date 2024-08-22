@@ -16,9 +16,10 @@
             </div>
         </div>
         <section class="section">
-            <form action="{{ route('admin.master-data.jenis-izin.store') }}"
+            <form action="{{ route('admin.master-data.jenis-izin.update', $jenis_izin->id) }}"
                   enctype="multipart/form-data"
                   method="POST">
+                @method('PUT')
                 @csrf
                 <h5 class="text-black mb-3 mt-4">Tambah Jenis Perijinan</h5>
                 <div class="card mb-3">
@@ -28,7 +29,8 @@
                                                        id="nama"
                                                        label="Nama"
                                                        name="nama"
-                                                       placeholder="Masukkan nama jenis ijin" />
+                                                       placeholder="Masukkan nama jenis ijin"
+                                                       value="{{ $jenis_izin->nama }}" />
                     </div>
                 </div>
                 <div class="card mb-3">
@@ -37,7 +39,7 @@
                                                            id="deskripsi"
                                                            label="Masukkan deskripsi syarat ijin"
                                                            name="deskripsi"
-                                                           value="" />
+                                                           value="{{ $jenis_izin->deskripsi }}" />
                     </div>
                 </div>
                 <hr>
@@ -61,13 +63,21 @@
                 <hr>
                 <h5 class="text-black mt-4">Template Laporan</h5>
                 <div class="form-group mb-3">
-                    <input class="form-control"
-                           id="template_laporan"
-                           name="template_laporan"
-                           required
-                           type="file">
+                    <div class="row">
+                        <div class="col-9">
+                            <input class="form-control"
+                                   id="template_laporan"
+                                   name="template_laporan"
+                                   type="file">
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-secondary w-100 d-block text-sm"
+                               href="{{ Storage::url($jenis_izin->template_surat) }}"
+                               target="_blank">Lihat Template</a>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-primary w-100 d-block mb-3 fw-bold"
+                <button class="btn btn-primary w-100 d-block fw-bold"
                         type="submit">Simpan Jenis Ijin</button>
             </form>
         </section>
@@ -76,6 +86,34 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {});
+        $(document).ready(function() {
+
+            @if ($old_values = old('syarat_berkas', $jenis_izin->berkasJenisIzin))
+                @foreach ($old_values as $key => $value)
+                    tambahDataBerkas('{{ $value['nama'] }}', '{{ $value['is_required'] }}');
+                @endforeach
+            @endif
+
+            @if ($old_values = old('syarat_form', $jenis_izin->formJenisIzin))
+                @foreach ($old_values as $key => $value)
+                    tambahDataForm('{{ $value['nama'] }}', '{{ $value['kode_isian'] }}',
+                        '{{ $value['tipe_form'] }}');
+                @endforeach
+            @endif
+
+            @if ($old_values = old('alur_verifikator', $jenis_izin->alurJenisIzin))
+                @foreach ($old_values as $key => $value)
+                    tambahAlurVerifikator('{{ $value['nama'] }}', '{{ $value['id'] }}',
+                        '{{ $value['jenis_verifikator'] }}');
+                @endforeach
+            @endif
+
+            @if ($old_values = old('syarat_kelengkapan', $jenis_izin->kelengkapanJenisIzin))
+                @foreach ($old_values as $key => $value)
+                    tambahDataKelengkapan('{{ $value['nama'] }}', '{{ $value['kode_isian'] }}',
+                        '{{ $value['tipe_form'] }}');
+                @endforeach
+            @endif
+        });
     </script>
 @endpush
