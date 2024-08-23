@@ -99,4 +99,10 @@ class AuthenticationController extends Controller
             'message' => 'Kode OTP berhasil dikirim ke email',
         ]);
     }
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect()->route('login.index')->with('success', 'Berhasil logout');
+    }
 }
