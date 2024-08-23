@@ -21,7 +21,7 @@
     <div class="loader-container">
         <div class="loader"></div>
     </div>
-    <section class="header">
+    {{-- <section class="header">
         <div class="row h-100">
             <div class="col-md-6 h-100 position-relative">
                 <a class="d-none d-md-inline-block back-button text-decoration-none rounded-circle position-relative bg-danger text-white py-3 px-3"
@@ -34,7 +34,8 @@
                 @yield('content-header')
             </div>
         </div>
-    </section>
+    </section> --}}
+    @yield('content')
     @stack('scripts')
     @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])
     <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>

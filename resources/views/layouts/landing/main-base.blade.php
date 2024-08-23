@@ -17,7 +17,7 @@
     <div class="loader-container">
         <div class="loader"></div>
     </div>
-    <section class="header">
+    {{-- <section class="header">
         <div class="row h-100">
             <div class="col-md-6 h-100 position-relative">
                 <div class="d-none d-md-block">
@@ -33,7 +33,17 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
+    <div class="min-vh-100 d-flex flex-column">
+        <div class="{{ request()->routeIs('user-guide', 'check-application') ? 'position-static' : 'position-absolute' }} d-none d-lg-block" style="z-index: 999;">
+            @include('layouts.landing.partials.navbar-dekstop')
+        </div>
+        @include('layouts.landing.partials.navbar-mobile')
+        @yield('content')
+        <div class="mt-auto">
+            @include('layouts.landing.partials.footer')
+        </div>
+    </div>
     <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
     @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])
 </body>
