@@ -5,6 +5,7 @@
         font-weight: bold;
         color: #000;
         text-align: center;
+        overflow-x: auto;
 
         .stepper-item {
             position: relative;
@@ -48,7 +49,15 @@
             }
 
             &.active {
-                color: #AA0000;
+                &::before {
+                    position: absolute;
+                    content: "";
+                    border-bottom: 2px solid #AA0000;
+                    width: 100%;
+                    top: 20px;
+                    left: -50%;
+                    z-index: 3;
+                }
 
                 .step-counter {
                     border-color: #AA0000;
