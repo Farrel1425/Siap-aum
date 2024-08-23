@@ -19,7 +19,15 @@ use App\Http\Controllers\AuthenticationController;
 
 Route::get('/', function () {
     return view('pages.landing.index');
-});
+})->name('home');
+
+Route::get('/panduan-pengguna', function () {
+    return view('pages.landing.user-guide');
+})->name('user-guide');;
+
+Route::get('/cek-permohonan', function () {
+    return view('pages.landing.check-application');
+})->name('check-application');;
 
 Route::middleware(['guest'])->group(function () {
     // login
@@ -63,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ADMINISTRATOR
+    Route::middleware(['role:administrator'])->group(function () {});
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
         // Master Data
         Route::prefix('master-data')->name('master-data.')->group(function () {
@@ -104,6 +113,8 @@ Route::middleware(['auth'])->group(function () {
     // VERIFIKATOR
     Route::middleware(['role:verifikator'])->group(function () {});
 
+
+    // OPERATOR
     // PUBLIC
     Route::middleware(['role:public', 'is_filled_data_register'])->group(function () {});
 
