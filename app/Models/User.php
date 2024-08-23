@@ -73,6 +73,20 @@ class User extends Authenticatable
         return $this->hasRole(RoleEnum::VERIFIKATOR->deskripsi());
     }
 
+    public function getRoleBadgeAttribute()
+    {
+        if ($this->is_admin) {
+            $badge = '<span class="badge bg-primary">Admin</span>';
+        } elseif ($this->is_verifikator) {
+            $badge = '<span class="badge bg-warning">Verifikator</span>';
+        } elseif ($this->is_public) {
+            $badge = '<span class="badge bg-success">Public</span>';
+        } else{
+            $badge = '<span class="badge bg-secondary">Undefined</span>';
+        }
+        return $badge;
+    }
+
     public function hasRole($role)
     {
         return $this->role->nama == $role;

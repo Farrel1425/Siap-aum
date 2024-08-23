@@ -2,8 +2,13 @@
 
 namespace App\Enums;
 
+use App\Traits\EnumToArray;
+
 enum RoleEnum: string
 {
+
+    use EnumToArray;
+
     case ADMIN = '1';
     case PUBLIC = '3';
     case VERIFIKATOR = '2';
@@ -17,7 +22,7 @@ enum RoleEnum: string
             self::PUBLIC => 'Public',
             self::VERIFIKATOR => 'Verifikator',
             self::AUDITOR => 'Auditor',
-            self::INPUTER => 'Inputer',
+            self::INPUTER => 'Inputer Reklame',
         };
     }
 }

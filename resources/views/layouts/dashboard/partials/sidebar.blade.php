@@ -37,12 +37,12 @@
                         <span>Master Data</span>
                     </a>
                     <ul class="submenu">
-                        <li class="submenu-item actives">
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.user.*') ? 'active' : '' }}">
                             <a class="submenu-link"
-                               href="#">
+                               href="{{ route('admin.master-data.user.index') }}">
                                 User</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.master-data.jenis-izin.index') ? 'active' : '' }}">
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.jenis-izin.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.jenis-izin.index') }}">
                                 Jenis Ijin</a>

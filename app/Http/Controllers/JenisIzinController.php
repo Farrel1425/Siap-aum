@@ -64,7 +64,7 @@ class JenisIzinController extends Controller
             $jenis_izin->deskripsi = $request->deskripsi;
 
             $file = $request->file('template_laporan');
-            $path = $file->storeAs('file_templateword', $file->getClientOriginalName(), 'public');
+            $path = $file->storeAs('public/file_templateword', $file->getClientOriginalName());
 
             $jenis_izin->template_surat = $path;
 
@@ -195,6 +195,12 @@ class JenisIzinController extends Controller
             'syarat_kelengkapan.*.tipe_form' => 'required|in:text,date',
         ]);
 
+        if ($request->template_laporan) {
+            $request->validate([
+                'template_laporan' => 'required|mimes:doc,docx|max:4096',
+            ]);
+        }
+
         // unique between kode isian from input user
         $all_kode_isian = array_merge(
             $request->syarat_form,
@@ -230,13 +236,9 @@ class JenisIzinController extends Controller
             $jenis_izin->deskripsi = $request->deskripsi;
 
             if ($request->template_laporan) {
-                $request->validate([
-                    'template_laporan' => 'required|mimes:doc,docx|max:4096',
-                ]);
-
                 Storage::disk('public')->delete($jenis_izin->template_surat);
                 $file = $request->file('template_laporan');
-                $path = $file->storeAs('file_templateword', $file->getClientOriginalName(), 'public');
+                $path = $file->storeAs('public/file_templateword', $file->getClientOriginalName());
 
                 $jenis_izin->template_surat = $path;
             }

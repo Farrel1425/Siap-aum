@@ -2,8 +2,11 @@
 
 namespace App\Enums;
 
+use App\Traits\EnumToArray;
+
 enum JenisKelaminEnum: int
 {
+    use EnumToArray;
     case LAKI_LAKI = 1;
     case PEREMPUAN = 0;
 

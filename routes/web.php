@@ -66,6 +66,21 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
         // Master Data
         Route::prefix('master-data')->name('master-data.')->group(function () {
+            // User
+            Route::prefix('user')->name('user.')->group(function () {
+                // Table
+                Route::get('/table', [UserController::class, 'userTable'])->name('table');
+
+                // Resource
+                Route::get('/', [UserController::class, 'index'])->name('index');
+                Route::get('/create', [UserController::class, 'create'])->name('create');
+                Route::post('/', [UserController::class, 'store'])->name('store');
+                Route::get('/{id}',  [UserController::class, 'show'])->name('show');
+                Route::put('/{id}', [UserController::class, 'update'])->name('update');
+                // Route::get('{id}/edit-password', [UserController::class, 'editPassword'])->name('edit-password');
+                // Route::put('{id}/change-password', [UserController::class, 'updatePassword'])->name('update-password');
+            });
+
             // Jenis Izin
             Route::prefix('jenis-izin')->name('jenis-izin.')->group(function () {
                 // Table

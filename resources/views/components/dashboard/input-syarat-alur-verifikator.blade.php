@@ -45,11 +45,6 @@
         .delete-data {
             cursor: pointer;
         }
-
-        .select2-results__option,
-        .select2-selection__rendered {
-            font-size: 0.775rem !important;
-        }
     </style>
 @endpush
 

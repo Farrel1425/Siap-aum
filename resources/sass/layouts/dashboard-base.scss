@@ -65,3 +65,8 @@ a {
     left: 0;
     right: 0;
 }
+
+.select2-results__option,
+.select2-selection__rendered {
+    font-size: 0.775rem !important;
+}
