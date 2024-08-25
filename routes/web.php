@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisIzinController;
+use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\AuthenticationController;
 
 /*
@@ -73,6 +74,20 @@ Route::middleware(['auth'])->group(function () {
     // ADMINISTRATOR
     Route::middleware(['role:administrator'])->group(function () {});
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
+        // Permohonan
+        Route::prefix('permohonan')->name('permohonan.')->group(function () {
+            // Table
+            Route::get('/table', [PermohonanController::class, 'permohonanTable'])->name('table');
+
+            // Resource
+            Route::get('/', [PermohonanController::class, 'index'])->name('index');
+            Route::get('/create', [PermohonanController::class, 'create'])->name('create');
+            Route::post('/', [PermohonanController::class, 'store'])->name('store');
+            Route::get('/{id}', [PermohonanController::class, 'show'])->name('show');
+            Route::put('/{id}', [PermohonanController::class, 'update'])->name('update');
+            Route::delete('/{id}', [PermohonanController::class, 'destroy'])->name('destroy');
+        });
+
         // Master Data
         Route::prefix('master-data')->name('master-data.')->group(function () {
             // User
@@ -86,8 +101,6 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/', [UserController::class, 'store'])->name('store');
                 Route::get('/{id}',  [UserController::class, 'show'])->name('show');
                 Route::put('/{id}', [UserController::class, 'update'])->name('update');
-                // Route::get('{id}/edit-password', [UserController::class, 'editPassword'])->name('edit-password');
-                // Route::put('{id}/change-password', [UserController::class, 'updatePassword'])->name('update-password');
             });
 
             // Jenis Izin

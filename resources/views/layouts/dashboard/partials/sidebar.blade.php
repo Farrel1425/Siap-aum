@@ -23,9 +23,9 @@
 
             @if (auth()->user()->is_admin)
                 <li
-                    class="sidebar-item actives">
+                    class="sidebar-item {{ request()->routeIs('admin.permohonan.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
-                       href="#">
+                       href="{{ route('admin.permohonan.index') }}">
                         <i class="isax isax-receipt"></i>
                         <span>Permohonan</span>
                     </a>
