@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\StatusPermohonanEnum;
 use App\Models\User;
 use App\Models\JenisIzin;
+use App\Models\AlurPermohonan;
+use App\Enums\StatusPermohonanEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,11 +30,18 @@ class Permohonan extends Model
         'template_surat_filepath',
         'status',
         'is_expired',
+        'is_legacy_data',
+        'pengajuan_at',
     ];
 
     public function jenisIzin()
     {
         return $this->belongsTo(JenisIzin::class);
+    }
+
+    public function alurPermohonan()
+    {
+        return $this->hasMany(AlurPermohonan::class)->orderBy('urutan');
     }
 
     public function user()

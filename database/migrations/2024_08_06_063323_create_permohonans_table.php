@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('template_surat_filepath')->nullable();
             $table->string('status')->default('pending')->comment('pending,permohonan_baru,selesai,revisi,verifikasi_ulang,expired,verifikasi');
             $table->boolean('is_expired')->default(false)->comment('Status permohonan yang revisi lama bisa expired');
+            $table->boolean('is_legacy_data')->default(false);
+            $table->timestamp('pengajuan_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

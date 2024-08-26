@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('verifikator_id')->constrained('users');
             $table->string('jenis_verifikator')->nullable();
             $table->integer('urutan');
+            $table->boolean('is_done')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

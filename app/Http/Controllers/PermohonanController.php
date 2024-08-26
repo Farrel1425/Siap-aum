@@ -16,6 +16,19 @@ class PermohonanController extends Controller
         ));
     }
 
+    public function show(Request $request, $id)
+    {
+        $permohonan = Permohonan::with([
+            'alurPermohonan',
+            'jenisIzin',
+            'user'
+        ])->findOrFail($id);
+
+        return view('pages.admin.permohonan.show', compact(
+            'permohonan'
+        ));
+    }
+
     public function permohonanTable(Request $request)
     {
         if ($request->ajax()) {
