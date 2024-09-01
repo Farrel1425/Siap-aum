@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\PermohonanController;
+use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
 
 /*
@@ -70,6 +71,17 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profile', [AuthenticationController::class, 'updateProfile'])->name('profile.update');
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // PUBLIC
+    Route::middleware(['role:public'])->group(function () {
+        Route::prefix('public')->name('public.')->group(function () {
+            // Permohonan
+            Route::prefix('permohonan')->name('permohonan.')->group(function () {
+                // Table
+                Route::get('/table', [DashboardUserController::class, 'permohonanTable'])->name('table');
+            });
+        });
+    });
 
     // ADMINISTRATOR
     Route::middleware(['role:administrator'])->group(function () {});

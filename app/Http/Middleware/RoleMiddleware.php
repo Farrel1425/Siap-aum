@@ -17,7 +17,7 @@ class RoleMiddleware
     {
         if ($roles == 'admin' && auth()->user()->isAdmin) {
             return $next($request);
-        } else if ($roles == 'public' && auth()->user()->isOperator) {
+        } else if ($roles == 'public' && auth()->user()->isPublic) {
             return $next($request);
         } else {
             return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses untuk aksi tersebut');

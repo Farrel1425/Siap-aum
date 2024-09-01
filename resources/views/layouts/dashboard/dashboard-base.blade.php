@@ -24,6 +24,9 @@
     {{-- datatables button --}}
     <link href="{{ asset('assets/vendors/datatables/buttons.bootstrap5.min.css') }}"
           rel="stylesheet">
+    {{-- datatables responsive --}}
+    <link href="{{ asset('assets/vendors/datatables/responsive.dataTables.min.css') }}"
+          rel="stylesheet">
     {{-- select 2 --}}
     <link href="{{ asset('assets/vendors/select2/select2.min.css') }}"
           rel="stylesheet">
@@ -69,6 +72,8 @@
     <script src="{{ asset('assets/vendors/datatables/dataTables.min.js') }}"></script>
     {{-- datatables bootstrap --}}
     <script src="{{ asset('assets/vendors/datatables/dataTables.bootstrap5.min.js') }}"></script>
+    {{-- datatables responsive --}}
+    <script src="{{ asset('assets/vendors/datatables/dataTables.responsive.min.js') }}"></script>
     {{-- datatables rowreorder --}}
     <script src="{{ asset('assets/vendors/datatables/dataTables.rowReorder.min.js') }}"></script>
     {{-- datatables button --}}
