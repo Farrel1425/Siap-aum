@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\JenisIzin;
 use App\Models\AlurPermohonan;
+use App\Models\FormPermohonan;
+use App\Models\BerkasPermohonan;
 use App\Enums\StatusPermohonanEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -49,6 +51,43 @@ class Permohonan extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function formPermohonan()
+    {
+        return $this->hasMany(FormPermohonan::class)->orderBy('urutan');
+    }
+
+    public function berkasPermohonan()
+    {
+        return $this->hasMany(BerkasPermohonan::class)->orderBy('urutan');
+    }
+
+    public function kelengkapanPermohonan()
+    {
+        return $this->hasMany(KelengkapanPermohonan::class)->orderBy('urutan');
+    }
+
+    public function getStatusNameAttribute()
+    {
+        switch ($this->status) {
+            case StatusPermohonanEnum::PENDING->value:
+                return 'Pending';
+            case StatusPermohonanEnum::PERMOHONAN_BARU->value:
+                return 'Permohonan Baru';
+            case StatusPermohonanEnum::SELESAI->value:
+                return 'Selesai';
+            case StatusPermohonanEnum::REVISI->value:
+                return 'Revisi';
+            case StatusPermohonanEnum::VERIFIKASI_ULANG->value:
+                return 'Verifikasi Ulang';
+            case StatusPermohonanEnum::EXPIRED->value:
+                return 'Expired';
+            case StatusPermohonanEnum::VERIFIKASI->value:
+                return 'Verifikasi';
+            default:
+                return 'Undefined';
+        }
+    }
+
     public function getStatusBadgeAttribute()
     {
         switch ($this->status) {
@@ -69,5 +108,10 @@ class Permohonan extends Model
             default:
                 return '<span class="badge bg-secondary">Undefined</span>';
         }
+    }
+
+    public function getMemohonUntukAttribute()
+    {
+        return $this->surat_kuasa_filepath ? 'Orang Lain' : 'Diri Sendiri';
     }
 }

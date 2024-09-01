@@ -2,10 +2,10 @@
     .stepper-wrapper {
         display: flex;
         justify-content: space-between;
-        font-weight: bold;
         color: #000;
         text-align: center;
         overflow-x: auto;
+        padding: 15px 0;
 
         .stepper-item {
             position: relative;
@@ -95,14 +95,15 @@
 
 @props([
     'steps' => [],
-    'currentStep' => 0,
 ])
 
 <div class="stepper-wrapper">
-    @foreach ($steps as $index => $step)
-        <div class="stepper-item {{ $currentStep > $index ? 'completed' : ($currentStep == $index ? 'active' : '') }}">
-            <div class="step-counter">{{ $index + 1 }}</div>
-            <div class="step-name">{{ $step }}</div>
+    @foreach ($steps as $key => $step)
+        <div class="stepper-item {{ $step->get('is_done') ? 'completed fw-bold' : '' }}">
+            <div class="step-counter {{ $step->get('is_done')?  'bg-primary text-white' : '' }}">{{ $loop->iteration }}
+            </div>
+            <div class="step-name">{{ $step->get('nama') }}</div>
+            <p class="text-xsm text-center fw-normal">{{ $step->get('done_at') }}</p>
         </div>
     @endforeach
 </div>

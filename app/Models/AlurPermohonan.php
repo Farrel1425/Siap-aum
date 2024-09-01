@@ -19,6 +19,11 @@ class AlurPermohonan extends Model
         'is_done',
     ];
 
+    public function verifikator()
+    {
+        return $this->belongsTo(User::class, 'verifikator_id');
+    }
+
     public function permohonan()
     {
         return $this->belongsTo(Permohonan::class);

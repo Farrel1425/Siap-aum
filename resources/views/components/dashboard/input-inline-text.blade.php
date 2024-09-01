@@ -10,6 +10,7 @@
     'disabled' => false,
     'readonly' => false,
     'class' => '',
+    'class_input' => '',
     'type' => 'text',
 ])
 
@@ -25,7 +26,7 @@
                @if ($autofocus) autofocus @endif
                aria-describedby="basic-addon1"
                autocomplete="{{ $autocomplete }}"
-               class="form-control text-sm @error($name) is-invalid @enderror"
+               class="form-control text-sm @error($name) is-invalid @enderror {{ $class_input }}"
                id="{{ $name }}"
                name="{{ $name }}"
                placeholder="{{ $placeholder }}"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JenisIzin;
 use App\Models\permohonan;
+use App\Services\PermohonanService;
 use Illuminate\Http\Request;
 
 class PermohonanController extends Controller
@@ -16,16 +17,27 @@ class PermohonanController extends Controller
         ));
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, $id, PermohonanService $permohonan_service,)
     {
         $permohonan = Permohonan::with([
-            'alurPermohonan',
             'jenisIzin',
-            'user'
+            'user',
+            'formPermohonan',
+            'berkasPermohonan',
+            'kelengkapanPermohonan'
         ])->findOrFail($id);
 
+        $steps = $permohonan_service->getStepAlurPermohonan($permohonan);
+        $form_permohonans = $permohonan_service->getListFormPermohonan($permohonan);
+        $berkas_permohonans = $permohonan_service->getListBerkasPermohonan($permohonan);
+        $kelengkapan_permohonans = $permohonan_service->getListKelengkapanPermohonan($permohonan);
+
         return view('pages.admin.permohonan.show', compact(
-            'permohonan'
+            'permohonan',
+            'steps',
+            'form_permohonans',
+            'berkas_permohonans',
+            'kelengkapan_permohonans'
         ));
     }
 
