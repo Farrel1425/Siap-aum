@@ -22,7 +22,7 @@ class UserPermohonanController extends Controller
         return view('pages.public.permohonan.submit-form', compact('jenis_izin'));
     }
 
-    public function show(Permohonan $permohonan)
+    public function show(Permohonan $permohonan, PermohonanService $permohonan_service)
     {
         $permohonan->load([
             'jenisIzin',
@@ -43,9 +43,15 @@ class UserPermohonanController extends Controller
                 'permohonan',
                 'is_all_uploaded'
             ));
+        } else if ($permohonan->status == StatusPermohonanEnum::REVISI->value) {
+            return view('pages.public.permohonan.revisi', compact('permohonan'));
+        } else {
+            $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
+            return view('pages.public.permohonan.show', compact(
+                'permohonan',
+                'steps'
+            ));
         }
-
-        return view('pages.public.permohonan.show', compact('permohonan'));
     }
 
     public function submitForm(Request $request, JenisIzin $jenis_izin, PermohonanService $permohonan_service)
@@ -234,7 +240,7 @@ class UserPermohonanController extends Controller
             // Get data
             $permohonans = $query->get()
                 ->map(function ($permohonan) use ($permohonan_service) {
-                    $steps = $permohonan_service->getStepAlurPermohonan($permohonan,true);
+                    $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
                     return [
                         'id' => $permohonan->id,
                         'url' => route('public.permohonan.show', $permohonan->id),
