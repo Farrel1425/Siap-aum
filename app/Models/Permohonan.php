@@ -36,6 +36,10 @@ class Permohonan extends Model
         'pengajuan_at',
     ];
 
+    protected $casts = [
+        'pengajuan_at' => 'datetime',
+    ];
+
     public function jenisIzin()
     {
         return $this->belongsTo(JenisIzin::class);

@@ -8,6 +8,7 @@
     'error' => null,
     'disabled' => false,
     'readonly' => false,
+    'allowClear' => false,
     'class' => '',
 ])
 
@@ -46,7 +47,8 @@
             $('#{{ $name }}').select2({
                 placeholder: '{{ $placeholder }}',
                 theme: 'bootstrap-5',
-                width: '100%'
+                width: '100%',
+                allowClear: {{ $allowClear ? 'true' : 'false' }},
             });
 
             @if ($value)

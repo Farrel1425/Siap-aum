@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('jenis_izin_id')->constrained('jenis_izins');
             $table->string('nama_jenis_izin');
             $table->text('deskripsi_jenis_izin');
-            $table->string('nomor_registrasi');
+            $table->string('nomor_registrasi')->nullable();
             $table->string('surat_kuasa_filepath')->nullable();
             $table->string('nama')->nullable();
             $table->string('nik')->nullable();

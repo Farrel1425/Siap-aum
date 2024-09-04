@@ -9,8 +9,8 @@
                     <h3 class="d-inline mb-0">Dashboard</h3>
                 </div>
                 <div class="col-12 col-lg-auto order-md-1">
-                    <button class="btn btn-primary d-block w-100 w-lg-auto"><i class="isax isax-element-plus"></i> Pengajuan
-                        Baru</button>
+                    <a href="{{ route('public.permohonan.create') }}" class="btn btn-primary d-block w-100 w-lg-auto"><i class="isax isax-element-plus"></i> Pengajuan
+                        Baru</a>
                 </div>
                 <div class="col-12 col-lg-auto gap-0 order-md-1">
                     <button class="btn btn-outline-primary d-block w-100 w-lg-auto fw-bold"><i
@@ -46,7 +46,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: '{{ route('public.permohonan.table') }}',
+                url: '{{ route('public.permohonan.permohonan-table') }}',
                 data: function(d) {
                     d.search = $('#dt-search-0').val();
                 }

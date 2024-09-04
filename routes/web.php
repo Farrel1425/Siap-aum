@@ -7,6 +7,7 @@ use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\UserPermohonanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,7 +79,18 @@ Route::middleware(['auth'])->group(function () {
             // Permohonan
             Route::prefix('permohonan')->name('permohonan.')->group(function () {
                 // Table
-                Route::get('/table', [DashboardUserController::class, 'permohonanTable'])->name('table');
+                Route::get('/permohonan-table', [UserPermohonanController::class, 'permohonanTable'])->name('permohonan-table');
+                Route::get('/jenis-izin-table', [UserPermohonanController::class, 'jenisIzinTable'])->name('jenis-izin-table');
+
+                // Resource
+                Route::get('/{permohonan}', [UserPermohonanController::class, 'show'])->name('show');
+                Route::get('/create', [UserPermohonanController::class, 'create'])->name('create');
+                Route::get('/create/{jenis_izin}', [UserPermohonanController::class, 'createPermohonan'])->name('create-permohonan');
+                Route::post('/submit-form/{jenis_izin}', [UserPermohonanController::class, 'submitForm'])->name('submit-form');
+                Route::post('/submit-berkas/{permohonan}', [UserPermohonanController::class, 'submitBerkas'])->name('submit-berkas');
+
+                // Ajax
+                Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');
             });
         });
     });

@@ -11,10 +11,10 @@
     'readonly' => false,
     'class' => '',
     'class_input' => '',
-    'type' => 'text',
+    'container_id' => rand(),
 ])
 
-<div class="form-group row mb-0 align-items-center {{ $class }}">
+<div class="form-group row mb-0 align-items-center {{ $class }}" id="{{ $container_id }}">
     @if ($label)
         <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
                for="{{ $name }}">{{ $label }}</label>
@@ -29,9 +29,7 @@
                class="form-control text-xsm @error($name) is-invalid @enderror {{ $class_input }}"
                id="{{ $name }}"
                name="{{ $name }}"
-               placeholder="{{ $placeholder }}"
-               type="{{ $type }}"
-               value="{{ $value }}">
+               type="file">
         @error($name)
             <div class="invalid-feedback">
                 <i class="isax isax-info-circle"></i>
@@ -40,16 +38,3 @@
         @enderror
     </div>
 </div>
-
-@push('scripts')
-    <script>
-        @if ($type == 'date')
-            flatpickr('#{{ $name }}', {
-                altInput: true,
-                altFormat: "j F Y",
-                dateFormat: "d-m-Y",
-                defaultDate: "{{ $value }}",
-            });
-        @endif
-    </script>
-@endpush

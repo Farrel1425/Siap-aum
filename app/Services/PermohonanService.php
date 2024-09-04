@@ -61,7 +61,7 @@ class PermohonanService
         });
     }
 
-    public function getStepAlurPermohonan(Permohonan $permohonan): Collection
+    public function getStepAlurPermohonan(Permohonan $permohonan, $is_include_pemohon = false): Collection
     {
         // check if permohonan load alur permohonan relation
         if (!$permohonan->relationLoaded('alurPermohonan')) {
@@ -74,14 +74,30 @@ class PermohonanService
         }
 
 
-        return $permohonan->alurPermohonan->map(function ($alurPermohonan) {
+
+        $alur_verifikator =  $permohonan->alurPermohonan->map(function ($alurPermohonan) {
             return collect([
                 'id' => $alurPermohonan->id,
                 'nama' => $alurPermohonan->verifikator->name,
                 'urutan' => $alurPermohonan->urutan,
                 'is_done' => $alurPermohonan->is_done,
-                'done_at' => $alurPermohonan->is_done ? $alurPermohonan->updated_at->format('d-m-Y H:i:s') : null,
+                'done_at' => $alurPermohonan->is_done ? $alurPermohonan->updated_at->format('d-m-Y H:i:s') : '-',
             ]);
         });
+
+        if (!$is_include_pemohon) {
+            return $alur_verifikator;
+        }else{
+            // add pemohon to first step
+            $pemohon = collect([
+                'id' => 0,
+                'nama' => 'Pemohon',
+                'urutan' => 0,
+                'is_done' => $permohonan->pengajuan_at ? true : false,
+                'done_at' => $permohonan->pengajuan_at ? $permohonan->pengajuan_at->format('d-m-Y H:i:s') : '-',
+            ]);
+
+            return $alur_verifikator->prepend($pemohon);
+        }
     }
 }
