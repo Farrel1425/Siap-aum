@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Permohonan;
 use Illuminate\Support\Collection;
+use App\Enums\StatusPermohonanEnum;
 
 class PermohonanService
 {
@@ -46,7 +47,7 @@ class PermohonanService
 
     public function getListKelengkapanPermohonan(Permohonan $permohonan): Collection
     {
-        if(!$permohonan->relationLoaded('kelengkapanPermohonan')) {
+        if (!$permohonan->relationLoaded('kelengkapanPermohonan')) {
             $permohonan->load('kelengkapanPermohonan');
         }
 
@@ -87,7 +88,7 @@ class PermohonanService
 
         if (!$is_include_pemohon) {
             return $alur_verifikator;
-        }else{
+        } else {
             // add pemohon to first step
             $pemohon = collect([
                 'id' => 0,
@@ -99,5 +100,10 @@ class PermohonanService
 
             return $alur_verifikator->prepend($pemohon);
         }
+    }
+
+    public function isPermohonanCanVerified(Permohonan $permohonan): bool
+    {
+        return in_array($permohonan->status, [StatusPermohonanEnum::VERIFIKASI->value, StatusPermohonanEnum::VERIFIKASI_ULANG->value]);
     }
 }

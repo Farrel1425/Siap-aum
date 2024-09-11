@@ -39,6 +39,7 @@ class VerifikatorPermohonanController extends Controller
         $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
         $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
         $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        $is_can_verified = $permohonanService->isPermohonanCanVerified($permohonan);
 
         $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
         return view('pages.verifikator.verifikasi.validasi', compact(
@@ -47,7 +48,8 @@ class VerifikatorPermohonanController extends Controller
             'steps',
             'is_verifikator_approvable_berkas',
             'is_verifikator_turn',
-            'alur_permohonan'
+            'alur_permohonan',
+            'is_can_verified',
         ));
     }
 
@@ -80,8 +82,12 @@ class VerifikatorPermohonanController extends Controller
         ]);
     }
 
-    public function simpanVerifikasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
+        if ($permohonanService->isPermohonanCanVerified($permohonan)) {
+            return redirect()->back()->with('error', 'Permohonan tidak dapat diverifikasi');
+        }
+
         // cek apakah semua berkas sudah divalidasi, jika belum set status permohonan ke revisi. jika sudah set alur permohonan ke done dan update status permohonan ke verifikasi.
         $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
 

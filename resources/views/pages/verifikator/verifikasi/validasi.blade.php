@@ -196,7 +196,7 @@
                 @endif
             @endif
 
-            @if ($is_verifikator_turn)
+            @if ($is_verifikator_turn && $is_can_verified)
                 <div class="mt-4">
                     <form action="{{ route('verifikator.verifikasi.verifikasi', $permohonan->id) }}" method="POST">
                         @csrf
