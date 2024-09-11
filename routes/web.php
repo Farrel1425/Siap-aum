@@ -8,6 +8,7 @@ use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\UserPermohonanController;
+use App\Http\Controllers\VerifikatorPermohonanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +92,37 @@ Route::middleware(['auth'])->group(function () {
 
                 // Ajax
                 Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');
+            });
+        });
+    });
+
+    // VERIFIKATOR
+    Route::middleware(['role:verifikator'])->group(function () {
+        Route::prefix('verifikator')->name('verifikator.')->group(function () {
+            // Permohonan
+            Route::prefix('permohonan')->name('permohonan.')->group(function () {
+                // Table
+                Route::get('/table', [VerifikatorPermohonanController::class, 'permohonanTable'])->name('table');
+
+                // Resource
+                Route::get('/', [VerifikatorPermohonanController::class, 'index'])->name('index');
+            });
+
+            // Verifikasi
+            Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
+                // Table
+                Route::get('/verifikasi-table', [VerifikatorPermohonanController::class, 'verifikasiTable'])->name('table');
+
+                // Resource
+                Route::get('/', [VerifikatorPermohonanController::class, 'verifikasiIndex'])->name('index');
+                Route::get('/show/{permohonan}', [VerifikatorPermohonanController::class, 'show'])->name('show');
+                Route::post('/simpan-verifikasi/{permohonan}', [VerifikatorPermohonanController::class, 'simpanVerifikasi'])->name('verifikasi');
+
+                // Ajax
+                Route::post('/valid-berkas', [VerifikatorPermohonanController::class, 'validBerkas'])->name('valid-berkas');
+                Route::post('/revision-berkas', [VerifikatorPermohonanController::class, 'revisiBerkas'])->name('revisi-berkas');
+                Route::post('/upload-surat-permohonan-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratPermohonanRekomendasi'])->name('upload-surat-permohonan-rekomendasi');
+                Route::post('/upload-surat-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratRekomendasi'])->name('upload-surat-rekomendasi');
             });
         });
     });

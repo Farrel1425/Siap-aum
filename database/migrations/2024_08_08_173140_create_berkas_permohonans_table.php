@@ -18,7 +18,8 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
             $table->integer('urutan')->default(0);
             $table->string('filepath')->nullable();
-            $table->boolean('is_valid')->default(false);
+            $table->boolean('is_revisi')->default(false);
+            $table->text('catatan')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

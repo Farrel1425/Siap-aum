@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('alur_permohonan_id')->constrained('alur_permohonans');
             $table->foreignId('berkas_permohonan_id')->constrained('berkas_permohonans');
-            $table->string('status')->default('pending')->comment('pending, revisi, valid');
+            $table->string('status')->default('pending')->comment('revisi, valid');
             $table->text('catatan')->nullable();
             $table->softDeletes();
             $table->timestamps();

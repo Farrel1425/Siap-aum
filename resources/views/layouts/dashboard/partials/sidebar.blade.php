@@ -85,9 +85,17 @@
 
             @if (auth()->user()->is_verifikator)
                 <li
-                    class="sidebar-item actives">
+                    class="sidebar-item {{ request()->routeIs('verifikator.permohonan.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
-                       href="#">
+                       href="{{ route('verifikator.permohonan.index') }}">
+                        <i class="isax isax-receipt"></i>
+                        <span>Permohonan</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ request()->routeIs('verifikator.verifikasi.*') ? 'active' : '' }}">
+                    <a class="sidebar-link"
+                       href="{{ route('verifikator.verifikasi.index') }}">
                         <i class="isax isax-receipt"></i>
                         <span>Verifikasi</span>
                     </a>

@@ -82,10 +82,10 @@
                                                value="{{ $form_permohonan->value ?? '-' }}" />
             @endforeach
             <h5 class="mt-4">Data Berkas Permohonan</h5>
-            @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
-                <div class="form-group mb-3 bg-white p-2">
+            @foreach ($berkas_permohonans as $berkas_permohonan)
+                <div class="form-group mb-3 mx-1 p-3 bg-white text-xsm">
                     <div class="row align-items-center">
-                        <div class="col-5">
+                        <div class="col-6">
                             <label class="text-primary col-form-label fw-bold text-xsm"
                                    for="{{ $berkas_permohonan->kode_berkas }}">{{ $berkas_permohonan->nama }}
                                 @if ($berkas_permohonan->is_required)
@@ -95,7 +95,10 @@
                                     <span class="badge bg-secondary fw-normal"><i class="isax isax-warning-2"></i>
                                         Optional</span>
                                 @endif
-                                @if ($berkas_permohonan->is_valid)
+                                @if ($berkas_permohonan->is_revisi)
+                                    <span class="badge bg-danger fw-normal"><i class="isax isax-warning-2"></i>
+                                        Revisi</span>
+                                @elseif (!$berkas_permohonan->is_need_validation)
                                     <span class="badge bg-success fw-normal"><i class="isax isax-tick-circle"></i>
                                         Valid</span>
                                 @else
@@ -104,10 +107,25 @@
                                 @endif
                             </label>
                         </div>
-                        <div class="col-2 offset-5">
+                        <div class="col-2"></div>
+                        @if ($berkas_permohonan->is_need_validation)
+                            <div class="col-2">
+                                <button class="btn btn-sm btn-success d-block w-100"
+                                        data-detail-id="{{ encrypt($berkas_permohonan->id) }}"
+                                        data-nama="{{ $berkas_permohonan->nama }}"
+                                        data-url="{{ $berkas_permohonan->filepath }}"
+                                        onclick="validasiBerkas(this)"
+                                        type="button">
+                                    Verifikasi</button>
+                            </div>
+                        @else
+                            <div class="col-2"></div>
+                        @endif
+                        <div class="col-2">
                             @if ($berkas_permohonan->filepath)
                                 <a class="btn btn-outline-primary text-xsm d-block w-100"
-                                   href="{{ Storage::url($berkas_permohonan->filepath) }}">
+                                   href="{{ Storage::url($berkas_permohonan->filepath) }}"
+                                   target="_blank">
                                     <i class="isax isax-download"></i> Lihat File
                                 </a>
                             @else
@@ -115,6 +133,10 @@
                             @endif
                         </div>
                     </div>
+                    @if ($berkas_permohonan->is_revisi)
+                        <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                            {{ $berkas_permohonan->catatan }}</span>
+                    @endif
                 </div>
             @endforeach
             <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
@@ -127,58 +149,67 @@
                                                value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
             @endforeach
             <h5 class="mt-4">Data Berkas Verifikator</h5>
-            <div class="form-group mb-3 bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Surat Permohonan Rekomendasi</label>
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->surat_permohonan_rekomendasi_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
+            @if (
+                $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
+                    $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
+                <x-dashboard.input-inline-file-upload :is_readonly="false"
+                                                      :is_show_badge="false"
+                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                      class_input="text-xsm"
+                                                      downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                      label="Surat Permohonan Rekomendasi"
+                                                      name="surat_permohonan_rekomendasi"
+                                                      uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
+            @else
+                <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                      :is_show_badge="false"
+                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                      class_input="text-xsm"
+                                                      downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                      label="Surat Permohonan Rekomendasi"
+                                                      name="surat_permohonan_rekomendasi" />
+                @if (
+                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
+                        $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
+                    <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                          label="Surat Rekomendasi"
+                                                          name="surat_rekomendasi"
+                                                          uploadUrl="{{ route('verifikator.verifikasi.upload-surat-rekomendasi', $permohonan->id) }}" />
+                @else
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                          label="Surat Rekomendasi"
+                                                          name="surat_rekomendasi" />
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->template_surat_filepath ? Storage::url($permohonan->template_surat_filepath) : '' }}"
+                                                          label="Ijin Terbit"
+                                                          name="ijin_terbit" />
+                @endif
+            @endif
+
+            @if ($is_verifikator_turn)
+                <div class="mt-4">
+                    <form action="{{ route('verifikator.verifikasi.verifikasi', $permohonan->id) }}" method="POST">
+                        @csrf
+                        <button class="d-block btn w-100 btn-primary">
+                            <i class="isax isax-tick-circle me-2"></i> Simpan
+                        </button>
+                    </form>
                 </div>
-                {{-- <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir: </span> --}}
-            </div>
-            <div class="form-group mb-3 bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Surat Rekomendasi</label>
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->surat_rekomendasi_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ Storage::url($permohonan->surat_rekomendasi_filepath) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="form-group bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Ijin Terbit</label>
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->template_surat_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ Storage::url($permohonan->template_surat_filepath) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
+            @endif
+
+            @if ($is_verifikator_approvable_berkas)
+                @include('components.dashboard.modal-validasi')
+            @endif
         </section>
     </div>
 @endsection

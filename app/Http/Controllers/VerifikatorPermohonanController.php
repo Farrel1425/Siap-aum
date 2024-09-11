@@ -1,0 +1,337 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\JenisVerifikatorEnum;
+use App\Models\JenisIzin;
+use App\Models\Permohonan;
+use Illuminate\Http\Request;
+use App\Models\BerkasPermohonan;
+use App\Enums\StatusPermohonanEnum;
+use App\Services\PermohonanService;
+use Illuminate\Support\Facades\Log;
+use App\Exceptions\ServiceException;
+use App\Services\VerifikatorService;
+use App\Services\BerkasPermohonanService;
+
+class VerifikatorPermohonanController extends Controller
+{
+    public function index(Request $request)
+    {
+        $jenis_izins = JenisIzin::all();
+        return view('pages.verifikator.permohonan.index', compact(
+            'jenis_izins',
+        ));
+    }
+
+    public function verifikasiIndex(Request $request)
+    {
+        $jenis_izins = JenisIzin::all();
+        return view('pages.verifikator.verifikasi.index', compact(
+            'jenis_izins'
+        ));
+    }
+
+    public function show(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $permohonan->load('user', 'alurPermohonan');
+        $steps = $permohonanService->getStepAlurPermohonan($permohonan);
+        $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
+        $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+
+        $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
+        return view('pages.verifikator.verifikasi.validasi', compact(
+            'permohonan',
+            'berkas_permohonans',
+            'steps',
+            'is_verifikator_approvable_berkas',
+            'is_verifikator_turn',
+            'alur_permohonan'
+        ));
+    }
+
+    public function uploadSuratPermohonanRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $request->validate([
+            // vaidate berkas_key us  surat_permohonan_rekomendasi
+            'berkas_key' => 'required|in:surat_permohonan_rekomendasi',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        // get alur
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah surat permohonan rekomendasi',
+            ]);
+        } else {
+            $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
+            $permohonan->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Surat permohonan rekomendasi berhasil diunggah',
+        ]);
+    }
+
+    public function simpanVerifikasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        // cek apakah semua berkas sudah divalidasi, jika belum set status permohonan ke revisi. jika sudah set alur permohonan ke done dan update status permohonan ke verifikasi.
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+
+
+        if ($verifikatorService->isJenisVerifikatorApprovable($alur_permohonan)) {
+            if ($berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan)) {
+                // JF wajib sudah upload surat permohonan rekomendasi
+                if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value) {
+                    if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
+                        return redirect()->back()->with('error', 'Mohon unggah surat permohonan rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                    }
+                } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
+                    if (!$permohonan->surat_rekomendasi_filepath) {
+                        return redirect()->back()->with('error', 'Mohon unggah surat rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                    }
+                }
+                // TODO: operator BO harus upload form kelengkapan verifikator sebelum selesai
+                $permohonan->status = StatusPermohonanEnum::VERIFIKASI->value;
+                $alur_permohonan->is_done = true;
+                $alur_permohonan->save();
+                $permohonan->save();
+
+                return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
+            } else {
+                if (!$berkasPermohonanService->isAllBerkasVerifiedFromVerifikator($alur_permohonan)) {
+                    return redirect()->back()->with('error', 'Mohon validasi semua berkas terlebih dahulu sebelum melanjutkan');
+                }
+                $permohonan->status = StatusPermohonanEnum::REVISI->value;
+                $permohonan->save();
+                return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil dilakukan revisi');
+            }
+        } else {
+            if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value) {
+                $permohonan->status = StatusPermohonanEnum::SELESAI->value;
+                $permohonan->save();
+                $alur_permohonan->is_done = true;
+                $alur_permohonan->save();
+                return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
+            }
+        }
+    }
+
+    public function permohonanTable(Request $request)
+    {
+        if ($request->ajax()) {
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $draw = $request->input('draw');
+            $search = $request->input('search');
+
+            // Query
+            $query = Permohonan::whereHas('alurPermohonan', function ($query) {
+                $query->where('verifikator_id', auth()->user()->id);
+            });
+
+            // Total records
+            $totalRecords = $query->count();
+
+            // Filter records
+            if ($search || $request->input('status') || $request->input('jenis_izin_id')) {
+                if ($search) {
+                    $query = $query->where('nomor_registrasi', 'like', '%' . $search . '%')
+                        ->orWhere('nama', 'like', '%' . $search . '%');
+                }
+                if ($request->input('status')) {
+                    $query = $query->where('status', $request->input('status'));
+                }
+                if ($request->input('jenis_izin_id')) {
+                    $query = $query->where('jenis_izin_id', $request->input('jenis_izin_id'));
+                }
+
+                // filtered records count
+                $totalFiltered = $query->count();
+            } else {
+                $totalFiltered = $totalRecords;
+            }
+
+            // Offset and limit
+            if ($start != 0 || $length != -1) {
+                $query = $query->offset($start)
+                    ->limit($length);
+            }
+
+            // Get data
+            $records = $query
+                ->get()
+                ->map(function ($permohonan) {
+                    $action = '<a href="' . route('verifikator.verifikasi.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
+                    return [
+                        'nama_jenis_izin' => $permohonan->nama_jenis_izin,
+                        'nomor_registrasi' => $permohonan->nomor_registrasi,
+                        'waktu_pengajuan' => $permohonan->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
+                        'nama_pemohon' => $permohonan->nama,
+                        'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
+                        'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
+                        'status_badge' => $permohonan->status_badge,
+                        'action' => $action,
+                    ];
+                });
+
+            // JSON response
+            return response()->json([
+                'draw' => intval($draw),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalFiltered,
+                'data' => $records,
+            ]);
+        }
+    }
+
+    public function verifikasiTable(Request $request, VerifikatorService $verifikatorService)
+    {
+        if ($request->ajax()) {
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $draw = $request->input('draw');
+            $search = $request->input('search');
+
+            // Query
+            $query = Permohonan::with(['alurPermohonan'])
+                ->whereHas('alurPermohonan', function ($query) {
+                    $query->where('verifikator_id', auth()->user()->id);
+                })
+                ->whereIn('status', [StatusPermohonanEnum::VERIFIKASI->value, StatusPermohonanEnum::VERIFIKASI_ULANG->value]);
+
+            // Total records
+            $totalRecords = $query->count();
+
+            // Filter records
+            if ($search || $request->input('status') || $request->input('jenis_izin_id')) {
+                if ($search) {
+                    $query = $query->where('nomor_registrasi', 'like', '%' . $search . '%')
+                        ->orWhere('nama', 'like', '%' . $search . '%');
+                }
+                if ($request->input('jenis_izin_id')) {
+                    $query = $query->where('jenis_izin_id', $request->input('jenis_izin_id'));
+                }
+            }
+
+            // Offset and limit
+            if ($start != 0 || $length != -1) {
+                $query = $query->offset($start)
+                    ->limit($length);
+            }
+
+            // Get data
+            $records = $query
+                ->get()
+                ->filter(function ($permohonan) use ($verifikatorService) {
+                    return $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
+                })
+                ->map(function ($permohonan) {
+                    $action = '<a href="' . route('verifikator.verifikasi.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
+                    return [
+                        'nama_jenis_izin' => $permohonan->nama_jenis_izin,
+                        'nomor_registrasi' => $permohonan->nomor_registrasi,
+                        'waktu_pengajuan' => $permohonan->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
+                        'nama_pemohon' => $permohonan->nama,
+                        'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
+                        'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
+                        'status_badge' => $permohonan->status_badge,
+                        'action' => $action,
+                    ];
+                });
+
+            // JSON response
+            return response()->json([
+                'draw' => intval($draw),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => count($records),
+                'data' => $records,
+            ]);
+        }
+    }
+
+    // AJAX
+    public function validBerkas(Request $request, VerifikatorService $verifikatorService, BerkasPermohonanService $berkasPermohonanService)
+    {
+        $request->validate([
+            'id' => 'required',
+        ]);
+
+        $berkas_permohonan = BerkasPermohonan::find(decrypt($request->id));
+        if (!$berkas_permohonan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Berkas tidak ditemukan',
+            ], 404);
+        }
+
+        try {
+            $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($berkas_permohonan->permohonan, auth()->user());
+
+            // validasi berkas
+            $berkasPermohonanService->validBerkasByVerifikator($alur_permohonan, $berkas_permohonan);
+        } catch (ServiceException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 400);
+        } catch (\Exception $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berkas berhasil divalidasi',
+        ]);
+    }
+
+    public function revisiBerkas(Request $request, VerifikatorService $verifikatorService, BerkasPermohonanService $berkasPermohonanService)
+    {
+        $request->validate([
+            'id' => 'required',
+            'catatan_revisi' => 'required',
+        ]);
+
+        $berkas_permohonan = BerkasPermohonan::find(decrypt($request->id));
+        if (!$berkas_permohonan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Berkas tidak ditemukan',
+            ], 404);
+        }
+
+        try {
+            $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($berkas_permohonan->permohonan, auth()->user());
+
+            // revisi berkas
+            $berkasPermohonanService->revisiBerkasByVerifikator($alur_permohonan, $berkas_permohonan, $request->catatan_revisi);
+        } catch (ServiceException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 400);
+        } catch (\Exception $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berkas berhasil direvisi',
+        ]);
+    }
+}

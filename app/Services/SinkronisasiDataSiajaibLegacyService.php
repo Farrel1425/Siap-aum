@@ -415,7 +415,8 @@ class SinkronisasiDataSiajaibLegacyService
                         'is_required' => $berkasPermohonan->required,
                         'urutan' => $urutan[$berkasPermohonan->id_permohonan],
                         'filepath' => $berkasPermohonan->file,
-                        'is_valid' => 1,
+                        'is_revisi' => $berkasPermohonan->ket_revisi ? 1 : 0,
+                        'catatan' => $berkasPermohonan->ket_revisi,
                         'created_at' => $berkasPermohonan->created_at,
                         'updated_at' => $berkasPermohonan->updated_at,
                     ];
@@ -426,20 +427,20 @@ class SinkronisasiDataSiajaibLegacyService
             });
 
         // Change status validasi berkas where status invalid exist
-        $berkasPermohonanLegacy = DB::connection('siajaib_legacy')
-            ->table('berkas_permohonan')
-            ->selectRaw('validasi_berkas.id_berkas as id')
-            ->join('permohonan', 'berkas_permohonan.id_permohonan', '=', 'permohonan.id')
-            ->join('validasi_berkas', 'berkas_permohonan.id', '=', 'validasi_berkas.id_berkas')
-            ->where('permohonan.deleted_at', null)
-            ->where('validasi_berkas.status_valid', 0)
-            ->orderBy('validasi_berkas.id_berkas')
-            ->get()
-            ->unique();
+        // $berkasPermohonanLegacy = DB::connection('siajaib_legacy')
+        //     ->table('berkas_permohonan')
+        //     ->selectRaw('validasi_berkas.id_berkas as id')
+        //     ->join('permohonan', 'berkas_permohonan.id_permohonan', '=', 'permohonan.id')
+        //     ->join('validasi_berkas', 'berkas_permohonan.id', '=', 'validasi_berkas.id_berkas')
+        //     ->where('permohonan.deleted_at', null)
+        //     ->where('validasi_berkas.status_valid', 0)
+        //     ->orderBy('validasi_berkas.id_berkas')
+        //     ->get()
+        //     ->unique();
 
-        foreach ($berkasPermohonanLegacy as $berkasPermohonan) {
-            BerkasPermohonan::where('id', $berkasPermohonan->id)->update(['is_valid' => 0]);
-        }
+        // foreach ($berkasPermohonanLegacy as $berkasPermohonan) {
+        //     BerkasPermohonan::where('id', $berkasPermohonan->id)->update(['is_valid' => 0]);
+        // }
     }
 
     private function sinkronAlurPermohonan()
