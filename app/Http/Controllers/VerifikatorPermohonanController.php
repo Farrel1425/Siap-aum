@@ -90,6 +90,43 @@ class VerifikatorPermohonanController extends Controller
         ]);
     }
 
+    public function uploadSuratRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $request->validate([
+            // vaidate berkas_key us  surat_rekomendasi
+            'berkas_key' => 'required|in:surat_rekomendasi',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        // get alur
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        // cek apakah jenis verifikator OPD, jika ya maka wajib upload surat rekomendasi
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::OPD->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah surat rekomendasi',
+            ]);
+        }
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah surat rekomendasi sebelum semua berkas dinyatakan valid',
+            ]);
+        } else {
+            $permohonan->surat_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_rekomendasi');
+            $permohonan->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Surat rekomendasi berhasil diunggah',
+        ]);
+    }
+
     public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
         if (!$permohonanService->isPermohonanCanVerified($permohonan)) {

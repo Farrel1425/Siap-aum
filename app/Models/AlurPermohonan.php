@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\JenisVerifikatorEnum;
 use App\Models\Permohonan;
+use App\Models\ValidasiBerkas;
+use App\Enums\JenisVerifikatorEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -32,5 +33,10 @@ class AlurPermohonan extends Model
     public function getJenisVerifikatorNameAttribute()
     {
         return JenisVerifikatorEnum::from($this->jenis_verifikator)->deskripsi();
+    }
+
+    public function validasiBerkas()
+    {
+        return $this->hasMany(ValidasiBerkas::class);
     }
 }

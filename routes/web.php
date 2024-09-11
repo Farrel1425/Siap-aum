@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/create/{jenis_izin}', [UserPermohonanController::class, 'createPermohonan'])->name('create-permohonan');
                 Route::post('/submit-form/{jenis_izin}', [UserPermohonanController::class, 'submitForm'])->name('submit-form');
                 Route::post('/submit-berkas/{permohonan}', [UserPermohonanController::class, 'submitBerkas'])->name('submit-berkas');
+                Route::post('/revisi/{permohonan}', [UserPermohonanController::class, 'revisi'])->name('revisi');
 
                 // Ajax
                 Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');

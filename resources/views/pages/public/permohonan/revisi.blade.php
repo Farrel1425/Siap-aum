@@ -83,41 +83,27 @@
             @endforeach
             <h5 class="mt-4">Data Berkas Permohonan</h5>
             @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
-                <div class="form-group mb-3 bg-white p-2">
-                    <div class="row align-items-center">
-                        <div class="col-5">
-                            <label class="text-primary col-form-label fw-bold text-xsm"
-                                   for="{{ $berkas_permohonan->kode_berkas }}">{{ $berkas_permohonan->nama }}
-                                @if ($berkas_permohonan->is_required)
-                                    <span class="badge bg-primary fw-normal"><i class="isax isax-warning-2"></i>
-                                        Required</span>
-                                @else
-                                    <span class="badge bg-secondary fw-normal"><i class="isax isax-warning-2"></i>
-                                        Optional</span>
-                                @endif
-                                @if ($berkas_permohonan->is_valid)
-                                    <span class="badge bg-success fw-normal"><i class="isax isax-tick-circle"></i>
-                                        Valid</span>
-                                @else
-                                    <span class="badge bg-warning fw-normal"><i class="isax isax-tick-circle"></i>
-                                        Pending</span>
-                                @endif
-                            </label>
-                        </div>
-                        <div class="col-2 offset-5">
-                            @if ($berkas_permohonan->filepath)
-                                <a class="btn btn-outline-primary text-xsm d-block w-100"
-                                   href="{{ Storage::url($berkas_permohonan->filepath) }}">
-                                    <i class="isax isax-download"></i> Lihat File
-                                </a>
-                            @else
-                                <span class="badge bg-warning">Belum diunggah</span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+                @if ($berkas_permohonan->is_revisi)
+                    <x-dashboard.input-inline-file-upload :required="$berkas_permohonan->is_required"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
+                                                          label="{{ $berkas_permohonan->nama }}"
+                                                          name="{{ $berkas_permohonan->id }}"
+                                                          uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}"
+                                                          revisi="{{ $berkas_permohonan->catatan }}" />
+                @else
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :required="$berkas_permohonan->is_required"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
+                                                          label="{{ $berkas_permohonan->nama }}"
+                                                          name="{{ $berkas_permohonan->id }}"
+                                                          uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}" />
+                @endif
             @endforeach
-            <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
+            {{-- <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
             @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                class_input="border-0 text-end text-xsm"
@@ -125,60 +111,12 @@
                                                name="{{ $kelengkapan_permohonan->kode_isian }}"
                                                readonly
                                                value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
-            @endforeach
-            <h5 class="mt-4">Data Berkas Verifikator</h5>
-            <div class="form-group mb-3 bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Surat Permohonan Rekomendasi</label>
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->surat_permohonan_rekomendasi_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
-                </div>
-                {{-- <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir: </span> --}}
-            </div>
-            <div class="form-group mb-3 bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Surat Rekomendasi</label>
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->surat_rekomendasi_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ Storage::url($permohonan->surat_rekomendasi_filepath) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="form-group bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Ijin Terbit</label>
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->template_surat_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ Storage::url($permohonan->template_surat_filepath) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
+            @endforeach --}}
+            <form action="{{ route('public.permohonan.revisi', $permohonan->id) }}" method="POST">
+                @csrf
+                <button class="btn btn-primary bg-primary mt-4 w-100 d-block"
+                            type="submit">Simpan dan Lanjutkan Permohonan</button>
+            </form>
         </section>
     </div>
 @endsection

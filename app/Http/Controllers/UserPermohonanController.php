@@ -32,6 +32,8 @@ class UserPermohonanController extends Controller
             'kelengkapanPermohonan',
         ]);
 
+        $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
+
         if (!$permohonan->pengajuan_at) {
             // upload berkas
             $is_all_uploaded = $permohonan
@@ -44,14 +46,63 @@ class UserPermohonanController extends Controller
                 'is_all_uploaded'
             ));
         } else if ($permohonan->status == StatusPermohonanEnum::REVISI->value) {
-            return view('pages.public.permohonan.revisi', compact('permohonan'));
+            return view('pages.public.permohonan.revisi', compact(
+                'permohonan',
+                'steps'
+            ));
         } else {
-            $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
             return view('pages.public.permohonan.show', compact(
                 'permohonan',
                 'steps'
             ));
         }
+    }
+
+    public function revisi(Request $request, Permohonan $permohonan)
+    {
+        $permohonan->load([
+            'berkasPermohonan',
+            'alurPermohonan' => function ($query) {
+                $query->with([
+                    'validasiBerkas' => function ($query) {
+                        $query->where('status', 'revisi');
+                    }
+                ])
+                    ->where('is_done', 0);
+            }
+        ]);
+
+        if ($permohonan->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses');
+        }
+
+        $is_all_uploaded = $permohonan
+            ->berkasPermohonan
+            ->where('is_required', 1)
+            ->whereNull('filepath')
+            ->count() == 0;
+
+        if (!$is_all_uploaded) {
+            return redirect()->back()->with('error', 'Berkas wajib belum lengkap');
+        }
+
+        DB::beginTransaction();
+        try {
+            $permohonan->update([
+                'pengajuan_at' => now(),
+                'status' => StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+            ]);
+            $permohonan->alurPermohonan->map(function ($alur) {
+                $alur->validasiBerkas()->where('status', 'revisi')->delete();
+            });
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kegagalan sistem, silahkan hubungi administrator');
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Permohonan berhasil diajukan');
     }
 
     public function submitForm(Request $request, JenisIzin $jenis_izin, PermohonanService $permohonan_service)

@@ -169,7 +169,7 @@
                                                       label="Surat Permohonan Rekomendasi"
                                                       name="surat_permohonan_rekomendasi" />
                 @if (
-                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
+                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
                     <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"

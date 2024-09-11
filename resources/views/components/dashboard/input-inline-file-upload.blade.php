@@ -9,6 +9,7 @@
     'required' => false,
     'is_show_badge' => true,
     'is_readonly' => false,
+    'revisi' => '',
 ])
 
 <div class="form-group row mb-0 align-items-center {{ $class }}"
@@ -67,4 +68,7 @@
             @endif
         </div>
     </div>
+    @if ($revisi)
+        <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir: {{ $revisi }}</span>
+    @endif
 </div>
