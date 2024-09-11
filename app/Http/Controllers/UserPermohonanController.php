@@ -168,7 +168,7 @@ class UserPermohonanController extends Controller
             return redirect()->back()->with('error', 'Terjadi kegagalan sistem, silahkan hubungi administrator')->withInput();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Permohonan berhasil diajukan');
+        return redirect()->route('public.permohonan.show', $permohonan->id)->with('success', 'Data berhasil disimpan. Silahkan lengkapi berkas permohonan');
     }
 
     public function submitBerkas(Request $request, Permohonan $permohonan)

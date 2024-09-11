@@ -66,6 +66,14 @@ class VerifikatorPermohonanController extends Controller
         // check is all berkas valid
         $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
+        // cek apakah jenis verifikator FO, jika ya maka wajib upload surat permohonan rekomendasi
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah surat permohonan rekomendasi',
+            ]);
+        }
+
         if (!$is_all_berkas_valid) {
             return response()->json([
                 'success' => false,
@@ -84,7 +92,7 @@ class VerifikatorPermohonanController extends Controller
 
     public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
-        if ($permohonanService->isPermohonanCanVerified($permohonan)) {
+        if (!$permohonanService->isPermohonanCanVerified($permohonan)) {
             return redirect()->back()->with('error', 'Permohonan tidak dapat diverifikasi');
         }
 
@@ -95,7 +103,7 @@ class VerifikatorPermohonanController extends Controller
         if ($verifikatorService->isJenisVerifikatorApprovable($alur_permohonan)) {
             if ($berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan)) {
                 // JF wajib sudah upload surat permohonan rekomendasi
-                if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value) {
+                if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::FO->value) {
                     if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
                         return redirect()->back()->with('error', 'Mohon unggah surat permohonan rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
@@ -186,7 +194,7 @@ class VerifikatorPermohonanController extends Controller
                         'status_badge' => $permohonan->status_badge,
                         'action' => $action,
                     ];
-                });
+                })->values();
 
             // JSON response
             return response()->json([
@@ -211,7 +219,13 @@ class VerifikatorPermohonanController extends Controller
                 ->whereHas('alurPermohonan', function ($query) {
                     $query->where('verifikator_id', auth()->user()->id);
                 })
-                ->whereIn('status', [StatusPermohonanEnum::VERIFIKASI->value, StatusPermohonanEnum::VERIFIKASI_ULANG->value]);
+                ->whereIn('status', [
+                    StatusPermohonanEnum::PERMOHONAN_BARU->value,
+                    StatusPermohonanEnum::VERIFIKASI->value,
+                    StatusPermohonanEnum::VERIFIKASI_ULANG->value
+                ]);
+
+            //
 
             // Total records
             $totalRecords = $query->count();
@@ -225,13 +239,17 @@ class VerifikatorPermohonanController extends Controller
                 if ($request->input('jenis_izin_id')) {
                     $query = $query->where('jenis_izin_id', $request->input('jenis_izin_id'));
                 }
+                // filtered records count
+                $totalFiltered = $query->count();
+            } else {
+                $totalFiltered = $totalRecords;
             }
 
             // Offset and limit
-            if ($start != 0 || $length != -1) {
-                $query = $query->offset($start)
-                    ->limit($length);
-            }
+            // if ($start != 0 || $length != -1) {
+            //     $query = $query->offset($start)
+            //         ->limit($length);
+            // }
 
             // Get data
             $records = $query
@@ -253,11 +271,20 @@ class VerifikatorPermohonanController extends Controller
                     ];
                 });
 
+
+            // Total records
+            $totalRecords = $records->count();
+
+            // offset and limit
+            $records = $records
+                ->slice($start, $length)
+                ->values();
+
             // JSON response
             return response()->json([
                 'draw' => intval($draw),
                 'recordsTotal' => $totalRecords,
-                'recordsFiltered' => count($records),
+                'recordsFiltered' => $totalRecords,
                 'data' => $records,
             ]);
         }

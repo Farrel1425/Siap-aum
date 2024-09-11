@@ -54,9 +54,9 @@ window.uploadBerkasPermohonan = function(uploadUrl, csrf_token, berkas_key) {
                     title: 'Berkas berhasil diunggah',
                     showConfirmButton: false,
                     timer: 1500
+                }).then((result) => {
+                    window.location.reload();
                 });
-
-                window.location.reload();
             } else {
                 Swal.fire({
                     icon: 'error',

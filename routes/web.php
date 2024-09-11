@@ -84,8 +84,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/jenis-izin-table', [UserPermohonanController::class, 'jenisIzinTable'])->name('jenis-izin-table');
 
                 // Resource
-                Route::get('/{permohonan}', [UserPermohonanController::class, 'show'])->name('show');
                 Route::get('/create', [UserPermohonanController::class, 'create'])->name('create');
+                Route::get('/{permohonan}', [UserPermohonanController::class, 'show'])->name('show');
                 Route::get('/create/{jenis_izin}', [UserPermohonanController::class, 'createPermohonan'])->name('create-permohonan');
                 Route::post('/submit-form/{jenis_izin}', [UserPermohonanController::class, 'submitForm'])->name('submit-form');
                 Route::post('/submit-berkas/{permohonan}', [UserPermohonanController::class, 'submitBerkas'])->name('submit-berkas');

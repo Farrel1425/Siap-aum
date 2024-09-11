@@ -104,6 +104,10 @@ class PermohonanService
 
     public function isPermohonanCanVerified(Permohonan $permohonan): bool
     {
-        return in_array($permohonan->status, [StatusPermohonanEnum::VERIFIKASI->value, StatusPermohonanEnum::VERIFIKASI_ULANG->value]);
+        return in_array($permohonan->status, [
+            StatusPermohonanEnum::PERMOHONAN_BARU->value,
+            StatusPermohonanEnum::VERIFIKASI->value,
+            StatusPermohonanEnum::VERIFIKASI_ULANG->value
+        ]);
     }
 }

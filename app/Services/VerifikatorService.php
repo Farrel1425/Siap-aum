@@ -7,6 +7,7 @@ use App\Models\Permohonan;
 use App\Models\AlurPermohonan;
 use App\Enums\JenisVerifikatorEnum;
 use App\Enums\StatusPermohonanEnum;
+use App\Services\PermohonanService;
 use App\Exceptions\ServiceException;
 use Illuminate\Auth\Authenticatable;
 
@@ -16,15 +17,12 @@ class VerifikatorService
     {
         //
     }
-    public function isPermohonanVerifiable(Permohonan $permohonan)
-    {
-        return $permohonan->status == StatusPermohonanEnum::VERIFIKASI->value || $permohonan->status == StatusPermohonanEnum::VERIFIKASI_ULANG->value;
-    }
 
     public function isVerifikatorApprovableBerkas(Permohonan $permohonan, User|Authenticatable $verifikator)
     {
+        $permohonan_service = new PermohonanService();
         // isPermohoanVerifiable
-        if (!$this->isPermohonanVerifiable($permohonan)) {
+        if (!$permohonan_service->isPermohonanCanVerified($permohonan)) {
             return false;
         }
         return $this->isVerifikatorTurn($permohonan, $verifikator) && $this->isJenisVerifikatorApprovable($this->getLastStepAlurPermohonan($permohonan));
@@ -33,7 +31,7 @@ class VerifikatorService
     // fungsi untuk cek apakah sudah saatnya verifikator melakukan verifikasi
     public function isVerifikatorTurn(Permohonan $permohonan, User|Authenticatable $verifikator)
     {
-        return $this->getLastStepAlurPermohonan($permohonan)->verifikator_id == $verifikator->id;
+        return $this->getLastStepAlurPermohonan($permohonan)?->verifikator_id == $verifikator->id;
     }
 
     private function getLastStepAlurPermohonan(Permohonan $permohonan)
