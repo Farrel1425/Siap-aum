@@ -40,6 +40,7 @@ class VerifikatorPermohonanController extends Controller
         $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
         $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
         $is_can_verified = $permohonanService->isPermohonanCanVerified($permohonan);
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
         $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
         return view('pages.verifikator.verifikasi.validasi', compact(
@@ -50,6 +51,7 @@ class VerifikatorPermohonanController extends Controller
             'is_verifikator_turn',
             'alur_permohonan',
             'is_can_verified',
+            'is_all_berkas_valid',
         ));
     }
 
@@ -129,6 +131,10 @@ class VerifikatorPermohonanController extends Controller
 
     public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
+        $permohonan->load([
+            'kelengkapanPermohonan'
+        ]);
+
         if (!$permohonanService->isPermohonanCanVerified($permohonan)) {
             return redirect()->back()->with('error', 'Permohonan tidak dapat diverifikasi');
         }
@@ -147,6 +153,19 @@ class VerifikatorPermohonanController extends Controller
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
                     if (!$permohonan->surat_rekomendasi_filepath) {
                         return redirect()->back()->with('error', 'Mohon unggah surat rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                    }
+                } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::BO->value) {
+                    // cek if all surat kelengkapan uploaded
+                    $rules = [];
+                    foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan) {
+                        $rules[$kelengkapan_permohonan->kode_isian] = 'required';
+                        $validation_messages[$kelengkapan_permohonan->kode_isian . '.required'] = 'Mohon unggah ' . $kelengkapan_permohonan->label;
+                    }
+                    $request->validate($rules, $validation_messages);
+
+                    foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan) {
+                        $kelengkapan_permohonan->value = $request->input($kelengkapan_permohonan->kode_isian);
+                        $kelengkapan_permohonan->save();
                     }
                 }
                 // TODO: operator BO harus upload form kelengkapan verifikator sebelum selesai
