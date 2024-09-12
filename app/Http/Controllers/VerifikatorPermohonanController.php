@@ -167,8 +167,14 @@ class VerifikatorPermohonanController extends Controller
                         $kelengkapan_permohonan->value = $request->input($kelengkapan_permohonan->kode_isian);
                         $kelengkapan_permohonan->save();
                     }
+
+                    // generate pdf template for ijin terbit
+                    $filepath = $permohonanService->generateIzinTerbit($permohonan);
+
+                    $permohonan->template_surat_filepath = $filepath;
+                    $permohonan->save();
                 }
-                // TODO: operator BO harus upload form kelengkapan verifikator sebelum selesai
+
                 $permohonan->status = StatusPermohonanEnum::VERIFIKASI->value;
                 $alur_permohonan->is_done = true;
                 $alur_permohonan->save();
@@ -190,6 +196,14 @@ class VerifikatorPermohonanController extends Controller
                 $alur_permohonan->is_done = true;
                 $alur_permohonan->save();
                 return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
+            } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value) {
+                $permohonan->status = StatusPermohonanEnum::VERIFIKASI->value;
+                $alur_permohonan->is_done = true;
+                $alur_permohonan->save();
+                $permohonan->save();
+                return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
+            } else {
+                return redirect()->back()->with('error', 'Permohonan tidak dapat diverifikasi');
             }
         }
     }

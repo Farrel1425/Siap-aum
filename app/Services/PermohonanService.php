@@ -5,6 +5,7 @@ namespace App\Services;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Models\Permohonan;
+use Illuminate\Support\Str;
 use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Collection;
 use App\Enums\StatusPermohonanEnum;
@@ -153,13 +154,23 @@ class PermohonanService
             $templateProcessor->setValue('NO_SK', 123);
 
             // Save the Word document to a temporary file
-            $tempWordPath = storage_path('app/temp/' . $permohonan->id . '.docx');
+            $filename_encrypt = Str::random(32);
+            $tempWordPath = storage_path('app/temp/' . $filename_encrypt . '.docx');
             $templateProcessor->saveAs($tempWordPath);
 
-            $pdfPath = storage_path('app/public/izin_terbit/' . $permohonan->id . '.pdf');
+            $pdfPath = 'public/izin_terbit/' . $filename_encrypt . '.pdf';
+            $pdfPathStorage = storage_path('app/' . $pdfPath);
+
+            // Path to LibreOffice soffice executable
+            if (config('app.env') == 'local') {
+                $sofficePath = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
+            } else {
+                $sofficePath = '/usr/bin/soffice';
+            }
 
             // Convert the Word document to PDF using LibreOffice
-            $command = 'soffice --headless --convert-to pdf --outdir ' . escapeshellarg(dirname($pdfPath)) . ' ' . escapeshellarg($tempWordPath);
+            $command = $sofficePath . ' --headless --convert-to pdf --outdir ' . escapeshellarg(dirname($pdfPathStorage)) . ' ' . escapeshellarg($tempWordPath);
+
             exec($command, $output, $returnVar);
 
             if ($returnVar !== 0) {
