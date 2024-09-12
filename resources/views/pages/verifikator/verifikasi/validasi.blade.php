@@ -213,7 +213,6 @@
 
                 @if ($is_verifikator_turn && $is_can_verified)
                     <div class="mt-4">
-
                         <button class="d-block btn w-100 btn-primary">
                             <i class="isax isax-tick-circle me-2"></i> Simpan
                         </button>

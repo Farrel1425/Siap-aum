@@ -2,9 +2,14 @@
 
 namespace App\Services;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Models\Permohonan;
+use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Collection;
 use App\Enums\StatusPermohonanEnum;
+use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class PermohonanService
 {
@@ -109,5 +114,66 @@ class PermohonanService
             StatusPermohonanEnum::VERIFIKASI->value,
             StatusPermohonanEnum::VERIFIKASI_ULANG->value
         ]);
+    }
+
+    public function generateIzinTerbit(Permohonan $permohonan)
+    {
+        $permohonan->load([
+            'jenisIzin',
+            'formPermohonan',
+            'kelengkapanPermohonan',
+        ]);
+        try {
+            // Convert $permohonan->jenisIzin->template_surat and assign template processing using PHPWord
+            $templateProcessor = new TemplateProcessor(storage_path('app/' . $permohonan->jenisIzin->template_surat));
+
+            $array_kode = array(
+                'NAMA' => $permohonan->nama,
+                'NIK' => $permohonan->nik,
+                'NPWP' => $permohonan->npwp,
+                'TEMPAT_LAHIR' => $permohonan->tempat_lahir,
+                'NAMA_JNS_IZIN' => $permohonan->nama_jenis_izin,
+                'DESKRIPSI_JNS_IZIN' => $permohonan->deskripsi_jenis_izin,
+                'NO_REGISTRASI' => $permohonan->no_registrasi
+            );
+
+            foreach ($permohonan->formPermohonan as $formPermohonan) {
+                $array_kode[$formPermohonan->kode_isian] = $formPermohonan->value;
+            }
+
+            foreach ($permohonan->kelengkapanPermohonan as $kelengkapanPermohonan) {
+                $array_kode[$kelengkapanPermohonan->kode_isian] = $kelengkapanPermohonan->value;
+            }
+
+            foreach ($array_kode as $key => $value) {
+                $templateProcessor->setValue($key, $value);
+            }
+
+            // Replace all variables in the template with values from $permohonan
+            $templateProcessor->setValue('NO_SK', 123);
+
+            // Save the Word document to a temporary file
+            $tempWordPath = storage_path('app/temp/' . $permohonan->id . '.docx');
+            $templateProcessor->saveAs($tempWordPath);
+
+            $pdfPath = storage_path('app/public/izin_terbit/' . $permohonan->id . '.pdf');
+
+            // Convert the Word document to PDF using LibreOffice
+            $command = 'soffice --headless --convert-to pdf --outdir ' . escapeshellarg(dirname($pdfPath)) . ' ' . escapeshellarg($tempWordPath);
+            exec($command, $output, $returnVar);
+
+            if ($returnVar !== 0) {
+                throw new \Exception('Error converting document to PDF: ' . implode("\n", $output));
+            }
+
+            // Clean up temporary files
+            unlink($tempWordPath);
+
+            return $pdfPath;
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Error generating Izin Terbit: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }
