@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JenisIzin;
-use App\Models\permohonan;
+use App\Models\Permohonan;
 use App\Services\PermohonanService;
 use Illuminate\Http\Request;
 

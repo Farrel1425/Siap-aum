@@ -30,6 +30,7 @@ class Permohonan extends Model
         'surat_permohonan_rekomendasi_filepath',
         'surat_rekomendasi_filepath',
         'template_surat_filepath',
+        'is_ttd',
         'status',
         'is_expired',
         'is_legacy_data',
