@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('surat_permohonan_rekomendasi_filepath')->nullable();
             $table->string('surat_rekomendasi_filepath')->nullable();
             $table->string('template_surat_filepath')->nullable();
+            $table->boolean('is_ttd')->default(false);
             $table->string('status')->default('pending')->comment('pending,permohonan_baru,selesai,revisi,verifikasi_ulang,expired,verifikasi');
             $table->boolean('is_expired')->default(false)->comment('Status permohonan yang revisi lama bisa expired');
             $table->boolean('is_legacy_data')->default(false);
