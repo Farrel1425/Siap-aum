@@ -8,17 +8,17 @@
         <li class="nav-item fw-bold">
             <a aria-current="page"
                 class="nav-link active"
-                href="/">Home</a>
+                href="{{ route('home') }}">Home</a>
         </li>
         <li class="nav-item fw-bold">
             <a aria-current="page"
                 class="nav-link active"
-                href="/panduan-pengguna">Panduan Pengguna</a>
+                href="{{ route('user-guide') }}">Panduan Pengguna</a>
         </li>
         <li class="nav-item fw-bold">
             <a aria-current="page"
                 class="nav-link active"
-                href="/cek-permohonan">Cek Permohonan</a>
+                href="{{ route('cek-permohonan.index') }}">Cek Permohonan</a>
         </li>
     </ul>
 </nav>

@@ -1,41 +1,5 @@
 @extends('layouts.landing.main-base')
 
-{{-- @section('content-header')
-    <div class="content-header">
-        <div class="d-flex justify-content-center align-items-center gap-3 flex-row mt-3 mt-md-0">
-            <img alt=""
-                 class="img-logo"
-                 src="{{ asset('assets/images/logo-kabupaten.png') }}">
-            <img alt=""
-                 class="img-logo"
-                 src="{{ asset('assets/images/logo-siajaib.png') }}">
-        </div>
-        <p class="text-center my-3 main-description">
-            <span class="fw-bold">SI AJAIB</span> adalah portal pelayanan perizinan online berbasis
-            website yang dikembangkan oleh
-            Pemerintah Kabupaten Buleleng yang bertujuan untuk memenuhi kebutuhan masyarakat dalam
-            pengajuan
-            izin yang transparans, inovatif, efektif, dan efisien. Sistem perizinan online ini
-            diperuntukkan
-            bagi pemohon yang ingin mengajukan permohonan perizinan secara online. Masyarakat dapat
-            mengajukan permohonan izin secara mandiri kapan pun dan dimana pun tanpa harus datang
-            langsung
-            ke kantor DPMPTSP Kabupaten Buleleng.
-        </p>
-        @auth
-            <a class="fw-bold btn btn-outline-danger"
-               href="{{ route('dashboard') }}">
-                <span class="isax-bold isax-login me-2"></span>Dashboard
-            </a>
-        @else
-            <a class="fw-bold btn btn-outline-danger"
-               href="{{ route('login.index') }}">
-                <span class="isax-bold isax-login me-2"></span>Login
-            </a>
-        @endauth
-    </div>
-@endsection --}}
-
 @section("content")
     <x-landing.hero>
         <div class="content-header">
@@ -94,16 +58,16 @@
          <section class="my-4">
              <div class="row g-4">
                  <div class="col-6 col-lg-3">
-                     <x-landing.total-summary icon="profile-circle" label="Jumlah Pemohon" total="24,863" />
+                     <x-landing.total-summary icon="profile-circle" label="Jumlah Pemohon" total="{{ number_format($user_count) }}" />
                  </div>
                  <div class="col-6 col-lg-3">
-                     <x-landing.total-summary icon="graph" label="Total Pemohonan" total="42,968" />
+                     <x-landing.total-summary icon="graph" label="Total Pemohonan" total="{{ number_format($permohonan_count) }}" />
                  </div>
                  <div class="col-6 col-lg-3">
-                     <x-landing.total-summary icon="timer" label="Dalam Proses" total="369" />
+                     <x-landing.total-summary icon="timer" label="Dalam Proses" total="{{ number_format($permohonan_proses_count) }}" />
                  </div>
                  <div class="col-6 col-lg-3">
-                     <x-landing.total-summary icon="printer" label="Izin Selesai" total="29,007" />
+                     <x-landing.total-summary icon="printer" label="Izin Selesai" total="{{ number_format($permohonan_selesai_count) }}" />
                  </div>
              </div>
              <div class="row g-4 mt-4">
@@ -111,7 +75,7 @@
                      <x-landing.card class="h-100 d-flex flex-column align-items-center justify-content-center text-center score-card">
                          <span class="score">90.08</span>
                          <span class="description">Sangat Baik</span>
-                         <span class="respondent-count">dari 6385 responden (data 3 bulan terakhir)</span>
+                         <span class="respondent-count">dari 6385 responden (data 3 bulan terakhir)</span>
                      </x-landing.card>
                  </div>
                  <div class="col-lg-9">

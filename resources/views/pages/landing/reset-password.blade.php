@@ -12,31 +12,26 @@
                      src="{{ asset('assets/images/logo-kabupaten.png') }}">
             </div>
             <div class="text-center my-3 w-100 auth-header">
-                <h3 class="title text-main">Daftar Akun</h3>
-                <p class="caption text-main">Masuk ke akun anda</p>
-                <input id="route_otp"
-                       type="hidden"
-                       value="{{ route('register.otp.generate') }}">
-                <input id="route_register"
-                       type="hidden"
-                       value="{{ route('register.store') }}">
-                <input id="csrf_token"
-                       type="hidden"
-                       value="{{ csrf_token() }}">
-                <x-landing.input-email :required=True
-                                       name="email"
-                                       placeholder="Email" />
-                <x-landing.input-password :required=True
-                                          name="password"
-                                          placeholder="Password" />
-                <x-landing.input-password :required=True
-                                          name="password_verify"
-                                          placeholder="Masukkan password kembali" />
-                <button class="btn btn-danger d-block w-100 fw-bold"
-                        id="generate_otp"
-                        type="button">Daftar</button>
-                <p class="mt-2 text-main">Sudah Punya Akun? <a class="text-danger"
-                       href="{{ route('login.index') }}">Masuk</a></p>
+                <form action="{{ route('password.update', $token) }}"
+                      method="POST">
+                    @csrf
+                    <h3 class="title text-main">Reset Password</h3>
+                    <p class="caption text-main">Masukkan password baru anda untuk akun <span class="fw-bold">{{ $email }}</span></p>
+                    <input name="token"
+                           type="hidden"
+                           value="{{ $token }}">
+                    <input name="email"
+                           type="hidden"
+                           value="{{ $email }}">
+                    <x-landing.input-password :required=True
+                                              name="password"
+                                              placeholder="Password" />
+                    <x-landing.input-password :required=True
+                                              name="password_verify"
+                                              placeholder="Masukkan password kembali" />
+                    <button class="btn btn-danger d-block w-100 fw-bold"
+                            type="submit">Ubah Password</button>
+                </form>
             </div>
         </div>
     </x-landing.hero>

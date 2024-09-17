@@ -12,14 +12,18 @@
                      src="{{ asset('assets/images/logo-kabupaten.png') }}">
             </div>
             <div class="text-center my-3 w-100 auth-header">
-                <h3 class="title text-main">Lupa Password</h3>
-                <p class="caption text-main">Masukkan Informasi dibawah ini untuk reset password</p>
-                <x-landing.input-email :required=True
-                                       name="email"
-                                       placeholder="Email" />
-                <button class="btn btn-danger d-block w-100 fw-bold"
-                        id="generate_otp"
-                        type="button">Ganti Password</button>
+                <form action="{{ route('forgot-password.store') }}"
+                      method="POST">
+                    @csrf
+                    <h3 class="title text-main">Lupa Password</h3>
+                    <p class="caption text-main">Masukkan Informasi dibawah ini untuk reset password</p>
+                    <x-landing.input-email :required=True
+                                           name="email"
+                                           placeholder="Email" />
+                    {!! htmlFormSnippet() !!}
+                    <button class="btn btn-danger d-block w-100 fw-bold mt-2"
+                            type="submit">Ganti Password</button>
+                </form>
             </div>
         </div>
     </x-landing.hero>

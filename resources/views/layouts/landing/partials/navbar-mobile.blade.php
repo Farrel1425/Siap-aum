@@ -8,7 +8,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{request()->routeIs('check-application') ? 'active' : ''}}"
+            <a class="nav-link {{request()->routeIs('cek-permohonan*') ? 'active' : ''}}"
             href="/cek-permohonan">
                 <i class="isax isax-search-favorite"></i>
                 <span class="d-block">Cek Permohonan</span>

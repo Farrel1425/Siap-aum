@@ -21,20 +21,6 @@
     <div class="loader-container">
         <div class="loader"></div>
     </div>
-    {{-- <section class="header">
-        <div class="row h-100">
-            <div class="col-md-6 h-100 position-relative">
-                <a class="d-none d-md-inline-block back-button text-decoration-none rounded-circle position-relative bg-danger text-white py-3 px-3"
-                   href="/"><span class="isax-bold isax-arrow-left"></span></a>
-                <div class="d-md-none image-main-mobile img-logo-auth">
-                </div>
-                <div class="d-md-none">
-                    @include('layouts.landing.partials.navbar-mobile')
-                </div>
-                @yield('content-header')
-            </div>
-        </div>
-    </section> --}}
     @yield('content')
     @stack('scripts')
     @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])

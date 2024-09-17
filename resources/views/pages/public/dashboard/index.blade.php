@@ -55,7 +55,7 @@
                 data: 'id',
                 name: 'id',
                 orderable: false,
-                className: 'd-flex align-items-center justify-content-center',
+                className: 'd-flex align-items-center w-100',
                 render: function(data, type, row, meta) {
                     return `
                         <div class="d-flex">
@@ -69,11 +69,11 @@
                             </div>
                         </div>
                     `;
-                }
+                },
             }, {
                 data: 'nama',
                 name: 'nama',
-                className: 'text-start',
+                className: 'text-start w-100',
                 orderable: false,
                 render: function(data, type, row, meta) {
                     let steps = row.steps;
@@ -90,7 +90,7 @@
                     // stepper-wrapper
                     html = `<a href="${row.url}"><div class="stepper-wrapper">${html}</div></a>`;
                     return html;
-                }
+                },
             }],
             // per page
             lengthMenu: [

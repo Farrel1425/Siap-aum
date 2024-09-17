@@ -17,23 +17,6 @@
     <div class="loader-container">
         <div class="loader"></div>
     </div>
-    {{-- <section class="header">
-        <div class="row h-100">
-            <div class="col-md-6 h-100 position-relative">
-                <div class="d-none d-md-block">
-                    @include('layouts.landing.partials.navbar-dekstop')
-                </div>
-                <div class="d-md-none">
-                    @include('layouts.landing.partials.navbar-mobile')
-                </div>
-                <div class="d-md-none image-main-mobile">
-                </div>
-                <div class="d-flex">
-                    @yield('content-header')
-                </div>
-            </div>
-        </div>
-    </section> --}}
     <div class="min-vh-100 d-flex flex-column">
         <div class="{{ request()->routeIs('user-guide', 'check-application') ? 'position-static' : 'position-absolute' }} d-none d-lg-block" style="z-index: 999;">
             @include('layouts.landing.partials.navbar-dekstop')
@@ -46,6 +29,7 @@
     </div>
     <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
     @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])
+    @include('components.toastr')
 </body>
 
 </html>
