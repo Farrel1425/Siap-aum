@@ -6,6 +6,7 @@ use App\Models\Permohonan;
 use App\Models\AlurPermohonan;
 use App\Models\BerkasPermohonan;
 use Illuminate\Support\Facades\DB;
+use App\Enums\JenisVerifikatorEnum;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
 use App\Services\VerifikatorService;
@@ -44,16 +45,23 @@ class BerkasPermohonanService
         $alurPermohonan->permohonan->relationLoaded('berkasPermohonan') || $alurPermohonan->permohonan->load('berkasPermohonan.validasiBerkas');
 
         $alurPermohonan->permohonan->berkasPermohonan->map(function ($berkasPermohonan) use ($alurPermohonan) {
-            if ($this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan)) {
+            if (
+                $alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value ||
+                $alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value
+            ) {
                 $berkasPermohonan->is_need_validation = false;
             } else {
-                if ($this->isBerkasOnRevisi($berkasPermohonan)) {
-                    $berkasPermohonan->is_need_validation = true;
+                if ($this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan)) {
+                    $berkasPermohonan->is_need_validation = false;
                 } else {
-                    if ($this->isLastStatusValidasiBerkasIsValid($alurPermohonan, $berkasPermohonan)) {
-                        $berkasPermohonan->is_need_validation = false;
-                    } else {
+                    if ($this->isBerkasOnRevisi($berkasPermohonan)) {
                         $berkasPermohonan->is_need_validation = true;
+                    } else {
+                        if ($this->isLastStatusValidasiBerkasIsValid($alurPermohonan, $berkasPermohonan)) {
+                            $berkasPermohonan->is_need_validation = false;
+                        } else {
+                            $berkasPermohonan->is_need_validation = true;
+                        }
                     }
                 }
             }

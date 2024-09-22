@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\JenisVerifikatorEnum;
+use Exception;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
 use App\Models\BerkasPermohonan;
+use App\Enums\JenisVerifikatorEnum;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
 use App\Services\VerifikatorService;
+use Illuminate\Support\Facades\Storage;
 use App\Services\BerkasPermohonanService;
 
 class VerifikatorPermohonanController extends Controller
@@ -40,7 +42,14 @@ class VerifikatorPermohonanController extends Controller
         $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
         $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
         $is_can_verified = $permohonanService->isPermohonanCanVerified($permohonan);
-        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+        if (
+            $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value ||
+            $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value
+        ) {
+            $is_all_berkas_valid = true;
+        } else {
+            $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+        }
 
         $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
         return view('pages.verifikator.verifikasi.validasi', compact(
@@ -191,10 +200,21 @@ class VerifikatorPermohonanController extends Controller
             }
         } else {
             if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value) {
-                $permohonan->status = StatusPermohonanEnum::SELESAI->value;
-                $permohonan->save();
-                $alur_permohonan->is_done = true;
-                $alur_permohonan->save();
+                $request->validate([
+                    'passphrase' => 'required',
+                ]);
+                try {
+                    $filepath = $permohonanService->ttdIzinTerbit($permohonan, auth()->user(), $request->input('passphrase'));
+                    $permohonan->status = StatusPermohonanEnum::SELESAI->value;
+                    $permohonan->save();
+                    $alur_permohonan->is_done = true;
+                    $alur_permohonan->save();
+                } catch (ServiceException $e) {
+                    return redirect()->back()->with('error', $e->getMessage());
+                } catch (Exception $e) {
+                    Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+                    return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
+                }
                 return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
             } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value) {
                 $permohonan->status = StatusPermohonanEnum::VERIFIKASI->value;
@@ -208,6 +228,37 @@ class VerifikatorPermohonanController extends Controller
         }
     }
 
+    public function generateUlangIzinTerbit(Request $request, $permohonan, PermohonanService $permohonanService)
+    {
+        $permohonan = Permohonan::find($permohonan);
+
+        try {
+            $filepath = $permohonanService->generateIzinTerbit($permohonan);
+            $permohonan->template_surat_filepath = $filepath;
+            $permohonan->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Izin terbit berhasil digenerate ulang',
+                'data' => [
+                    'filepath' => Storage::url($filepath),
+                ],
+            ]);
+        } catch (ServiceException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        } catch (Exception $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada server',
+            ]);
+        }
+    }
+
+    // TABLE
     public function permohonanTable(Request $request)
     {
         if ($request->ajax()) {
@@ -314,18 +365,11 @@ class VerifikatorPermohonanController extends Controller
             } else {
                 $totalFiltered = $totalRecords;
             }
-
-            // Offset and limit
-            // if ($start != 0 || $length != -1) {
-            //     $query = $query->offset($start)
-            //         ->limit($length);
-            // }
-
             // Get data
             $records = $query
                 ->get()
                 ->filter(function ($permohonan) use ($verifikatorService) {
-                    return $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
+                    return $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
                 })
                 ->map(function ($permohonan) {
                     $action = '<a href="' . route('verifikator.verifikasi.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';

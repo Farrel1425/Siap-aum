@@ -10,6 +10,10 @@ use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Collection;
 use App\Enums\StatusPermohonanEnum;
 use Illuminate\Support\Facades\Log;
+use App\Exceptions\ServiceException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\TemplateProcessor;
 
 class PermohonanService
@@ -117,6 +121,53 @@ class PermohonanService
         ]);
     }
 
+    public function ttdIzinTerbit(Permohonan $permohonan, $user, $passphrase)
+    {
+        if (!$permohonan->template_surat_filepath) {
+            throw new ServiceException('Template surat izin terbit belum diupload');
+        }
+
+        if ($permohonan->is_ttd) {
+            throw new ServiceException('Izin sudah ditandatangani');
+        }
+
+        try {
+            $file = file_get_contents(storage_path('app/' . $permohonan->template_surat_filepath));
+            $response = Http::withBasicAuth(config('app.esign_username'), config('app.esign_password'))
+                ->attach('file', $file, 'test.pdf')
+                ->post(config('app.esign_url') . '/api/sign/pdf', [
+                    'nik' => $user->nik,
+                    'passphrase' => $passphrase,
+                    'tampilan' => 'visible',
+                    'page' => '1',
+                    'image' => 'false',
+                    'linkQR' => '',
+                    'xAxis' => '20',
+                    'yAxis' => '-10',
+                    'width' => '150',
+                    'height' => '75',
+                    'tag' => ''
+                ]);
+            $response_object = $response->object();
+            if ($response->status() != 200) {
+                throw new ServiceException($response_object->error);
+            }
+            // save signed file
+            Storage::put($permohonan->template_surat_filepath, $response->body());
+            $permohonan->update([
+                'is_ttd' => true
+            ]);
+
+            return $permohonan;
+        } catch (ConnectionException $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            throw new ServiceException('Gagal menandatangani izin terbit. Server e-sign tidak merespon');
+        } catch (\Exception $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            throw new ServiceException('Gagal menandatangani izin terbit');
+        }
+    }
+
     public function generateIzinTerbit(Permohonan $permohonan)
     {
         $permohonan->load([
@@ -125,6 +176,10 @@ class PermohonanService
             'kelengkapanPermohonan',
         ]);
         try {
+            if ($permohonan->is_ttd) {
+                throw new ServiceException('Izin sudah ditandatangani. Tidak bisa generate izin terbit');
+            }
+
             // Convert $permohonan->jenisIzin->template_surat and assign template processing using PHPWord
             $templateProcessor = new TemplateProcessor(storage_path('app/' . $permohonan->jenisIzin->template_surat));
 
@@ -158,7 +213,7 @@ class PermohonanService
             $tempWordPath = storage_path('app/temp/' . $filename_encrypt . '.docx');
             $templateProcessor->saveAs($tempWordPath);
 
-            $pdfPath = 'public/izin_terbit/' . $filename_encrypt . '.pdf';
+            $pdfPath = 'izin_terbit/' . $filename_encrypt . '.pdf';
             $pdfPathStorage = storage_path('app/' . $pdfPath);
 
             // Path to LibreOffice soffice executable
@@ -185,6 +240,36 @@ class PermohonanService
             // Log the error for debugging
             Log::error('Error generating Izin Terbit: ' . $e->getMessage());
             throw $e;
+        }
+    }
+
+    public function downloadIzinTerbit(Permohonan $permohonan, $user)
+    {
+        $permohonan->load([
+            'kuesioner',
+            'alurPermohonan',
+        ]);
+
+        if (!$permohonan->template_surat_filepath) {
+            throw new ServiceException('Template surat izin terbit belum diupload oleh verifikator');
+        }
+
+        if ($permohonan->user_id == $user->id) {
+            if ($permohonan->is_ttd) {
+                if ($permohonan->kuesioner()->exists()) {
+                    $pdfPath = $permohonan->izin_terbit;
+                    return response()->download(storage_path('app/' . $pdfPath));
+                } else {
+                    throw new ServiceException('Anda harus mengisi kuesioner terlebih dahulu sebelum dapat mengunduh ijin terbit');
+                }
+            } else {
+                throw new ServiceException('Izin belum ditandatangani');
+            }
+        } else {
+            if (!$permohonan->alurPermohonan->contains('verifikator_id', $user->id)) {
+                throw new ServiceException('Anda tidak memiliki akses untuk mengunduh ijin terbit');
+            }
+            return response()->download(storage_path('app/' . $permohonan->template_surat_filepath));
         }
     }
 }

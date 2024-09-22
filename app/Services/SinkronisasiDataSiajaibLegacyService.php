@@ -355,6 +355,7 @@ class SinkronisasiDataSiajaibLegacyService
                 'surat_permohonan_rekomendasi_filepath' => $permohonan->surat_permohonan_rekomendasi,
                 'surat_rekomendasi_filepath' => $permohonan->surat_rekomendasi,
                 'template_surat_filepath' => $permohonan->template_pdf,
+                'is_ttd' => $permohonan->status == 'selesai' ? true : false,
                 'status' => $permohonan->status,
                 'is_expired' => $permohonan->deleted_at ? true : false,
                 'is_legacy_data' => true,

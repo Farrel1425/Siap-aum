@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\JenisIzin;
+use App\Models\Kuesioner;
 use App\Models\AlurPermohonan;
 use App\Models\FormPermohonan;
 use App\Models\BerkasPermohonan;
@@ -118,5 +119,10 @@ class Permohonan extends Model
     public function getMemohonUntukAttribute()
     {
         return $this->surat_kuasa_filepath ? 'Orang Lain' : 'Diri Sendiri';
+    }
+
+    public function kuesioner()
+    {
+        return $this->hasOne(Kuesioner::class);
     }
 }

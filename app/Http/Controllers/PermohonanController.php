@@ -111,4 +111,14 @@ class PermohonanController extends Controller
             ]);
         }
     }
+
+    public function downloadIzinTerbit(Request $request, $permohonan, PermohonanService $permohonan_service)
+    {
+        try {
+            $permohonan = Permohonan::findOrFail($permohonan);
+            return $permohonan_service->downloadIzinTerbit($permohonan, auth()->user());
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }

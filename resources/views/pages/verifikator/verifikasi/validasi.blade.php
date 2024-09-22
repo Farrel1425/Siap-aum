@@ -147,7 +147,8 @@
                     @if (
                         $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
                             $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
-                            $is_all_berkas_valid && $is_verifikator_turn)
+                            $is_all_berkas_valid &&
+                            $is_verifikator_turn)
                         <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                        class_input="text-xsm"
                                                        label="{{ $kelengkapan_permohonan->label }}"
@@ -201,21 +202,59 @@
                                                               downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
                                                               label="Surat Rekomendasi"
                                                               name="surat_rekomendasi" />
-                        <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                              :is_show_badge="false"
-                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                              class_input="text-xsm"
-                                                              downloadUrl="{{ $permohonan->template_surat_filepath ? Storage::url($permohonan->template_surat_filepath) : '' }}"
-                                                              label="Ijin Terbit"
-                                                              name="ijin_terbit" />
+                        @if (
+                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
+                                $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
+                                !$permohonan->is_ttd)
+                            <div class="row align-items-center">
+                                <div class="col-9">
+                                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                          :is_show_badge="false"
+                                                                          :is_ttd="$permohonan->is_ttd"
+                                                                          :show_ttd_status="true"
+                                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                          class_input="text-xsm"
+                                                                          downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                                          label="Ijin Terbit"
+                                                                          name="ijin_terbit" />
+                                </div>
+                                <div class="col-3">
+                                    <button class="d-block btn w-100 btn-primary mb-3"
+                                            onclick="generateUlangIzinTerbit()"
+                                            type="button">
+                                        <i class="isax isax-refresh me-2"></i> Generate Ulang Ijin Terbit
+                                    </button>
+                                </div>
+                            </div>
+                        @else
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  :is_ttd="$permohonan->is_ttd"
+                                                                  :show_ttd_status="true"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                                  label="Ijin Terbit"
+                                                                  name="ijin_terbit" />
+                        @endif
                     @endif
                 @endif
 
                 @if ($is_verifikator_turn && $is_can_verified)
                     <div class="mt-4">
-                        <button class="d-block btn w-100 btn-primary">
-                            <i class="isax isax-tick-circle me-2"></i> Simpan
-                        </button>
+                        @if ($alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::PENANDATANGAN->value)
+                            <input id="passphrase"
+                                   name="passphrase"
+                                   type="hidden">
+                            <button class="d-block btn w-100 btn-primary"
+                                    onclick="promptTtd()">
+                                <i class="isax isax-tick-circle me-2"></i> Tanda Tangan dan Selesaikan Permohonan
+                            </button>
+                        @else
+                            <button class="d-block btn w-100 btn-primary">
+                                <i class="isax isax-tick-circle me-2"></i> Simpan
+                            </button>
+                        @endif
                     </div>
                 @endif
             </form>
@@ -226,3 +265,107 @@
         </section>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function promptTtd() {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'question',
+                title: 'Apakah Anda yakin ingin menandatangani ijin terbit dan menyelesaikan permohonan?',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Masukkan passphrase',
+                        input: 'password',
+                        inputAttributes: {
+                            autocapitalize: 'off'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'Tanda Tangan',
+                        cancelButtonText: 'Batal',
+                        showLoaderOnConfirm: true,
+                        preConfirm: (passphrase) => {
+                            if (!passphrase) {
+                                Swal.showValidationMessage('Passphrase tidak boleh kosong');
+                            }
+                            return passphrase;
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#passphrase').val(result.value);
+                            $('form').submit();
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Tanda tangan dibatalkan'
+                    });
+                }
+            });
+        }
+
+        function generateUlangIzinTerbit() {
+            Swal.fire({
+                icon: 'question',
+                title: 'Apakah Anda yakin ingin generate ulang ijin terbit? Pastikan template surat pada admin telah berubah jika ingin melakukan perubahan layout surat.',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('verifikator.verifikasi.generate-ulang-izin-terbit', $permohonan->id) }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        // show loading
+                        beforeSend: function() {
+                            Swal.fire({
+                                title: 'Loading',
+                                html: 'Mohon tunggu sebentar',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                },
+                            });
+                        },
+                        success: function(response) {
+                            Swal.close();
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Generate ulang ijin terbit berhasil'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Generate ulang ijin terbit gagal'
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Generate ulang ijin terbit gagal'
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Generate ulang ijin terbit dibatalkan'
+                    });
+                }
+            });
+        }
+    </script>
+@endpush

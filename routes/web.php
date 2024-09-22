@@ -82,6 +82,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['is_filled_data_register'])->group(function () {
         // Dashboard
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        // All Role
+        Route::get('download-izin-terbit/{permohonan}', [PermohonanController::class, 'downloadIzinTerbit'])->name('download-izin-terbit');
 
         // PUBLIC
         Route::middleware(['role:public'])->group(function () {
@@ -133,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/revision-berkas', [VerifikatorPermohonanController::class, 'revisiBerkas'])->name('revisi-berkas');
                     Route::post('/upload-surat-permohonan-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratPermohonanRekomendasi'])->name('upload-surat-permohonan-rekomendasi');
                     Route::post('/upload-surat-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratRekomendasi'])->name('upload-surat-rekomendasi');
+                    ROute::post('/generate-ulang-izin-terbit/{permohonan}', [VerifikatorPermohonanController::class, 'generateUlangIzinTerbit'])->name('generate-ulang-izin-terbit');
                 });
             });
         });
@@ -189,15 +192,6 @@ Route::middleware(['auth'])->group(function () {
             });
         });
     });
-
-    // VERIFIKATOR
-    Route::middleware(['role:verifikator'])->group(function () {});
-
-
-    // OPERATOR
-    // PUBLIC
-    Route::middleware(['role:public', 'is_filled_data_register'])->group(function () {});
-
 
     // Profile
     // Route::prefix('profile')->name('profile.')->group(function () {

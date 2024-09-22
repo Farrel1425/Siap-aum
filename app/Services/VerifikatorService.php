@@ -65,4 +65,12 @@ class VerifikatorService
             JenisVerifikatorEnum::BO->value,
         ]);
     }
+
+    public function isJenisVerifikatorViewable(AlurPermohonan $alur_permohonan)
+    {
+        return in_array($alur_permohonan->jenis_verifikator, [
+            JenisVerifikatorEnum::JF->value,
+            JenisVerifikatorEnum::PENANDATANGAN->value,
+        ]);
+    }
 }

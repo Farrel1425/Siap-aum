@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
 return [
+    // Custom configuration
+    'esign_url' => env('ESIGN_URL', 'http://localhost'),
+    'esign_username' => env('ESIGN_USERNAME', 'admin'),
+    'esign_password' => env('ESIGN_PASSWORD', 'password'),
 
     /*
     |--------------------------------------------------------------------------

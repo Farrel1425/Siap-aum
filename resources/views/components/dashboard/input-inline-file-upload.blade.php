@@ -10,6 +10,8 @@
     'is_show_badge' => true,
     'is_readonly' => false,
     'revisi' => '',
+    'show_ttd_status' => false,
+    'is_ttd' => false,
 ])
 
 <div class="form-group row mb-0 align-items-center {{ $class }}"
@@ -24,6 +26,15 @@
                 @else
                     <span class="badge bg-secondary fw-normal"><i class="isax isax-warning-2"></i>
                         Optional</span>
+                @endif
+            @endif
+            @if ($show_ttd_status)
+                @if ($is_ttd)
+                    <span class="badge bg-success fw-normal"><i class="isax isax-check"></i>
+                        Sudah ditandatangani</span>
+                @else
+                    <span class="badge bg-danger fw-normal"><i class="isax isax-warning-2"></i>
+                        Belum ditandatangani</span>
                 @endif
             @endif
         </label>
@@ -52,6 +63,7 @@
                     <div class="col-3">
                         <a class="btn-outline-primary btn text-xsm text-center w-100 d-block"
                            href="{{ $downloadUrl }}"
+                           id="btn-download-{{ $name }}"
                            target="_blank">Lihat File</a>
                     </div>
                 @endif
@@ -60,6 +72,7 @@
                     @if ($downloadUrl)
                         <a class="btn-outline-primary btn text-xsm text-center w-100 d-block"
                            href="{{ $downloadUrl }}"
+                           id="btn-download-{{ $name }}"
                            target="_blank">Lihat File</a>
                     @else
                         <span class="badge bg-warning text-xsm">Belum diunggah</span>
