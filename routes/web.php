@@ -7,6 +7,7 @@ use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\UserPermohonanController;
 use App\Http\Controllers\VerifikatorPermohonanController;
@@ -104,6 +105,13 @@ Route::middleware(['auth'])->group(function () {
 
                     // Ajax
                     Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');
+                });
+
+                // Kuesioner
+                Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
+                    // Resource
+                    Route::get('/create/{permohonan}', [KuesionerController::class, 'create'])->name('create');
+                    Route::post('/store/{permohonan}', [KuesionerController::class, 'store'])->name('store');
                 });
             });
         });

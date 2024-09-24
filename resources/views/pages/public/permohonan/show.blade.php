@@ -130,14 +130,18 @@
             @endforeach
             <h5 class="mt-4">Data Berkas Verifikator</h5>
             <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                  :is_show_badge="false"
-                                                                  :is_ttd="$permohonan->is_ttd"
-                                                                  :show_ttd_status="true"
-                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                  class_input="text-xsm"
-                                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
-                                                                  label="Ijin Terbit"
-                                                                  name="ijin_terbit" />
+                                                  :is_show_badge="false"
+                                                  :is_ttd="$permohonan->is_ttd"
+                                                  :show_ttd_status="true"
+                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                  class_input="text-xsm"
+                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                  label="Ijin Terbit"
+                                                  name="ijin_terbit" />
+            @if ($need_kuesioner)
+                <a class="btn fw-bold btn-primary w-100 mt-1"
+                   href="{{ route('public.kuesioner.create', $permohonan->id) }}">Isi Kuesioner</a>
+            @endif
         </section>
     </div>
 @endsection

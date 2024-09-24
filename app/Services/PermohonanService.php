@@ -257,8 +257,7 @@ class PermohonanService
         if ($permohonan->user_id == $user->id) {
             if ($permohonan->is_ttd) {
                 if ($permohonan->kuesioner()->exists()) {
-                    $pdfPath = $permohonan->izin_terbit;
-                    return response()->download(storage_path('app/' . $pdfPath));
+                    return response()->download(storage_path('app/' . $permohonan->template_surat_filepath));
                 } else {
                     throw new ServiceException('Anda harus mengisi kuesioner terlebih dahulu sebelum dapat mengunduh ijin terbit');
                 }

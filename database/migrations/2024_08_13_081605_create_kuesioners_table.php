@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kuesioners', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('permohonan_id')->constrained('permohonans');
+            $table->foreignId('permohonan_id')->nullable()->constrained('permohonans');
             $table->boolean('jenis_kelamin')->nullable();
             $table->string('pendidikan')->nullable();
             $table->string('pekerjaan')->nullable();

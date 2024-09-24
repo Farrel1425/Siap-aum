@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\KuesionerJawaban;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Kuesioner extends Model
 {
@@ -16,4 +17,9 @@ class Kuesioner extends Model
         'pekerjaan',
         'jenis_layanan',
     ];
+
+    public function kuesionerJawaban()
+    {
+        return $this->hasMany(KuesionerJawaban::class);
+    }
 }

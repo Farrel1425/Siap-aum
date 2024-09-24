@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\KuesionerOpsi;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KuesionerPertanyaan extends Model
 {
@@ -12,4 +13,9 @@ class KuesionerPertanyaan extends Model
     protected $fillable = [
         'pertanyaan',
     ];
+
+    public function kuesionerOpsi()
+    {
+        return $this->hasMany(KuesionerOpsi::class);
+    }
 }

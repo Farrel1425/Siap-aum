@@ -30,9 +30,12 @@ class UserPermohonanController extends Controller
             'alurPermohonan',
             'berkasPermohonan',
             'kelengkapanPermohonan',
+            'kuesioner',
         ]);
 
         $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
+
+        $need_kuesioner = $permohonan->status == StatusPermohonanEnum::SELESAI->value && !$permohonan->kuesioner ? true : false;
 
         if (!$permohonan->pengajuan_at) {
             // upload berkas
@@ -53,7 +56,8 @@ class UserPermohonanController extends Controller
         } else {
             return view('pages.public.permohonan.show', compact(
                 'permohonan',
-                'steps'
+                'steps',
+                'need_kuesioner'
             ));
         }
     }
