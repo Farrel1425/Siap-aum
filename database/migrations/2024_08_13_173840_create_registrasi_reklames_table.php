@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('registrasi_reklames', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('nomor_registrasi');
+            $table->string('nomor_registrasi')->nullable();
             $table->string('nama')->nullable();
             $table->string('nik')->nullable();
             $table->string('npwp')->nullable();

@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasRole(RoleEnum::VERIFIKATOR->deskripsi());
     }
 
+    public function getIsInputerAttribute()
+    {
+        return $this->hasRole(RoleEnum::INPUTER->deskripsi());
+    }
+
     public function getRoleBadgeAttribute()
     {
         if ($this->is_admin) {

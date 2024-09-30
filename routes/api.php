@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ReklameController;
+use App\Http\Controllers\Api\AuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('guest')->group(function () {
+    Route::post('/login', [AuthenticationController::class, 'login']);
+});
+
+Route::middleware(['auth:sanctum', 'role:inputer'])->group(function () {
+    Route::post('/logout', [AuthenticationController::class, 'logout']);
+
+    // Reklame
+    Route::get('/reklame', [ReklameController::class, 'index']);
+    Route::get('/reklame/{id}', [ReklameController::class, 'show']);
+    Route::post('/reklame', [ReklameController::class, 'initReklame']);
+    Route::post('/reklame/{id}', [ReklameController::class, 'storeReklame']);
 });

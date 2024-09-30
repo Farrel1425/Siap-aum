@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Reklame;
+use App\Models\FormReklame;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RegistrasiReklame extends Model
 {
@@ -19,4 +21,14 @@ class RegistrasiReklame extends Model
         'alamat_perusahaan',
         'nomor_telepon',
     ];
+
+    public function formReklame()
+    {
+        return $this->hasManyThrough(FormReklame::class, Reklame::class);
+    }
+
+    public function reklame()
+    {
+        return $this->hasMany(Reklame::class);
+    }
 }

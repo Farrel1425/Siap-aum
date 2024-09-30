@@ -162,6 +162,9 @@ class SinkronisasiDataSiajaibLegacyService
         $usersLegacy = DB::connection('siajaib_legacy')->table('users')->get();
 
         foreach ($usersLegacy as $user) {
+            if(config('app.env') == 'dev' || config('app.env') == 'local'){
+                $user->password = bcrypt('P@ssw0rd');
+            }
             $user = [
                 'id' => $user->id,
                 'name' => $user->name,

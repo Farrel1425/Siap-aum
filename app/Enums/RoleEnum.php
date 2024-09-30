@@ -22,7 +22,7 @@ enum RoleEnum: string
             self::PUBLIC => 'Public',
             self::VERIFIKATOR => 'Verifikator',
             self::AUDITOR => 'Auditor',
-            self::INPUTER => 'Inputer Reklame',
+            self::INPUTER => 'Inputer',
         };
     }
 }

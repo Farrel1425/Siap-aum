@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\ResponseFormatter;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,8 +22,14 @@ class RoleMiddleware
             return $next($request);
         } else if ($roles == 'verifikator' && auth()->user()->isVerifikator) {
             return $next($request);
+        } else if ($roles == 'inputer' && auth()->user()->isInputer) {
+            return $next($request);
         } else {
-            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses untuk aksi tersebut');
+            return $request->expectsJson() ?
+                ResponseFormatter::error([
+                    'message' => 'Anda tidak memiliki akses untuk aksi tersebut',
+                ], 'Forbidden', 403) :
+                redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses untuk aksi tersebut');
         }
     }
 }

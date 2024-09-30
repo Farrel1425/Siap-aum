@@ -72,6 +72,11 @@ class Permohonan extends Model
         return $this->hasMany(KelengkapanPermohonan::class)->orderBy('urutan');
     }
 
+    public function scopeReklame($query)
+    {
+        return $query->where('jenis_izin_id', 9);
+    }
+
     public function getStatusNameAttribute()
     {
         switch ($this->status) {
