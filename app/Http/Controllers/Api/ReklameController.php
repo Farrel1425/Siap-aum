@@ -102,6 +102,7 @@ class ReklameController extends Controller
 
             $reklame = $registrasi_reklame->reklame()->create([
                 'image_filepath' => $filepath,
+                'is_from_sireko' => true,
             ]);
 
             $jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)

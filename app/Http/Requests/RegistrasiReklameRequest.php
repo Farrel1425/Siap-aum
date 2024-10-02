@@ -35,6 +35,10 @@ class RegistrasiReklameRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        return ResponseFormatter::failedValidation($validator->errors());
+        if ($this->expectsJson()) {
+            return ResponseFormatter::failedValidation($validator->errors());
+        } else {
+            return parent::failedValidation($validator);
+        }
     }
 }

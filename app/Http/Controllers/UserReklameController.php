@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Reklame;
+use Illuminate\Http\Request;
+use App\Models\FormJenisIzin;
+use App\Models\RegistrasiReklame;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\FormReklameRequest;
+use App\Http\Requests\RegistrasiReklameRequest;
+
+class UserReklameController extends Controller
+{
+    public function index()
+    {
+        $registrasi_reklame = RegistrasiReklame::where('user_id', auth()->id())->get();
+        return view('pages.public.reklame.index', compact('registrasi_reklame'));
+    }
+
+    public function search(Request $request)
+    {
+        return view('pages.public.reklame.search');
+    }
+
+    public function create(Request $request)
+    {
+        $registrasi_reklame = RegistrasiReklame::with('reklame.formReklame')->where('nomor_registrasi', $request->nomor_registrasi)->first();
+        if ($registrasi_reklame) {
+            return view('pages.public.reklame.create', compact('registrasi_reklame'));
+        } else {
+            return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
+        }
+    }
+
+    public function registrasi(Request $request)
+    {
+        return view('pages.public.reklame.registrasi');
+    }
+
+    public function storeRegistrasi(RegistrasiReklameRequest $request)
+    {
+        $reklame = RegistrasiReklame::create([
+            'user_id' => auth()->id(),
+            'nama' => $request->nama,
+            'nik' => $request->nik,
+            'npwp' => $request->npwp,
+            'nama_perusahaan' => $request->nama_perusahaan,
+            'alamat_perusahaan' => $request->alamat_perusahaan,
+            'nomor_telepon' => $request->nomor_telepon,
+        ]);
+
+        $reklame->update([
+            'nomor_registrasi' => 'BLL/' . time() . '/' . auth()->id() . '/9/' . $reklame->id,
+        ]);
+
+        return redirect()->route('public.reklame.create', ['nomor_registrasi' => $reklame->nomor_registrasi])->with('success', 'Data Registrasi Reklame berhasil disimpan');
+    }
+
+    public function createReklame(Request $request, $registrasi_reklame)
+    {
+        $registrasi_reklame = RegistrasiReklame::with('reklame.formReklame')->where('nomor_registrasi', decrypt($registrasi_reklame))->first();
+        if (!$registrasi_reklame) {
+            return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
+        }
+
+        $form_jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)
+            ->whereNotIn('kode_isian', ['NAMA_PERUSAHAAN', 'HP/TELP', 'ALAMAT'])
+            ->get();
+
+        return view('pages.public.reklame.insert', compact('registrasi_reklame', 'form_jenis_izin'));
+    }
+
+    public function storeReklame(FormReklameRequest $request, $registrasi_reklame)
+    {
+        $registrasi_reklame = RegistrasiReklame::with('reklame.formReklame')->where('nomor_registrasi', decrypt($registrasi_reklame))->first();
+        if (!$registrasi_reklame) {
+            return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
+        }
+
+        DB::beginTransaction();
+        try {
+            $filepath = $request->file('image')->store('public/reklame-images');
+
+            $reklame = $registrasi_reklame->reklame()->create([
+                'image_filepath' => $filepath,
+                'is_from_sireko' => false,
+            ]);
+
+            $jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)
+                ->get();
+
+            foreach ($jenis_izin as $izin) {
+                if ($izin->kode_isian == 'NAMA_PERUSAHAAN') {
+                    $reklame->formReklame()->create([
+                        'kode_isian' => $izin->kode_isian,
+                        'tipe' => $izin->tipe,
+                        'label' => $izin->label,
+                        'value' => $registrasi_reklame->nama_perusahaan,
+                        'urutan' => $izin->urutan,
+                    ]);
+                    continue;
+                }
+
+                if ($izin->kode_isian == 'HP/TELP') {
+                    $reklame->formReklame()->create([
+                        'kode_isian' => $izin->kode_isian,
+                        'tipe' => $izin->tipe,
+                        'label' => $izin->label,
+                        'value' => $registrasi_reklame->nomor_telepon,
+                        'urutan' => $izin->urutan,
+                    ]);
+                    continue;
+                }
+
+                if ($izin->kode_isian == 'ALAMAT') {
+                    $reklame->formReklame()->create([
+                        'kode_isian' => $izin->kode_isian,
+                        'tipe' => $izin->tipe,
+                        'label' => $izin->label,
+                        'value' => $registrasi_reklame->alamat_perusahaan,
+                        'urutan' => $izin->urutan,
+                    ]);
+                    continue;
+                }
+
+                $reklame->formReklame()->create([
+                    'kode_isian' => $izin->kode_isian,
+                    'tipe' => $izin->tipe,
+                    'label' => $izin->label,
+                    'value' => $request->input($izin->kode_isian),
+                    'urutan' => $izin->urutan,
+                ]);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
+        }
+        return redirect()->route('public.reklame.create', ['nomor_registrasi' => $registrasi_reklame->nomor_registrasi])->with('success', 'Data Reklame berhasil disimpan');
+    }
+
+    public function destroyReklame(Request $request, $nomor_registrasi, Reklame $reklame)
+    {
+        RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
+        if($reklame->is_from_sireko) {
+            return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat dihapus');
+        }
+
+        $reklame->delete();
+
+        return redirect()->back()->with('success', 'Data Reklame berhasil dihapus');
+    }
+}

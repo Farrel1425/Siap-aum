@@ -2,13 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisIzinController;
+use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\PermohonanController;
+use App\Http\Controllers\Api\ReklameController;
+use App\Http\Controllers\UserReklameController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\KuesionerController;
-use App\Http\Controllers\LandingController;
 use App\Http\Controllers\UserPermohonanController;
 use App\Http\Controllers\VerifikatorPermohonanController;
 
@@ -105,6 +107,19 @@ Route::middleware(['auth'])->group(function () {
 
                     // Ajax
                     Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');
+                });
+
+                // Reklame
+                Route::prefix('reklame')->name('reklame.')->group(function () {
+                    Route::get('/', [UserReklameController::class, 'index'])->name('index');
+                    Route::get('/create', [UserReklameController::class, 'create'])->name('create');
+                    Route::get('/search', [UserReklameController::class, 'search'])->name('search');
+                    Route::get('/registrasi', [UserReklameController::class, 'registrasi'])->name('registrasi');
+                    Route::post('/registrasi', [UserReklameController::class, 'storeRegistrasi'])->name('store-registrasi');
+                    Route::post('/{nomor_registrasi}', [UserReklameController::class, 'store'])->name('store');
+                    Route::get('/create/{nomor_registrasi}', [UserReklameController::class, 'createReklame'])->name('create-reklame');
+                    Route::post('/create/{nomor_registrasi}', [UserReklameController::class, 'storeReklame'])->name('store-reklame');
+                    Route::delete('/delete/{nomor_registrasi}/{reklame}', [UserReklameController::class, 'destroyReklame'])->name('destroy-reklame');
                 });
 
                 // Kuesioner

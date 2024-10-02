@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('registrasi_reklame_id')->constrained('registrasi_reklames');
             $table->string('image_filepath')->nullable();
+            $table->boolean('is_from_sireko')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -6,14 +6,16 @@ use App\Models\FormReklame;
 use App\Models\RegistrasiReklame;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reklame extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'registrasi_reklame_id',
         'image_filepath',
+        'is_from_sireko',
     ];
 
     public function registrasiReklame()
