@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\FormJenisIzin;
+use Illuminate\Support\Carbon;
 use App\Models\RegistrasiReklame;
 use App\Helpers\ResponseFormatter;
 use Illuminate\Support\Facades\Log;
@@ -72,7 +73,7 @@ class ReklameController extends Controller
             ]);
 
             $reklame->update([
-                'nomor_registrasi' => $nomor_registrasi = 'BLL/' . time() . '/' . auth()->id() . '/9/' . $reklame->id,
+                'nomor_registrasi' => 'BLL/' . time() . '/' . auth()->id() . '/9/' . $reklame->id,
             ]);
 
             return ResponseFormatter::success(
@@ -137,6 +138,20 @@ class ReklameController extends Controller
                         'tipe' => $izin->tipe,
                         'label' => $izin->label,
                         'value' => $registrasi_reklame->alamat_perusahaan,
+                        'urutan' => $izin->urutan,
+                    ]);
+                    continue;
+                }
+
+                if ($izin->kode_isian == 'LAMA_PEMASANGAN') {
+                    $tanggal_awal = Carbon::createFromFormat('d-m-Y', $request->input('TGL_MULAI'));
+                    $tanggal_akhir = Carbon::createFromFormat('d-m-Y', $request->input('TGL_AKHIR'));
+                    $lama_pemasangan = $tanggal_awal->diffInDays($tanggal_akhir);
+                    $reklame->formReklame()->create([
+                        'kode_isian' => $izin->kode_isian,
+                        'tipe' => $izin->tipe,
+                        'label' => $izin->label,
+                        'value' => $lama_pemasangan,
                         'urutan' => $izin->urutan,
                     ]);
                     continue;

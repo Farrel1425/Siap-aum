@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ResponseFormatter;
 use App\Models\FormJenisIzin;
+use App\Enums\JenisReklameEnum;
+use App\Helpers\ResponseFormatter;
+use App\Enums\AreaPemasanganReklameEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
@@ -24,8 +26,9 @@ class FormReklameRequest extends FormRequest
      */
     public function rules(): array
     {
-        $form_jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)
-        ->get();
+        $form_jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)->get();
+        $area_pemasangan = implode(',', array_values(AreaPemasanganReklameEnum::array()));
+        $jenis_reklame = implode(',', array_values(JenisReklameEnum::array()));
         $rules = [
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
@@ -34,10 +37,18 @@ class FormReklameRequest extends FormRequest
             if ($form->tipe == 'date') {
                 $rules[$form->kode_isian] = 'required|date:Y-m-d';
             }
+            if($form->kode_isian == 'AREA_PEMASANGAN') {
+                $rules[$form->kode_isian] = 'required|in:' . $area_pemasangan;
+            }
+            if($form->kode_isian == 'JENIS_REKLAME') {
+                $rules[$form->kode_isian] = 'required|in:' . $jenis_reklame;
+            }
         }
+        // get all value from App\Enums\AreaPemasanganReklameEnum
         unset($rules['NAMA_PERUSAHAAN']);
         unset($rules['HP/TELP']);
         unset($rules['ALAMAT']);
+        unset($rules['LAMA_PEMASANGAN']);
         return $rules;
     }
 
@@ -45,7 +56,7 @@ class FormReklameRequest extends FormRequest
     {
         if ($this->expectsJson()) {
             return ResponseFormatter::failedValidation($validator->errors());
-        }else{
+        } else {
             return parent::failedValidation($validator);
         }
     }

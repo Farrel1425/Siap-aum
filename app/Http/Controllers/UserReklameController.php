@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\FormReklameRequest;
 use App\Http\Requests\RegistrasiReklameRequest;
+use Carbon\Carbon;
 
 class UserReklameController extends Controller
 {
@@ -125,6 +126,31 @@ class UserReklameController extends Controller
                     continue;
                 }
 
+                if ($izin->kode_isian == 'AREA_PEMASANGAN') {
+                    $reklame->formReklame()->create([
+                        'kode_isian' => $izin->kode_isian,
+                        'tipe' => $izin->tipe,
+                        'label' => $izin->label,
+                        'value' => $request->input($izin->kode_isian),
+                        'urutan' => $izin->urutan,
+                    ]);
+                    continue;
+                }
+
+                if ($izin->kode_isian == 'LAMA_PEMASANGAN') {
+                    $tanggal_awal = Carbon::createFromFormat('d-m-Y', $request->input('TGL_MULAI'));
+                    $tanggal_akhir = Carbon::createFromFormat('d-m-Y', $request->input('TGL_AKHIR'));
+                    $lama_pemasangan = $tanggal_awal->diffInDays($tanggal_akhir);
+                    $reklame->formReklame()->create([
+                        'kode_isian' => $izin->kode_isian,
+                        'tipe' => $izin->tipe,
+                        'label' => $izin->label,
+                        'value' => $lama_pemasangan,
+                        'urutan' => $izin->urutan,
+                    ]);
+                    continue;
+                }
+
                 $reklame->formReklame()->create([
                     'kode_isian' => $izin->kode_isian,
                     'tipe' => $izin->tipe,
@@ -136,7 +162,7 @@ class UserReklameController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
         }
         return redirect()->route('public.reklame.create', ['nomor_registrasi' => $registrasi_reklame->nomor_registrasi])->with('success', 'Data Reklame berhasil disimpan');
