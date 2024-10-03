@@ -13,9 +13,9 @@
                         Baru</a>
                 </div>
                 <div class="col-12 col-lg-auto gap-0 order-md-1">
-                    <button class="btn btn-outline-primary d-block w-100 w-lg-auto fw-bold"><i
+                    <a href="https://bit.ly/siajaibbuleleng" target="_blank" class="btn btn-outline-primary d-block w-100 w-lg-auto fw-bold"><i
                            class="isax isax-document-download"></i> Download
-                        Contoh Berkas</button>
+                        Contoh Berkas</a>
                 </div>
             </div>
         </div>
