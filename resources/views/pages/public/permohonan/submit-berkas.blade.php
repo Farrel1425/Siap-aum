@@ -28,7 +28,7 @@
                                                    downloadUrl="{{ $berkasPermohonan->filepath ? Storage::url($berkasPermohonan->filepath) : '' }}"
                                                    :required="$berkasPermohonan->is_required" />
                 @endforeach
-                <button class="btn btn-primary bg-primary mt-3 w-100 d-block"
+                <button class="btn btn-primary bg-primary mt-3 w-100 d-block mb-4"
                         type="submit" {{ !$is_all_uploaded? 'disabled' : '' }}>Simpan dan Ajukan Permohonan</button>
             </form>
         </section>
