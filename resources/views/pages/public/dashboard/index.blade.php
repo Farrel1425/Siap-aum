@@ -9,12 +9,14 @@
                     <h3 class="d-inline mb-0">Dashboard</h3>
                 </div>
                 <div class="col-12 col-lg-auto order-md-1">
-                    <a href="{{ route('public.permohonan.create') }}" class="btn btn-primary d-block w-100 w-lg-auto"><i class="isax isax-element-plus"></i> Pengajuan
+                    <a class="btn btn-primary d-block w-100 w-lg-auto"
+                       href="{{ route('public.permohonan.create') }}"><i class="isax isax-element-plus"></i> Pengajuan
                         Baru</a>
                 </div>
                 <div class="col-12 col-lg-auto gap-0 order-md-1">
-                    <a href="https://bit.ly/siajaibbuleleng" target="_blank" class="btn btn-outline-primary d-block w-100 w-lg-auto fw-bold"><i
-                           class="isax isax-document-download"></i> Download
+                    <a class="btn btn-outline-primary d-block w-100 w-lg-auto fw-bold"
+                       href="https://bit.ly/siajaibbuleleng"
+                       target="_blank"><i class="isax isax-document-download"></i> Download
                         Contoh Berkas</a>
                 </div>
             </div>
@@ -58,15 +60,22 @@
                 className: 'd-flex align-items-center w-100',
                 render: function(data, type, row, meta) {
                     return `
-                        <div class="d-flex">
+                        <div class="d-flex align-items-center gap-4">
                             <div class="flex-grow-1 ms-3">
                                 <a href="${row.url}" class="text-decoration-none text-dark">
                                     <h4 class="mb-2">${row.nama_jenis_izin}</h4>
                                 </a>
                                 <p class="text-xsm text-primary fw-bold mb-0">${row.nomor_registrasi}</p>
                                 <p class="text-xsm text-muted mb-0">Tanggal Masuk: ${row.tanggal_masuk}</p>
-                                <p class="text-xsm text-muted mb-0">${row.status_badge}</p>
+                                <p class="text-xsm text-muted mb-0 d-inline">${row.status_badge}</p>
                             </div>
+                            ` + (row.status == 'pending' ? `
+                                <form action="${row.delete_url}" }} method="POST" id="permohonan-${row.id}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="deletePermohonan(${row.id})"><i class="isax isax-trash"></i></button>
+                                </form>
+                                ` : '') + `
                         </div>
                     `;
                 },
@@ -100,5 +109,38 @@
             // default per page
             pageLength: 5,
         });
+
+        // $('.delete-permohonan').on('submit', function(event) {
+        //     event.preventDefault();
+        //     Swal.fire({
+        //         title: 'Apakah Anda yakin?',
+        //         text: "Data permohonan ini akan dihapus!",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Ya, hapus data ini!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             event.target.submit();
+        //         }
+        //     });
+        // });
+
+        function deletePermohonan(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data permohonan ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus data ini!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#permohonan-${id}`).submit();
+                }
+            });
+        }
     </script>
 @endpush

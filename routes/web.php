@@ -104,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/submit-form/{jenis_izin}', [UserPermohonanController::class, 'submitForm'])->name('submit-form');
                     Route::post('/submit-berkas/{permohonan}', [UserPermohonanController::class, 'submitBerkas'])->name('submit-berkas');
                     Route::post('/revisi/{permohonan}', [UserPermohonanController::class, 'revisi'])->name('revisi');
+                    Route::delete('/delete/{permohonan}', [UserPermohonanController::class, 'destroy'])->name('destroy');
 
                     // Ajax
                     Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');

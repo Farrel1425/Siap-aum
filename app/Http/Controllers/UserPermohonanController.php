@@ -262,6 +262,39 @@ class UserPermohonanController extends Controller
         return redirect()->route('dashboard')->with('success', 'Permohonan berhasil diajukan');
     }
 
+    public function destroy(Request $request, Permohonan $permohonan)
+    {
+        if ($permohonan->user_id != auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses'
+            ]);
+        }
+
+        if($permohonan->status != StatusPermohonanEnum::PENDING->value){
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya permohonan dengan status pending yang dapat dihapus'
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $permohonan->formPermohonan()->delete();
+            $permohonan->alurPermohonan()->delete();
+            $permohonan->berkasPermohonan()->delete();
+            $permohonan->kelengkapanPermohonan()->delete();
+            $permohonan->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kegagalan sistem, silahkan hubungi administrator');
+        }
+
+        return redirect()->back()->with('success', 'Permohonan berhasil dihapus');
+    }
+
     public function permohonanTable(Request $request, PermohonanService $permohonan_service)
     {
         if ($request->ajax()) {
@@ -296,6 +329,8 @@ class UserPermohonanController extends Controller
                     ->limit($length);
             }
 
+            $query = $query->orderBy('created_at', 'desc');
+
             // Get data
             $permohonans = $query->get()
                 ->map(function ($permohonan) use ($permohonan_service) {
@@ -308,7 +343,9 @@ class UserPermohonanController extends Controller
                         'status_badge' => $permohonan->status_badge,
                         'nama_jenis_izin' => $permohonan->jenisIzin->nama,
                         'tanggal_masuk' => $permohonan->created_at->format('d-m-Y'),
-                        'steps' => $steps
+                        'steps' => $steps,
+                        'status' => $permohonan->status,
+                        'delete_url' => route('public.permohonan.destroy', $permohonan->id),
                     ];
                 });
 
