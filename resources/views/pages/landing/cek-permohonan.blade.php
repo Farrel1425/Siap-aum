@@ -28,7 +28,7 @@
             </div>
         </form>
         @if (isset($is_found) && $is_found)
-            <h3 class="text-primary text-center mt-4 mb-3">laskdalskdk</h3>
+            <div class="mb-3"></div>
             <x-landing.progress-stepper-bar :steps="$steps" />
             {{-- <div class="mb-3">
                 <div class="card">
