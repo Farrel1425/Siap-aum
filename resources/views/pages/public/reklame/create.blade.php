@@ -59,6 +59,12 @@
                                                    value="{{ $registrasi_reklame->nomor_telepon }}" />
                 </div>
             </div>
+            @if ($registrasi_reklame->reklame->count() == 0)
+                <div class="alert alert-warning mt-3 fw-bold text-xsm text-center"
+                     role="alert">
+                    <i class="isax-bold isax-warning-2"></i> Belum terdapat data reklame yang belum diajukan pada nomor registrasi ini. Silahkan tambahkan data reklame secara manual terlebih dahulu
+                </div>
+            @endif
             <div class="accordion"
                  id="accordionExample">
                 @foreach ($registrasi_reklame->reklame as $index => $reklame)

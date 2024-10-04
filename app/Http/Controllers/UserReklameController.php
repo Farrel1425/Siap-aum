@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusPermohonanEnum;
 use Carbon\Carbon;
 use App\Models\Reklame;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\FormReklameRequest;
 use App\Http\Requests\FormReklameEditRequest;
 use App\Http\Requests\RegistrasiReklameRequest;
+use App\Models\JenisIzin;
 
 class UserReklameController extends Controller
 {
@@ -34,6 +36,101 @@ class UserReklameController extends Controller
         } else {
             return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
         }
+    }
+
+    public function store(Request $request, $nomor_registrasi)
+    {
+        $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->first();
+        if (!$registrasi_reklame) {
+            return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
+        }
+
+        $registrasi_reklame->load('reklame.formReklame');
+
+        if ($registrasi_reklame->reklame->count() == 0) {
+            return redirect()->back()->with('error', 'Belum terdapat data reklame pada nomor registrasi ini');
+        }
+
+        $jenis_izin = JenisIzin::with([
+            'alurJenisIzin',
+            'formJenisIzin',
+            'berkasJenisIzin',
+            'kelengkapanJenisIzin',
+        ])->find(9);
+
+        DB::beginTransaction();
+        try {
+            foreach ($registrasi_reklame->reklame as $reklame) {
+                // create permohonan
+                $permohonan = $reklame->permohonan()->create([
+                    'user_id' => auth()->id(),
+                    'jenis_izin_id' => $jenis_izin->id,
+                    'nama_jenis_izin' => $jenis_izin->nama,
+                    'deskripsi_jenis_izin' => $jenis_izin->deskripsi,
+                    'nomor_registrasi' => $registrasi_reklame->nomor_registrasi,
+                    'nama' => $registrasi_reklame->nama,
+                    'nik' => $registrasi_reklame->nik,
+                    'npwp' => $registrasi_reklame->npwp,
+                    'tempat_lahir' => '',
+                    'status' => StatusPermohonanEnum::PENDING->value,
+                ]);
+
+                // create form reklame
+                foreach ($reklame->formReklame as $form) {
+                    $permohonan->formPermohonan()->create([
+                        'kode_isian' => $form->kode_isian,
+                        'tipe' => $form->tipe,
+                        'label' => $form->label,
+                        'value' => $form->value,
+                        'urutan' => $form->urutan,
+                    ]);
+                }
+
+                // alur permohonan
+                foreach ($jenis_izin->alurJenisIzin as $alur) {
+                    $permohonan->alurPermohonan()->create([
+                        'verifikator_id' => $alur->verifikator_id,
+                        'jenis_verifikator' => $alur->jenis_verifikator,
+                        'urutan' => $alur->urutan,
+                        'is_done' => 0
+                    ]);
+                }
+
+                // berkas permohonan
+                foreach ($jenis_izin->berkasJenisIzin as $berkas) {
+                    $permohonan->berkasPermohonan()->create([
+                        'nama' => $berkas->nama,
+                        'is_required' => $berkas->is_required,
+                        'urutan' => $berkas->urutan,
+                        'is_valid' => 0,
+                    ]);
+                }
+
+                // kelengkapan permohonan
+                foreach ($jenis_izin->kelengkapanJenisIzin as $kelengkapan) {
+                    $permohonan->kelengkapanPermohonan()->create([
+                        'label' => $kelengkapan->label,
+                        'tipe' => $kelengkapan->tipe,
+                        'kode_isian' => $kelengkapan->kode_isian,
+                        'urutan' => $kelengkapan->urutan,
+                    ]);
+                }
+
+                $reklame->update([
+                    'permohonan_id' => $permohonan->id,
+                ]);
+
+                // delete reklame
+                $reklame->delete();
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Data Reklame berhasil diajukan. Silahkan lengkapi berkas permohonan pada setiap reklame');
     }
 
     public function registrasi(Request $request)
@@ -176,7 +273,7 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat diubah');
         }
 
-        if($registrasi_reklame->user_id != auth()->id()) {
+        if ($registrasi_reklame->user_id != auth()->id()) {
             return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
         }
 
@@ -200,7 +297,7 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat diubah');
         }
 
-        if($registrasi_reklame->user_id != auth()->id()) {
+        if ($registrasi_reklame->user_id != auth()->id()) {
             return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
         }
 
@@ -255,7 +352,7 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat dihapus');
         }
 
-        if($registrasi_reklame->user_id != auth()->id()) {
+        if ($registrasi_reklame->user_id != auth()->id()) {
             return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
         }
 
