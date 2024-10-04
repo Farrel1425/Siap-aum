@@ -66,10 +66,11 @@ window.uploadBerkasPermohonan = function(uploadUrl, csrf_token, berkas_key) {
             }
         },
         error: function (data) {
+            console.log('Error:', data);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Berkas gagal diunggah',
+                text: data.responseJSON.message,
             });
         }
     });

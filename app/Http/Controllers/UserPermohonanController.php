@@ -19,10 +19,11 @@ class UserPermohonanController extends Controller
 
     public function createPermohonan(Request $request, JenisIzin $jenis_izin)
     {
-        if ($jenis_izin->id = 9) {
+        if ($jenis_izin->id == 9) {
             return redirect()->route('public.reklame.index');
+        }else{
+            return view('pages.public.permohonan.submit-form', compact('jenis_izin'));
         }
-        return view('pages.public.permohonan.submit-form', compact('jenis_izin'));
     }
 
     public function show(Permohonan $permohonan, PermohonanService $permohonan_service)
