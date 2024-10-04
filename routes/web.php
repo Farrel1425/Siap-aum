@@ -120,6 +120,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/{nomor_registrasi}', [UserReklameController::class, 'store'])->name('store');
                     Route::get('/create/{nomor_registrasi}', [UserReklameController::class, 'createReklame'])->name('create-reklame');
                     Route::post('/create/{nomor_registrasi}', [UserReklameController::class, 'storeReklame'])->name('store-reklame');
+                    Route::get('/edit/{nomor_registrasi}/{reklame}', [UserReklameController::class, 'editReklame'])->name('edit-reklame');
+                    Route::put('/edit/{nomor_registrasi}/{reklame}', [UserReklameController::class, 'updateReklame'])->name('update-reklame');
                     Route::delete('/delete/{nomor_registrasi}/{reklame}', [UserReklameController::class, 'destroyReklame'])->name('destroy-reklame');
                 });
 

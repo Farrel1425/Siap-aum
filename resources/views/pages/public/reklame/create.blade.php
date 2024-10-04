@@ -97,15 +97,27 @@
                                     <img alt=""
                                          class="img img-thumbnail mb-2"
                                          src="{{ Storage::url($reklame->image_filepath) }}">
-                                    <form action="{{ route('public.reklame.destroy-reklame', ['nomor_registrasi' => encrypt($registrasi_reklame->nomor_registrasi), 'reklame' => $reklame->id]) }}"
-                                          class="delete-reklame"
-                                          method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-primary btn-sm d-block w-100"
-                                                onclick="deleteReklame(event)"><i class="isax isax-trash"></i> Delete
-                                            Reklame Ini</button>
-                                    </form>
+                                    @if (!$reklame->is_from_sireko)
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a class="btn btn-secondary btn-sm d-block w-100"
+                                                   href="{{ route('public.reklame.edit-reklame', ['nomor_registrasi' => encrypt($registrasi_reklame->nomor_registrasi), 'reklame' => $reklame->id]) }}"><i
+                                                       class="isax isax-pen-add"></i> Edit Reklame Ini</a>
+                                            </div>
+                                            <div class="col-6">
+                                                <form action="{{ route('public.reklame.destroy-reklame', ['nomor_registrasi' => encrypt($registrasi_reklame->nomor_registrasi), 'reklame' => $reklame->id]) }}"
+                                                      class="delete-reklame"
+                                                      method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-primary btn-sm d-block w-100"
+                                                            onclick="deleteReklame(event)"><i class="isax isax-trash"></i>
+                                                        Delete
+                                                        Reklame Ini</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

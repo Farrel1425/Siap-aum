@@ -18,12 +18,6 @@
             <form action="{{ route('public.reklame.registrasi') }}"
                   method="POST">
                 @csrf
-                {{-- 'nama' => $request->nama,
-                'nik' => $request->nik,
-                'npwp' => $request->npwp,
-                'nama_perusahaan' => $request->nama_perusahaan,
-                'alamat_perusahaan' => $request->alamat_perusahaan,
-                'nomor_telepon' => $request->nomor_telepon --}}
                <x-dashboard.input-inline-text :required=True
                                                        class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                        class_input="text-start text-xsm"

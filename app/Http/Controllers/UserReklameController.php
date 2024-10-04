@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Reklame;
 use Illuminate\Http\Request;
 use App\Models\FormJenisIzin;
@@ -9,8 +10,8 @@ use App\Models\RegistrasiReklame;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\FormReklameRequest;
+use App\Http\Requests\FormReklameEditRequest;
 use App\Http\Requests\RegistrasiReklameRequest;
-use Carbon\Carbon;
 
 class UserReklameController extends Controller
 {
@@ -168,11 +169,94 @@ class UserReklameController extends Controller
         return redirect()->route('public.reklame.create', ['nomor_registrasi' => $registrasi_reklame->nomor_registrasi])->with('success', 'Data Reklame berhasil disimpan');
     }
 
+    public function editReklame(Request $request, $nomor_registrasi, Reklame $reklame)
+    {
+        $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
+        if ($reklame->is_from_sireko) {
+            return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat diubah');
+        }
+
+        if($registrasi_reklame->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
+        }
+
+        $form_jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)
+            ->whereNotIn('kode_isian', ['NAMA_PERUSAHAAN', 'HP/TELP', 'ALAMAT'])
+            ->get();
+
+        $reklame->load('formReklame');
+
+        return view('pages.public.reklame.edit', compact(
+            'reklame',
+            'form_jenis_izin',
+            'registrasi_reklame'
+        ));
+    }
+
+    public function updateReklame(FormReklameEditRequest $request, $nomor_registrasi, Reklame $reklame)
+    {
+        $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
+        if ($reklame->is_from_sireko) {
+            return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat diubah');
+        }
+
+        if($registrasi_reklame->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
+        }
+
+        DB::beginTransaction();
+        try {
+            $reklame->update([
+                'image_filepath' => $request->file('image') ? $request->file('image')->store('public/reklame-images') : $reklame->image_filepath,
+            ]);
+
+            $jenis_izin = FormJenisIzin::where('jenis_izin_id', 9)
+                ->get();
+
+            foreach ($jenis_izin as $izin) {
+                if ($izin->kode_isian == 'AREA_PEMASANGAN') {
+                    $reklame->formReklame()->where('kode_isian', $izin->kode_isian)->update([
+                        'value' => $request->input($izin->kode_isian),
+                    ]);
+                    continue;
+                }
+
+                if ($izin->kode_isian == 'LAMA_PEMASANGAN') {
+                    $tanggal_awal = Carbon::createFromFormat('d-m-Y', $request->input('TGL_MULAI'));
+                    $tanggal_akhir = Carbon::createFromFormat('d-m-Y', $request->input('TGL_AKHIR'));
+                    $lama_pemasangan = $tanggal_awal->diffInDays($tanggal_akhir);
+                    $reklame->formReklame()->where('kode_isian', $izin->kode_isian)->update([
+                        'value' => $lama_pemasangan,
+                    ]);
+                    continue;
+                }
+
+                if (in_array($izin->kode_isian, ['NAMA_PERUSAHAAN', 'HP/TELP', 'ALAMAT'])) {
+                    continue;
+                }
+
+                $reklame->formReklame()->where('kode_isian', $izin->kode_isian)->update([
+                    'value' => $request->input($izin->kode_isian),
+                ]);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
+        }
+        return redirect()->back()->with('success', 'Data Reklame berhasil diubah');
+    }
+
     public function destroyReklame(Request $request, $nomor_registrasi, Reklame $reklame)
     {
-        RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
-        if($reklame->is_from_sireko) {
+        $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
+        if ($reklame->is_from_sireko) {
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat dihapus');
+        }
+
+        if($registrasi_reklame->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
         }
 
         $reklame->delete();

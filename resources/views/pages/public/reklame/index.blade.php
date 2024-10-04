@@ -30,6 +30,7 @@
                                     <th>Nomor Registrasi</th>
                                     <th>Nama Perusahaan</th>
                                     <th>Alamat Perusahaan</th>
+                                    <th>Tanggal Pembuatan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -39,10 +40,10 @@
                                         <td>{{ $registrasi->nomor_registrasi }}</td>
                                         <td>{{ $registrasi->nama_perusahaan }}</td>
                                         <td>{{ $registrasi->alamat_perusahaan }}</td>
+                                        <td>{{ $registrasi->created_at->setTimezone('GMT+8')->format('d-m-Y') }}</td>
                                         <td>
                                             <a class="btn btn-sm btn-primary"
-                                               href="{{ route('public.reklame.create', ['nomor_registrasi' => $registrasi->nomor_registrasi]) }}">+
-                                                Tambah data reklame manual</a>
+                                            href="{{ route('public.reklame.create', ['nomor_registrasi' => $registrasi->nomor_registrasi]) }}"><i class="isax isax-eye"></i> Data Reklame</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -57,7 +58,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#table').DataTable();
+            $('#table').DataTable({
+                "order": [[ 3, "desc" ]]
+            });
         });
     </script>
 @endpush
