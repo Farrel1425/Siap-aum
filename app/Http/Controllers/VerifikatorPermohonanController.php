@@ -275,6 +275,11 @@ class VerifikatorPermohonanController extends Controller
             // Total records
             $totalRecords = $query->count();
 
+            // order table
+            if($request->input('order.0.name') == 'waktu_pengajuan') {
+                $query = $query->orderBy('created_at', $request->input('order.0.dir'));
+            }
+
             // Filter records
             if ($search || $request->input('status') || $request->input('jenis_izin_id')) {
                 if ($search) {
@@ -346,7 +351,10 @@ class VerifikatorPermohonanController extends Controller
                     StatusPermohonanEnum::VERIFIKASI_ULANG->value
                 ]);
 
-            //
+            // order table
+            if ($request->input('order.0.name') == 'waktu_pengajuan') {
+                $query = $query->orderBy('created_at', $request->input('order.0.dir'));
+            }
 
             // Total records
             $totalRecords = $query->count();

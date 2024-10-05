@@ -116,7 +116,7 @@
                                     <button class="btn btn-sm btn-success d-block w-100"
                                             data-detail-id="{{ encrypt($berkas_permohonan->id) }}"
                                             data-nama="{{ $berkas_permohonan->nama }}"
-                                            data-url="{{ $berkas_permohonan->filepath }}"
+                                            data-url="{{ Storage::url($berkas_permohonan->filepath) }}"
                                             onclick="validasiBerkas(this)"
                                             type="button">
                                         Verifikasi</button>

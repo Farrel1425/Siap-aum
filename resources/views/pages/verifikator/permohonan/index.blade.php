@@ -79,6 +79,9 @@
                         d.jenis_izin_id = $('#jenis_izin_id').val();
                     }
                 },
+                order: [
+                    [3, 'desc']
+                ],
                 columns: [{
                         data: null,
                         name: 'index',
@@ -91,19 +94,22 @@
                     },
                     {
                         data: 'nama_jenis_izin',
-                        name: 'nama_jenis_izin'
+                        name: 'nama_jenis_izin',
+                        orderable: false
                     },
                     {
                         data: 'nomor_registrasi',
-                        name: 'nomor_registrasi'
+                        name: 'nomor_registrasi',
+                        orderable: false
                     },
                     {
                         data: 'waktu_pengajuan',
-                        name: 'waktu_pengajuan',
+                        name: 'waktu_pengajuan'
                     },
                     {
                         data: 'nama_pemohon',
-                        name: 'nama_pemohon'
+                        name: 'nama_pemohon',
+                        orderable: false
                     },
                     {
                         data: 'surat_permohonan_rekomendasi',
@@ -111,7 +117,8 @@
                         className: 'text-center',
                         render: function(data, type, row) {
                             return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
-                        }
+                        },
+                        orderable: false
                     },
                     {
                         data: 'surat_rekomendasi',
@@ -119,17 +126,20 @@
                         className: 'text-center',
                         render: function(data, type, row) {
                             return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
-                        }
+                        },
+                        orderable: false
                     },
                     {
                         data: 'status_badge',
                         name: 'status_badge',
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: false
                     },
                     {
                         data: 'action',
                         name: 'action',
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: false
                     }
                 ],
             });

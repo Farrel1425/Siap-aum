@@ -21,12 +21,12 @@
             </div>
             <div class="modal-footer justify-content-between section-verifikasi-berkas">
                 <div class="left">
-                    <a class="btn btn-outline-primary"
+                    {{-- <a class="btn btn-outline-primary"
                        download=""
                        href=""
                        id="download-berkas"
                        style="height: 50px; line-height:36px"><i class="isax isax-document-download me-2"></i>
-                        Download Dokumen</a>
+                        Download Dokumen</a> --}}
                 </div>
                 <div class="right">
                     <button class="btn btn-outline-primary me-2"
