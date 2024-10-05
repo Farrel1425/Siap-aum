@@ -104,7 +104,7 @@
                 </div>
                 <div class="card mb-3">
                     <div class="card-body p-3">
-                        <x-dashboard.input-inline-text :required=True
+                        <x-dashboard.input-inline-password :required=True
                                                        class=""
                                                        id="password"
                                                        label="Password"
