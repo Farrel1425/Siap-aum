@@ -53,6 +53,15 @@
                                                          name="{{ $form_reklame->kode_isian }}"
                                                          placeholder="Pilih {{ $form_reklame->label }}"
                                                          value="{{ old($form_reklame->kode_isian) }}" />
+                    @elseif ($form_reklame->kode_isian == 'BUNYI_REKLAME')
+                        <x-dashboard.input-inline-textarea :required=True
+                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                       class_input="text-start text-xsm"
+                                                       id="{{ $form_reklame->id }}"
+                                                       label="{{ $form_reklame->label }}"
+                                                       name="{{ $form_reklame->kode_isian }}"
+                                                       placeholder="Masukkan {{ $form_reklame->label }}"
+                                                       value="{{ old($form_reklame->kode_isian) }}" />
                     @else
                         <x-dashboard.input-inline-text :required=True
                                                        class="bg-white p-2 mx-1 mb-3 text-xsm"

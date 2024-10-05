@@ -54,6 +54,15 @@
                                                          name="{{ $form_reklame->kode_isian }}"
                                                          placeholder="Pilih {{ $form_reklame->label }}"
                                                          value="{{ old($form_reklame->kode_isian, $reklame->formReklame?->firstWhere('kode_isian', $form_reklame->kode_isian)->value) }}" />
+                    @elseif ($form_reklame->kode_isian == 'BUNYI_REKLAME')
+                        <x-dashboard.input-inline-text :required=True
+                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                       class_input="text-start text-xsm"
+                                                       id="{{ $form_reklame->id }}"
+                                                       label="{{ $form_reklame->label }}"
+                                                       name="{{ $form_reklame->kode_isian }}"
+                                                       placeholder="Masukkan {{ $form_reklame->label }}"
+                                                       value="{{ old($form_reklame->kode_isian, $reklame->formReklame?->firstWhere('kode_isian', $form_reklame->kode_isian)->value) }}" />
                     @else
                         <x-dashboard.input-inline-text :required=True
                                                        class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -65,14 +74,15 @@
                                                        value="{{ old($form_reklame->kode_isian, $reklame->formReklame?->firstWhere('kode_isian', $form_reklame->kode_isian)->value) }}" />
                     @endif
                 @endforeach
-                <x-dashboard.input-inline-file
-                                               accept="image/*"
+                <x-dashboard.input-inline-file accept="image/*"
                                                class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                class_input="text-start text-xsm"
                                                id="image"
                                                label="Gambar Reklame"
                                                name="image" />
-                <img alt="" class="img img-thumbnail" src="{{ Storage::url($reklame->image_filepath) }}">
+                <img alt=""
+                     class="img img-thumbnail"
+                     src="{{ Storage::url($reklame->image_filepath) }}">
                 <button class="btn btn-primary w-100 d-block mb-3 mt-5"
                         type="submit">Simpan Reklame</button>
             </form>
