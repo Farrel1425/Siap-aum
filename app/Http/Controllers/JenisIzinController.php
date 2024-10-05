@@ -245,43 +245,47 @@ class JenisIzinController extends Controller
 
             // Form Jenis Izin
             $jenis_izin->formJenisIzin()->delete();
-            foreach ($request->syarat_form as $key => $form) {
+            $urutan = 1;
+            foreach ($request->syarat_form as $form) {
                 $jenis_izin->formJenisIzin()->create([
                     'label' => $form['nama'],
                     'kode_isian' => $form['kode_isian'],
                     'tipe' => $form['tipe_form'],
-                    'urutan' => $key + 1,
+                    'urutan' => $urutan++,
                 ]);
             }
 
             // Berkas Jenis Izin
             $jenis_izin->berkasJenisIzin()->delete();
-            foreach ($request->syarat_berkas as $key => $berkas) {
+            $urutan = 1;
+            foreach ($request->syarat_berkas as $berkas) {
                 $jenis_izin->berkasJenisIzin()->create([
                     'nama' => $berkas['nama'],
                     'is_required' => $berkas['is_required'],
-                    'urutan' => $key + 1,
+                    'urutan' => $urutan++,
                 ]);
             }
 
             // Alur Jenis Izin
             $jenis_izin->alurJenisIzin()->delete();
-            foreach ($request->alur_verifikator as $key => $verifikator) {
+            $urutan = 1;
+            foreach ($request->alur_verifikator as $verifikator) {
                 $jenis_izin->alurJenisIzin()->create([
                     'verifikator_id' => $verifikator['id'],
                     'jenis_verifikator' => $verifikator['jenis_verifikator'],
-                    'urutan' => $key + 1,
+                    'urutan' => $urutan++,
                 ]);
             }
 
             // Kelengkapan Jenis Izin
             $jenis_izin->kelengkapanJenisIzin()->delete();
-            foreach ($request->syarat_kelengkapan as $key => $kelengkapan) {
+            $urutan = 1;
+            foreach ($request->syarat_kelengkapan as $kelengkapan) {
                 $jenis_izin->kelengkapanJenisIzin()->create([
                     'label' => $kelengkapan['nama'],
                     'kode_isian' => $kelengkapan['kode_isian'],
                     'tipe' => $kelengkapan['tipe_form'],
-                    'urutan' => $key + 1,
+                    'urutan' => $urutan++,
                 ]);
             }
 
