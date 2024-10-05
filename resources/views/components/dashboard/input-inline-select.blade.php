@@ -51,7 +51,7 @@
                 allowClear: {{ $allowClear ? 'true' : 'false' }},
             });
 
-            @if ($value)
+            @if ($value !== null)
                 $('#{{ $name }}').val('{{ $value }}').trigger('change');
             @endif
         });
