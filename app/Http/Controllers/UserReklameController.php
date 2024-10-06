@@ -159,7 +159,10 @@ class UserReklameController extends Controller
 
     public function createReklame(Request $request, $registrasi_reklame)
     {
-        $registrasi_reklame = RegistrasiReklame::with('reklame.formReklame')->where('nomor_registrasi', decrypt($registrasi_reklame))->first();
+        $registrasi_reklame = RegistrasiReklame::with(['reklame'=> function($query) {
+            $query->with('formReklame')->whereNull('permohonan_id');
+        }])
+        ->where('nomor_registrasi', decrypt($registrasi_reklame))->first();
         if (!$registrasi_reklame) {
             return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
         }
@@ -273,6 +276,10 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat diubah');
         }
 
+        if ($reklame->permohonan_id) {
+            return redirect()->back()->with('error', 'Data Reklame ini sudah diajukan, tidak dapat diubah');
+        }
+
         if ($registrasi_reklame->user_id != auth()->id()) {
             return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
         }
@@ -295,6 +302,10 @@ class UserReklameController extends Controller
         $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
         if ($reklame->is_from_sireko) {
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat diubah');
+        }
+
+        if ($reklame->permohonan_id) {
+            return redirect()->back()->with('error', 'Data Reklame ini sudah diajukan, tidak dapat diubah');
         }
 
         if ($registrasi_reklame->user_id != auth()->id()) {
@@ -350,6 +361,10 @@ class UserReklameController extends Controller
         $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
         if ($reklame->is_from_sireko) {
             return redirect()->back()->with('error', 'Data Reklame ini berasal dari Sireko, tidak dapat dihapus');
+        }
+
+        if ($reklame->permohonan_id) {
+            return redirect()->back()->with('error', 'Data Reklame ini sudah diajukan, tidak dapat dihapus');
         }
 
         if ($registrasi_reklame->user_id != auth()->id()) {

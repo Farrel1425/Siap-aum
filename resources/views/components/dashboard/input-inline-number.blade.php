@@ -12,7 +12,6 @@
     'class' => '',
     'class_input' => '',
     'type' => 'text',
-    'is_currency' => false,
 ])
 
 <div class="form-group row mb-0 align-items-center {{ $class }}">
@@ -50,15 +49,6 @@
                 altFormat: "j F Y",
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $value }}",
-            });
-        @endif
-        @if ($is_currency)
-            new AutoNumeric('#{{ $name }}', {
-                currencySymbol: "Rp ",
-                decimalCharacter: ",",
-                digitGroupSeparator: ".",
-                decimalPlaces: 2,
-                unformatOnSubmit: true,
             });
         @endif
     </script>

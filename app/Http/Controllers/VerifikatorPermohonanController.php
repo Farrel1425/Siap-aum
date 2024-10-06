@@ -64,80 +64,6 @@ class VerifikatorPermohonanController extends Controller
         ));
     }
 
-    public function uploadSuratPermohonanRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
-    {
-        $request->validate([
-            // vaidate berkas_key us  surat_permohonan_rekomendasi
-            'berkas_key' => 'required|in:surat_permohonan_rekomendasi',
-            'berkas' => 'required|file|mimes:pdf|max:2048',
-        ]);
-
-        // get alur
-        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
-        // check is all berkas valid
-        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
-
-        // cek apakah jenis verifikator FO, jika ya maka wajib upload surat permohonan rekomendasi
-        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah surat permohonan rekomendasi',
-            ]);
-        }
-
-        if (!$is_all_berkas_valid) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah surat permohonan rekomendasi',
-            ]);
-        } else {
-            $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
-            $permohonan->save();
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Surat permohonan rekomendasi berhasil diunggah',
-        ]);
-    }
-
-    public function uploadSuratRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
-    {
-        $request->validate([
-            // vaidate berkas_key us  surat_rekomendasi
-            'berkas_key' => 'required|in:surat_rekomendasi',
-            'berkas' => 'required|file|mimes:pdf|max:2048',
-        ]);
-
-        // get alur
-        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
-        // check is all berkas valid
-        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
-
-        // cek apakah jenis verifikator OPD, jika ya maka wajib upload surat rekomendasi
-        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::OPD->value) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah surat rekomendasi',
-            ]);
-        }
-
-        if (!$is_all_berkas_valid) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tidak dapat mengunggah surat rekomendasi sebelum semua berkas dinyatakan valid',
-            ]);
-        } else {
-            $permohonan->surat_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_rekomendasi');
-            $permohonan->save();
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Surat rekomendasi berhasil diunggah',
-        ]);
-    }
-
     public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
         $permohonan->load([
@@ -160,6 +86,31 @@ class VerifikatorPermohonanController extends Controller
                         return redirect()->back()->with('error', 'Mohon unggah surat permohonan rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
+                    // handle reklame harus upload pajak reklame, skpd
+                    if ($permohonan->jenis_izin_id == 9) {
+                        $rules = [
+                            'PAJAK_REKLAME' => 'required',
+                            'PAJAK_REKLAME_TERBILANG' => 'required',
+                            'NO_SKPD' => 'required',
+                        ];
+                        $validation_messages = [
+                            'PAJAK_REKLAME.required' => 'Mohon unggah pajak reklame',
+                            'PAJAK_REKLAME_TERBILANG.required' => 'Mohon unggah pajak reklame terbilang',
+                            'NO_SKPD.required' => 'Mohon unggah nomor SKPD',
+                        ];
+                        if (!$permohonan->reklame->skpd_filepath) {
+                            return redirect()->back()->with('error', 'Mohon unggah SKPD terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                        }
+
+                        $validated = $request->validate($rules, $validation_messages);
+
+                        foreach ($validated as $key => $value) {
+                            $kelengkapan_permohonan = $permohonan->kelengkapanPermohonan->where('kode_isian', $key)->first();
+                            $kelengkapan_permohonan->value = $value;
+                            $kelengkapan_permohonan->save();
+                        }
+                    }
+                    // all permohonan
                     if (!$permohonan->surat_rekomendasi_filepath) {
                         return redirect()->back()->with('error', 'Mohon unggah surat rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
@@ -167,18 +118,35 @@ class VerifikatorPermohonanController extends Controller
                     // cek if all surat kelengkapan uploaded
                     $rules = [];
                     foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan) {
+                        // blacklist reklame form
+                        if ($permohonan->jenis_izin_id == 9 && in_array($kelengkapan_permohonan->kode_isian, [
+                            'PAJAK_REKLAME',
+                            'PAJAK_REKLAME_TERBILANG',
+                            'NO_SKPD'
+                        ])) {
+                            continue;
+                        }
                         $rules[$kelengkapan_permohonan->kode_isian] = 'required';
                         $validation_messages[$kelengkapan_permohonan->kode_isian . '.required'] = 'Mohon unggah ' . $kelengkapan_permohonan->label;
                     }
-                    $request->validate($rules, $validation_messages);
 
-                    foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan) {
-                        $kelengkapan_permohonan->value = $request->input($kelengkapan_permohonan->kode_isian);
+                    $validated = $request->validate($rules, $validation_messages);
+
+                    foreach ($validated as $key => $value) {
+                        $kelengkapan_permohonan = $permohonan->kelengkapanPermohonan->where('kode_isian', $key)->first();
+                        $kelengkapan_permohonan->value = $value;
                         $kelengkapan_permohonan->save();
                     }
 
                     // generate pdf template for ijin terbit
-                    $filepath = $permohonanService->generateIzinTerbit($permohonan);
+                    try{
+                        $filepath = $permohonanService->generateIzinTerbit($permohonan);
+                    }catch(ServiceException $e){
+                        return redirect()->back()->with('error', $e->getMessage());
+                    }catch(Exception $e){
+                        Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+                        return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
+                    }
 
                     $permohonan->template_surat_filepath = $filepath;
                     $permohonan->save();
@@ -258,6 +226,151 @@ class VerifikatorPermohonanController extends Controller
         }
     }
 
+
+
+    public function uploadSuratPermohonanRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $request->validate([
+            // vaidate berkas_key us  surat_permohonan_rekomendasi
+            'berkas_key' => 'required|in:surat_permohonan_rekomendasi',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        // get alur
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        // cek apakah jenis verifikator FO, jika ya maka wajib upload surat permohonan rekomendasi
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah surat permohonan rekomendasi',
+            ]);
+        }
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah surat permohonan rekomendasi',
+            ]);
+        } else {
+            $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
+            $permohonan->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Surat permohonan rekomendasi berhasil diunggah',
+        ]);
+    }
+
+    public function uploadSuratRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $request->validate([
+            // vaidate berkas_key us  surat_rekomendasi
+            'berkas_key' => 'required|in:surat_rekomendasi',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        // get alur
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        // cek apakah jenis verifikator OPD, jika ya maka wajib upload surat rekomendasi
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::OPD->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah surat rekomendasi',
+            ]);
+        }
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah surat rekomendasi sebelum semua berkas dinyatakan valid',
+            ]);
+        } else {
+            $permohonan->surat_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_rekomendasi');
+            $permohonan->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Surat rekomendasi berhasil diunggah',
+        ]);
+    }
+
+    public function uploadSkpd(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $request->validate([
+            'berkas_key' => 'required|in:skpd',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::OPD->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah SKPD',
+            ]);
+        }
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah SKPD sebelum semua berkas dinyatakan valid',
+            ]);
+        }
+
+        $permohonan->reklame->skpd_filepath = $request->file('berkas')->store('public/permohonan/reklame/skpd');
+        $permohonan->reklame->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SKPD berhasil diunggah',
+        ]);
+    }
+
+    public function uploadBuktiBayarReklame(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    {
+        $request->validate([
+            'berkas_key' => 'required|in:bukti_bayar',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::BO->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator BO yang dapat mengunggah bukti bayar',
+            ]);
+        }
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah bukti bayar sebelum semua berkas dinyatakan valid',
+            ]);
+        }
+
+        $permohonan->reklame->bukti_bayar_filepath = $request->file('berkas')->store('public/permohonan/reklame/bukti_bayar');
+        $permohonan->reklame->bukti_bayar_user_id = auth()->user()->id;
+        $permohonan->reklame->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bukti bayar berhasil diunggah',
+        ]);
+    }
+
     // TABLE
     public function permohonanTable(Request $request)
     {
@@ -276,7 +389,7 @@ class VerifikatorPermohonanController extends Controller
             $totalRecords = $query->count();
 
             // order table
-            if($request->input('order.0.name') == 'waktu_pengajuan') {
+            if ($request->input('order.0.name') == 'waktu_pengajuan') {
                 $query = $query->orderBy('created_at', $request->input('order.0.dir'));
             }
 

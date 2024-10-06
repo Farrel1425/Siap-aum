@@ -180,6 +180,11 @@ class PermohonanService
                 throw new ServiceException('Izin sudah ditandatangani. Tidak bisa generate izin terbit');
             }
 
+            // check if template surat izin terbit is exists in storage
+            if (!Storage::exists($permohonan->jenisIzin->template_surat)) {
+                throw new ServiceException('Template surat izin terbit tidak ditemukan. Silahkan upload template surat izin terbit pada admin');
+            }
+
             // Convert $permohonan->jenisIzin->template_surat and assign template processing using PHPWord
             $templateProcessor = new TemplateProcessor(storage_path('app/' . $permohonan->jenisIzin->template_surat));
 

@@ -144,7 +144,34 @@
                 @endforeach
                 <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
                 @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
+                    {{-- HANDLE REKLAME --}}
                     @if (
+                        $permohonan->jenis_izin_id == 9 &&
+                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
+                            $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
+                            $is_all_berkas_valid &&
+                            $is_verifikator_turn &&
+                            ($kelengkapan_permohonan->kode_isian == 'NO_SKPD' ||
+                                $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME_TERBILANG' ||
+                                $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME') &&
+                            $permohonan->reklame->skpd_filepath)
+                        @if ($kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME')
+                            <x-dashboard.input-inline-text :is_currency=True
+                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                           class_input="text-xsm"
+                                                           label="{{ $kelengkapan_permohonan->label }}"
+                                                           name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                           placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                           value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                        @else
+                            <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                           class_input="text-xsm"
+                                                           label="{{ $kelengkapan_permohonan->label }}"
+                                                           name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                           placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                           value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                        @endif
+                    @elseif (
                         $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
                             $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                             $is_all_berkas_valid &&
@@ -187,6 +214,26 @@
                     @if (
                         $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
                             $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
+                        {{-- HANDLE REKLAME --}}
+                        @if ($permohonan->jenis_izin_id == 9)
+                            <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->reklame->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
+                                                                  label="SKPD"
+                                                                  name="skpd"
+                                                                  uploadUrl="{{ route('verifikator.verifikasi.upload-skpd', $permohonan->id) }}" />
+                            @if ($permohonan->reklame->skpd_filepath)
+                                <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                      class_input="text-xsm"
+                                                                      downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                                      label="Bukti Bayar SKPD (Opsional)"
+                                                                      name="skpd"
+                                                                      uploadUrl="{{ route('verifikator.verifikasi.upload-bukti-bayar-reklame', $permohonan->id) }}" />
+                            @endif
+                        @endif
+                        {{-- HANDLE ALL PERMOHONAN --}}
                         <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                               class_input="text-xsm"
@@ -202,30 +249,41 @@
                                                               downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
                                                               label="Surat Rekomendasi"
                                                               name="surat_rekomendasi" />
+                        @if ($permohonan->jenis_izin_id == 9)
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                                  label="Bukti Bayar SKPD"
+                                                                  name="bukti_bayar" />
+                        @endif
                         @if (
                             $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
                                 $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                                 !$permohonan->is_ttd)
-                            <div class="row align-items-center">
-                                <div class="col-9">
-                                    <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                          :is_show_badge="false"
-                                                                          :is_ttd="$permohonan->is_ttd"
-                                                                          :show_ttd_status="true"
-                                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                          class_input="text-xsm"
-                                                                          downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
-                                                                          label="Ijin Terbit"
-                                                                          name="ijin_terbit" />
+                            @if ($alur_permohonan->is_done)
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                              :is_show_badge="false"
+                                                                              :is_ttd="$permohonan->is_ttd"
+                                                                              :show_ttd_status="true"
+                                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                              class_input="text-xsm"
+                                                                              downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                                              label="Ijin Terbit"
+                                                                              name="ijin_terbit" />
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="d-block text-xsm btn w-100 btn-primary mb-3"
+                                                onclick="generateUlangIzinTerbit()"
+                                                type="button">
+                                            <i class="isax isax-refresh me-2"></i> Generate Ulang Ijin Terbit
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-3">
-                                    <button class="d-block btn w-100 btn-primary mb-3"
-                                            onclick="generateUlangIzinTerbit()"
-                                            type="button">
-                                        <i class="isax isax-refresh me-2"></i> Generate Ulang Ijin Terbit
-                                    </button>
-                                </div>
-                            </div>
+                            @endif
                         @else
                             <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                                   :is_show_badge="false"

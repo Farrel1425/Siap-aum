@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Reklame;
 use App\Models\JenisIzin;
 use App\Models\Kuesioner;
 use App\Models\AlurPermohonan;
@@ -70,6 +71,11 @@ class Permohonan extends Model
     public function kelengkapanPermohonan()
     {
         return $this->hasMany(KelengkapanPermohonan::class)->orderBy('urutan');
+    }
+
+    public function reklame()
+    {
+        return $this->hasOne(Reklame::class);
     }
 
     public function scopeReklame($query)

@@ -161,6 +161,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/revision-berkas', [VerifikatorPermohonanController::class, 'revisiBerkas'])->name('revisi-berkas');
                     Route::post('/upload-surat-permohonan-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratPermohonanRekomendasi'])->name('upload-surat-permohonan-rekomendasi');
                     Route::post('/upload-surat-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratRekomendasi'])->name('upload-surat-rekomendasi');
+                    Route::post('/upload-skpd/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSkpd'])->name('upload-skpd');
+                    Route::post('/upload-bukti-bayar-reklame/{permohonan}', [VerifikatorPermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
                     ROute::post('/generate-ulang-izin-terbit/{permohonan}', [VerifikatorPermohonanController::class, 'generateUlangIzinTerbit'])->name('generate-ulang-izin-terbit');
                 });
             });

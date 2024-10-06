@@ -11,13 +11,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reklame extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'registrasi_reklame_id',
         'image_filepath',
         'is_from_sireko',
         'permohonan_id',
+        'skpd_filepath',
+        'bukti_bayar_filepath',
+        'bukti_bayar_user_id',
     ];
 
     public function registrasiReklame()

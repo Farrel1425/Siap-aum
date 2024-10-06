@@ -91,6 +91,8 @@
     {{-- trix editor --}}
     <script src="https://cdn.jsdelivr.net/npm/trix@2.1.5/dist/trix.umd.min.js"></script>
     {{-- @yield('content') --}}
+    {{-- Autonumeric --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.10.5/autoNumeric.min.js" integrity="sha512-EGJ6YGRXzV3b1ouNsqiw4bI8wxwd+/ZBN+cjxbm6q1vh3i3H19AJtHVaICXry109EVn4pLBGAwaVJLQhcazS2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @stack('scripts')
     @vite(['resources/js/app.js', 'resources/js/dashboard/dashboard.js'])
     @include('components.toastr')
