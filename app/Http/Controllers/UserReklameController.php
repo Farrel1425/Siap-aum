@@ -121,6 +121,7 @@ class UserReklameController extends Controller
                 ]);
 
                 // delete reklame
+                $reklame->formReklame()->delete();
                 $reklame->delete();
             }
             DB::commit();

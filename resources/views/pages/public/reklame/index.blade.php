@@ -46,16 +46,21 @@
                                         <td>{{ $registrasi->alamat_perusahaan }}</td>
                                         <td>{{ $registrasi->created_at->setTimezone('GMT+8')->format('d-m-Y') }}</td>
                                         <td>
-                                            <form action="{{ route('public.reklame.destroy', $registrasi->nomor_registrasi) }}"
-                                                  method="POST" class="delete-registrasi-reklame">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm btn-danger"
-                                                        type="submit"><i class="isax isax-trash"></i> Hapus</button>
-                                            </form>
-                                            <a class="btn btn-sm btn-primary"
-                                               href="{{ route('public.reklame.create', ['nomor_registrasi' => $registrasi->nomor_registrasi]) }}"><i
-                                                   class="isax isax-eye"></i> Data Reklame</a>
+                                            <div class="d-flex gap-2">
+
+                                                <form action="{{ route('public.reklame.destroy', ['nomor_registrasi' => encrypt($registrasi->nomor_registrasi)]) }}"
+                                                      class="delete-registrasi-reklame"
+                                                      method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-sm btn-danger"
+                                                            type="submit"><i class="isax isax-trash"></i> Hapus</button>
+                                                </form>
+                                                <a class="btn btn-sm btn-primary"
+                                                   href="{{ route('public.reklame.create', ['nomor_registrasi' => $registrasi->nomor_registrasi]) }}"><i
+                                                       class="isax isax-eye"></i> Data Reklame</a>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
