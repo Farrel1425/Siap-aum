@@ -16,8 +16,12 @@
         </div>
         <section class="section">
             <div class="mb-3 d-flex gap-2">
-                <a href="{{ route('public.reklame.registrasi') }}" class="btn btn-primary"><i class="isax isax-element-plus"></i> Registrasi Manual</a>
-                <a href="{{ route('public.reklame.search') }}" class="btn btn-primary"><i class="isax isax-document-download"></i> Import Nomor Registrasi</a>
+                <a class="btn btn-primary"
+                   href="{{ route('public.reklame.registrasi') }}"><i class="isax isax-element-plus"></i> Registrasi
+                    Manual</a>
+                <a class="btn btn-primary"
+                   href="{{ route('public.reklame.search') }}"><i class="isax isax-document-download"></i> Import Nomor
+                    Registrasi</a>
             </div>
             <div class="card">
                 <div class="card-header">
@@ -42,8 +46,16 @@
                                         <td>{{ $registrasi->alamat_perusahaan }}</td>
                                         <td>{{ $registrasi->created_at->setTimezone('GMT+8')->format('d-m-Y') }}</td>
                                         <td>
+                                            <form action="{{ route('public.reklame.destroy', $reklame->nomor_registrasi) }}"
+                                                  method="POST" class="delete-registrasi-reklame">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger"
+                                                        type="submit"><i class="isax isax-trash"></i> Hapus</button>
+                                            </form>
                                             <a class="btn btn-sm btn-primary"
-                                            href="{{ route('public.reklame.create', ['nomor_registrasi' => $registrasi->nomor_registrasi]) }}"><i class="isax isax-eye"></i> Data Reklame</a>
+                                               href="{{ route('public.reklame.create', ['nomor_registrasi' => $registrasi->nomor_registrasi]) }}"><i
+                                                   class="isax isax-eye"></i> Data Reklame</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -59,7 +71,26 @@
     <script>
         $(document).ready(function() {
             $('#table').DataTable({
-                "order": [[ 3, "desc" ]]
+                "order": [
+                    [3, "desc"]
+                ]
+            });
+        });
+
+        $('.delete-registrasi-reklame').on('submit', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data reklame ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus data ini!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
             });
         });
     </script>

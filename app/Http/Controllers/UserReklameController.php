@@ -138,6 +138,22 @@ class UserReklameController extends Controller
         return view('pages.public.reklame.registrasi');
     }
 
+    public function destroy(Request $request, $nomor_registrasi)
+    {
+        $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
+        if ($registrasi_reklame->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Data Registrasi ini bukan milik anda');
+        }
+
+        if($registrasi_reklame->reklame->count() > 0) {
+            return redirect()->back()->with('error', 'Data Registrasi ini masih memiliki data reklame');
+        }
+
+        $registrasi_reklame->delete();
+
+        return redirect()->back()->with('success', 'Data Registrasi Reklame berhasil dihapus');
+    }
+
     public function storeRegistrasi(RegistrasiReklameRequest $request)
     {
         $reklame = RegistrasiReklame::create([
