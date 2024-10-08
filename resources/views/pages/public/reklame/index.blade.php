@@ -46,7 +46,7 @@
                                         <td>{{ $registrasi->alamat_perusahaan }}</td>
                                         <td>{{ $registrasi->created_at->setTimezone('GMT+8')->format('d-m-Y') }}</td>
                                         <td>
-                                            <form action="{{ route('public.reklame.destroy', $reklame->nomor_registrasi) }}"
+                                            <form action="{{ route('public.reklame.destroy', $registrasi->nomor_registrasi) }}"
                                                   method="POST" class="delete-registrasi-reklame">
                                                 @csrf
                                                 @method('DELETE')
