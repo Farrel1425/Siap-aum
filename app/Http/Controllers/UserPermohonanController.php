@@ -409,7 +409,7 @@ class UserPermohonanController extends Controller
     public function storeBerkas(Request $request)
     {
         $request->validate([
-            'berkas' => 'required|file|mimes:pdf,docx|max:2048',
+            'berkas' => 'required|file|mimes:pdf|max:5120',
             'berkas_key' => 'required',
         ]);
 
