@@ -445,7 +445,7 @@ class VerifikatorPermohonanController extends Controller
         }
     }
 
-    public function verifikasiTable(Request $request, VerifikatorService $verifikatorService)
+    public function verifikasiTable(Request $request, VerifikatorService $verifikatorService, BerkasPermohonanService $berkasPermohonanService)
     {
         if ($request->ajax()) {
             $start = $request->input('start');
@@ -455,7 +455,7 @@ class VerifikatorPermohonanController extends Controller
 
             // Query
             $query = Permohonan::with(['alurPermohonan'])
-                ->whereHas('alurPermohonan', function ($query) {
+                ->withWhereHas('alurPermohonan', function ($query) {
                     $query->where('verifikator_id', auth()->user()->id);
                 })
                 ->whereIn('status', [
@@ -492,7 +492,7 @@ class VerifikatorPermohonanController extends Controller
                 ->filter(function ($permohonan) use ($verifikatorService) {
                     return $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
                 })
-                ->map(function ($permohonan) {
+                ->map(function ($permohonan) use ($berkasPermohonanService) {
                     $action = '<a href="' . route('verifikator.verifikasi.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
                     return [
                         'nama_jenis_izin' => $permohonan->nama_jenis_izin,
@@ -501,6 +501,7 @@ class VerifikatorPermohonanController extends Controller
                         'nama_pemohon' => $permohonan->nama,
                         'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
                         'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
+                        'status_berkas' => $berkasPermohonanService->isAllBerkasValidFromVerifikator($permohonan->alurPermohonan->first()),
                         'status_badge' => $permohonan->status_badge,
                         'action' => $action,
                     ];

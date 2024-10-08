@@ -371,6 +371,7 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Data Reklame ini bukan milik anda');
         }
 
+        $reklame->formReklame()->delete();
         $reklame->delete();
 
         return redirect()->back()->with('success', 'Data Reklame berhasil dihapus');

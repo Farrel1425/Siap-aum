@@ -32,6 +32,7 @@
                                     <th>Nama Pemohon</th>
                                     <th>Permohonan Rekomendasi</th>
                                     <th>Surat Rekomendasi</th>
+                                    <th>Status Berkas</th>
                                     <th>Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -98,6 +99,15 @@
                     {
                         data: 'surat_rekomendasi',
                         name: 'surat_rekomendasi',
+                        className: 'text-center',
+                        render: function(data, type, row) {
+                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
+                        },
+                        orderable: false
+                    },
+                    {
+                        data: 'status_berkas',
+                        name: 'status_berkas',
                         className: 'text-center',
                         render: function(data, type, row) {
                             return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
