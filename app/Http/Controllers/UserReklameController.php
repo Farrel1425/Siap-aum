@@ -131,7 +131,7 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Data Reklame berhasil diajukan. Silahkan lengkapi berkas permohonan pada setiap reklame');
+        return redirect()->route('public.permohonan.store-berkas', $permohonan->id)->with('success', 'Data Reklame berhasil diajukan. Silahkan lengkapi berkas permohonan pada setiap reklame');
     }
 
     public function registrasi(Request $request)
