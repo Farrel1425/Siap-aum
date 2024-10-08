@@ -92,7 +92,7 @@
                         name: 'surat_permohonan_rekomendasi',
                         className: 'text-center',
                         render: function(data, type, row) {
-                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : `<span class='text-success'><i class='isax-bold isax-minus-cirlce'></i></span>`;
+                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : `<span class='text-danger'><i class='isax-bold isax-minus-cirlce'></i></span>`;
                         },
                         orderable: false
                     },
@@ -101,7 +101,7 @@
                         name: 'surat_rekomendasi',
                         className: 'text-center',
                         render: function(data, type, row) {
-                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>`;
+                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : `<span class='text-danger'><i class='isax-bold isax-minus-cirlce'></i></span>`;
                         },
                         orderable: false
                     },
@@ -110,7 +110,7 @@
                         name: 'status_berkas',
                         className: 'text-center',
                         render: function(data, type, row) {
-                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>`;
+                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : `<span class='text-danger'><i class='isax-bold isax-minus-cirlce'></i></span>`;
                         },
                         orderable: false
                     },
