@@ -17,28 +17,25 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Kambing Terbang',
                 'email' => 'user@example.com',
-                'password' => bcrypt('P@ssw0rd'),
                 'role_id' => 3,
             ],
             [
                 'name' => 'Kambing Rebahan',
                 'email' => 'verifikator@example.com',
-                'password' => bcrypt('P@ssw0rd'),
                 'role_id' => 2,
             ],
             [
                 'name' => 'Kambing Ganteng',
                 'email' => 'admin@example.com',
-                'password' => bcrypt('P@ssw0rd'),
                 'role_id' => 1,
             ],
         ];
 
         foreach ($users as $user) {
-            $data = [
+            User::firstOrCreate($user, [
+                'password' => bcrypt('password'),
                 'is_filled_data_register' => true,
-            ];
-            User::firstOrCreate($user, $data);
+            ]);
         }
     }
 }

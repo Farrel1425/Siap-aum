@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\Api\AuthenticationController;
+use App\Http\Controllers\OpenApi\AuthenticationController as OpenApiAuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +29,12 @@ Route::middleware(['auth:sanctum', 'role:inputer'])->group(function () {
     Route::get('/reklame/{id}', [ReklameController::class, 'show']);
     Route::post('/reklame', [ReklameController::class, 'initReklame']);
     Route::post('/reklame/{id}', [ReklameController::class, 'storeReklame']);
+});
+
+// OPEN API
+Route::prefix('v1')->group(function () {
+    Route::post('/login', [OpenApiAuthenticationController::class, 'login']);
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/logout', [OpenApiAuthenticationController::class, 'logout']);
+    });
 });
