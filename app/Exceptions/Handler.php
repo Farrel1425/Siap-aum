@@ -33,6 +33,15 @@ class Handler extends ExceptionHandler
             }
         });
 
+        // response internal server error for api
+        $this->renderable(function (Throwable $e, $request) {
+            if ($request->is('api/*')) {
+                return ResponseFormatter::error([
+                    'message' => 'Internal server error'
+                ], 'Internal Server Error', 500);
+            }
+        });
+
         $this->reportable(function (Throwable $e) {
             //
         });

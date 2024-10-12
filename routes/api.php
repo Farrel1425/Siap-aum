@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\OpenApi\AuthenticationController as OpenApiAuthenticationController;
+use App\Http\Controllers\OpenApi\StatistikController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,10 @@ Route::middleware(['auth:sanctum', 'role:inputer'])->group(function () {
 Route::prefix('v1')->group(function () {
     Route::post('/login', [OpenApiAuthenticationController::class, 'login']);
     Route::middleware(['auth:sanctum'])->group(function () {
+        // Auth
         Route::post('/logout', [OpenApiAuthenticationController::class, 'logout']);
+
+        // Statistik
+        Route::get('/statistik-permohonan', [StatistikController::class, 'index']);
     });
 });
