@@ -37,7 +37,7 @@ class VerifikatorPermohonanController extends Controller
     public function show(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
         $permohonan->load('user', 'alurPermohonan');
-        $steps = $permohonanService->getStepAlurPermohonan($permohonan);
+        $steps = $permohonanService->getStepAlurPermohonan($permohonan, true);
         $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
         $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
         $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());

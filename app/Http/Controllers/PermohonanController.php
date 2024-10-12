@@ -27,7 +27,7 @@ class PermohonanController extends Controller
             'kelengkapanPermohonan'
         ])->findOrFail($id);
 
-        $steps = $permohonan_service->getStepAlurPermohonan($permohonan);
+        $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
         $form_permohonans = $permohonan_service->getListFormPermohonan($permohonan);
         $berkas_permohonans = $permohonan_service->getListBerkasPermohonan($permohonan);
         $kelengkapan_permohonans = $permohonan_service->getListKelengkapanPermohonan($permohonan);

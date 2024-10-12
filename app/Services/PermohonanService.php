@@ -92,7 +92,7 @@ class PermohonanService
                 'nama' => $alurPermohonan->verifikator->name,
                 'urutan' => $alurPermohonan->urutan,
                 'is_done' => $alurPermohonan->is_done,
-                'done_at' => $alurPermohonan->is_done ? $alurPermohonan->updated_at->format('d-m-Y H:i:s') : '-',
+                'done_at' => $alurPermohonan->is_done ? $alurPermohonan->updated_at->setTimezone('GMT+8')->format('d-m-Y H:i:s') : '-',
             ]);
         });
 
@@ -105,7 +105,7 @@ class PermohonanService
                 'nama' => 'Pemohon',
                 'urutan' => 0,
                 'is_done' => $permohonan->pengajuan_at ? true : false,
-                'done_at' => $permohonan->pengajuan_at ? $permohonan->pengajuan_at->format('d-m-Y H:i:s') : '-',
+                'done_at' => $permohonan->pengajuan_at ? $permohonan->pengajuan_at->setTimezone('GMT+8')->format('d-m-Y H:i:s') : '-',
             ]);
 
             return $alur_verifikator->prepend($pemohon);
