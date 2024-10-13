@@ -17,6 +17,7 @@
         <section class="section">
             <h5>Data Diri Pemohon</h5>
             <form action="{{ route('public.permohonan.submit-form', $jenis_izin->id) }}"
+                  enctype="multipart/form-data"
                   method="POST">
                 @csrf
                 <x-dashboard.input-inline-select :options="['0' => 'Diri Sendiri', '1' => 'Mewakili Orang Lain']"
@@ -98,5 +99,10 @@
                 }
             });
         });
+
+        @if (old('memohon_untuk') === '1')
+            $('#surat_kuasa_container').removeClass('d-none');
+            $('#surat_kuasa').attr('required', true);
+        @endif
     </script>
 @endpush

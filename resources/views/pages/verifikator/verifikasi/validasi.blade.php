@@ -51,6 +51,15 @@
                                                name="memohon_untuk"
                                                readonly
                                                value="{{ $permohonan->memohon_untuk }}" />
+                @if ($permohonan->surat_kuasa_filepath)
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ Storage::url($permohonan->surat_kuasa_filepath) }}"
+                                                          label="Surat Kuasa"
+                                                          name="surat_kuasa" />
+                @endif
                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                class_input="border-0 text-end text-xsm"
                                                label="Nama"
