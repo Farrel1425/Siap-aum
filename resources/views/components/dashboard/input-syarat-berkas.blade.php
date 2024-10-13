@@ -87,7 +87,9 @@
                 '][nama]" placeholder="Masukkan nama berkas" type="text" required></div></div></td>',
                 '<td><div class="form-check form-switch"><input type="hidden" name="syarat_berkas[' + newCounter +
                 '][is_required]" data-id="syarat_berkas_' + newCounter +
-                '" value="0"><input class="form-check-input" id="syarat_berkas_' + newCounter +
+                '" value="0"><input class="form-check-input syarat-berkas-is-required-checkbox" data-id="' +
+                newCounter +
+                '" id="syarat_berkas_' + newCounter +
                 '" type="checkbox"><label class="form-check-label" for="syarat_berkas_' + newCounter +
                 '">Wajib</label></div></td>',
                 '<td class="w-10"><i class="isax isax-trash fs-4 delete-data"></i></td>'
@@ -104,13 +106,23 @@
             }
 
             // set is required
-            if (is_required) {
+            if (is_required == 1) {
                 $('#syarat_berkas_' + newCounter).prop('checked', true);
-                $('#syarat_berkas_' + newCounter).prev().val(1);
+                $('input[name="syarat_berkas[' + newCounter + '][is_required]"]').val(1);
             } else {
                 $('#syarat_berkas_' + newCounter).prop('checked', false);
-                $('#syarat_berkas_' + newCounter).prev().val(0);
+                $('input[name="syarat_berkas[' + newCounter + '][is_required]"]').val(0);
             }
         }
+
+        // on change is required
+        $(document).on('change', '.syarat-berkas-is-required-checkbox', function() {
+            var id = $(this).data('id');
+            if ($(this).is(':checked')) {
+                $('input[name="syarat_berkas[' + id + '][is_required]"]').val(1);
+            } else {
+                $('input[name="syarat_berkas[' + id + '][is_required]"]').val(0);
+            }
+        });
     </script>
 @endpush
