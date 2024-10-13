@@ -189,12 +189,24 @@
                                 $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                                 $is_all_berkas_valid &&
                                 $is_verifikator_turn)
-                            <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                           class_input="text-xsm"
-                                                           label="{{ $kelengkapan_permohonan->label }}"
-                                                           name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                                           placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
-                                                           value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                            @if ($kelengkapan_permohonan->tipe == 'text')
+                                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                               class_input="text-xsm"
+                                                               label="{{ $kelengkapan_permohonan->label }}"
+                                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                               placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                               value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                            @elseif($kelengkapan_permohonan->tipe == 'date')
+                                <x-dashboard.input-inline-text :required=True
+                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                               class_input="text-start text-xsm"
+                                                               id="{{ $kelengkapan_permohonan->id }}"
+                                                               label="{{ $kelengkapan_permohonan->label }}"
+                                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                               placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                               type="date"
+                                                               value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                            @endif
                         @else
                             <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                            class_input="border-0 text-end text-xsm"
