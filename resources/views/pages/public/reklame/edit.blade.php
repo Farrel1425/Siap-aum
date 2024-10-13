@@ -44,7 +44,7 @@
                                                          name="{{ $form_reklame->kode_isian }}"
                                                          placeholder="Pilih {{ $form_reklame->label }}"
                                                          value="{{ old($form_reklame->kode_isian, $reklame->formReklame?->firstWhere('kode_isian', $form_reklame->kode_isian)->value) }}" />
-                    @elseif ($form_reklame->kode_isian == 'TEMPAT_PEMASANGAN')
+                    @elseif ($form_reklame->kode_isian == 'AREA_PEMASANGAN')
                         <x-dashboard.input-inline-select :options="App\Enums\AreaPemasanganReklameEnum::array()"
                                                          :required=True
                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
