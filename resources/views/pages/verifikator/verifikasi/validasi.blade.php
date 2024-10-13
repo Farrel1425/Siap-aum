@@ -142,22 +142,45 @@
                         @endif
                     </div>
                 @endforeach
-                <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
-                @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
-                    {{-- HANDLE REKLAME --}}
-                    @if (
-                        $permohonan->jenis_izin_id == 9 &&
-                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
-                            $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
-                            $is_all_berkas_valid &&
-                            $is_verifikator_turn &&
-                            ($kelengkapan_permohonan->kode_isian == 'NO_SKPD' ||
-                                $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME_TERBILANG' ||
-                                $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME') &&
-                            $permohonan->reklame->skpd_filepath)
-                        @if ($kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME')
-                            <x-dashboard.input-inline-text :is_currency=True
-                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
+                @if (
+                    $alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::FO->value &&
+                        ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value ||
+                            $permohonan->jenis_izin_id == 9))
+                    <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
+                    @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
+                        {{-- HANDLE REKLAME --}}
+                        @if (
+                            $permohonan->jenis_izin_id == 9 &&
+                                $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
+                                $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
+                                $is_all_berkas_valid &&
+                                $is_verifikator_turn &&
+                                ($kelengkapan_permohonan->kode_isian == 'NO_SKPD' ||
+                                    $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME_TERBILANG' ||
+                                    $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME') &&
+                                $permohonan->reklame->skpd_filepath)
+                            @if ($kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME')
+                                <x-dashboard.input-inline-text :is_currency=True
+                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                               class_input="text-xsm"
+                                                               label="{{ $kelengkapan_permohonan->label }}"
+                                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                               placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                               value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                            @else
+                                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                               class_input="text-xsm"
+                                                               label="{{ $kelengkapan_permohonan->label }}"
+                                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                               placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                               value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                            @endif
+                        @elseif (
+                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
+                                $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
+                                $is_all_berkas_valid &&
+                                $is_verifikator_turn)
+                            <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                            class_input="text-xsm"
                                                            label="{{ $kelengkapan_permohonan->label }}"
                                                            name="{{ $kelengkapan_permohonan->kode_isian }}"
@@ -165,44 +188,36 @@
                                                            value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
                         @else
                             <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                           class_input="text-xsm"
+                                                           class_input="border-0 text-end text-xsm"
                                                            label="{{ $kelengkapan_permohonan->label }}"
                                                            name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                                           placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
-                                                           value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                                                           readonly
+                                                           value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
                         @endif
-                    @elseif (
-                        $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
-                            $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
-                            $is_all_berkas_valid &&
-                            $is_verifikator_turn)
-                        <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                       class_input="text-xsm"
-                                                       label="{{ $kelengkapan_permohonan->label }}"
-                                                       name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                                       placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
-                                                       value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
-                    @else
-                        <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                       class_input="border-0 text-end text-xsm"
-                                                       label="{{ $kelengkapan_permohonan->label }}"
-                                                       name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                                       readonly
-                                                       value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
-                    @endif
-                @endforeach
+                    @endforeach
+                @endif
                 <h5 class="mt-4">Data Berkas Verifikator</h5>
                 @if (
                     $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
-                    <x-dashboard.input-inline-file-upload :is_readonly="false"
-                                                          :is_show_badge="false"
-                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                          class_input="text-xsm"
-                                                          downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                          label="Surat Permohonan Rekomendasi"
-                                                          name="surat_permohonan_rekomendasi"
-                                                          uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
+                    @if ($is_all_berkas_valid)
+                        <x-dashboard.input-inline-file-upload :is_readonly="false"
+                                                              :is_show_badge="false"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                              label="Surat Permohonan Rekomendasi"
+                                                              name="surat_permohonan_rekomendasi"
+                                                              uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
+                    @else
+                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                              :is_show_badge="false"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                              label="Surat Permohonan Rekomendasi"
+                                                              name="surat_permohonan_rekomendasi" />
+                    @endif
                 @else
                     <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                           :is_show_badge="false"
@@ -234,13 +249,23 @@
                             @endif
                         @endif
                         {{-- HANDLE ALL PERMOHONAN --}}
-                        <x-dashboard.input-inline-file-upload :is_show_badge="false"
-                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                              class_input="text-xsm"
-                                                              downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                              label="Surat Rekomendasi"
-                                                              name="surat_rekomendasi"
-                                                              uploadUrl="{{ route('verifikator.verifikasi.upload-surat-rekomendasi', $permohonan->id) }}" />
+                        @if ($is_all_berkas_valid)
+                            <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                                  label="Surat Rekomendasi"
+                                                                  name="surat_rekomendasi"
+                                                                  uploadUrl="{{ route('verifikator.verifikasi.upload-surat-rekomendasi', $permohonan->id) }}" />
+                        @else
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                                  label="Surat Rekomendasi"
+                                                                  name="surat_rekomendasi" />
+                        @endif
                     @else
                         <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                               :is_show_badge="false"
@@ -284,7 +309,7 @@
                                     </div>
                                 </div>
                             @endif
-                        @else
+                        @elseif($permohonan->template_surat_filepath)
                             <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                                   :is_show_badge="false"
                                                                   :is_ttd="$permohonan->is_ttd"
