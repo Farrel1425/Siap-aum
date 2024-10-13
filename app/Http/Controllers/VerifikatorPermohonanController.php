@@ -36,32 +36,39 @@ class VerifikatorPermohonanController extends Controller
 
     public function show(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
-        $permohonan->load('user', 'alurPermohonan');
-        $steps = $permohonanService->getStepAlurPermohonan($permohonan, true);
-        $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
-        $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
-        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
-        $is_can_verified = $permohonanService->isPermohonanCanVerified($permohonan);
-        if (
-            $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value ||
-            $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value
-        ) {
-            $is_all_berkas_valid = true;
-        } else {
-            $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
-        }
+        try {
+            $permohonan->load('user', 'alurPermohonan');
+            $steps = $permohonanService->getStepAlurPermohonan($permohonan, true);
+            $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
+            $is_verifikator_approvable_berkas = $verifikatorService->isVerifikatorApprovableBerkas($permohonan, auth()->user());
+            $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+            $is_can_verified = $permohonanService->isPermohonanCanVerified($permohonan);
+            if (
+                $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value ||
+                $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value
+            ) {
+                $is_all_berkas_valid = true;
+            } else {
+                $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+            }
 
-        $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
-        return view('pages.verifikator.verifikasi.validasi', compact(
-            'permohonan',
-            'berkas_permohonans',
-            'steps',
-            'is_verifikator_approvable_berkas',
-            'is_verifikator_turn',
-            'alur_permohonan',
-            'is_can_verified',
-            'is_all_berkas_valid',
-        ));
+            $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
+            return view('pages.verifikator.verifikasi.validasi', compact(
+                'permohonan',
+                'berkas_permohonans',
+                'steps',
+                'is_verifikator_approvable_berkas',
+                'is_verifikator_turn',
+                'alur_permohonan',
+                'is_can_verified',
+                'is_all_berkas_valid',
+            ));
+        } catch (ServiceException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        } catch (Exception $e) {
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
+        }
     }
 
     public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
@@ -139,11 +146,11 @@ class VerifikatorPermohonanController extends Controller
                     }
 
                     // generate pdf template for ijin terbit
-                    try{
+                    try {
                         $filepath = $permohonanService->generateIzinTerbit($permohonan);
-                    }catch(ServiceException $e){
+                    } catch (ServiceException $e) {
                         return redirect()->back()->with('error', $e->getMessage());
-                    }catch(Exception $e){
+                    } catch (Exception $e) {
                         Log::error($e->getFile() . $e->getLine() . $e->getMessage());
                         return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
                     }
