@@ -30,7 +30,10 @@ class UserReklameController extends Controller
 
     public function create(Request $request)
     {
-        $registrasi_reklame = RegistrasiReklame::with('reklame.formReklame')->where('nomor_registrasi', $request->nomor_registrasi)->first();
+        $registrasi_reklame = RegistrasiReklame::with(['reklame' => function ($query) {
+            $query->whereNull('permohonan_id')->with('formReklame');
+        }])
+            ->where('nomor_registrasi', $request->nomor_registrasi)->first();
         if ($registrasi_reklame) {
             return view('pages.public.reklame.create', compact('registrasi_reklame'));
         } else {
@@ -45,7 +48,9 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
         }
 
-        $registrasi_reklame->load('reklame.formReklame');
+        $registrasi_reklame->load(['reklame' => function ($query) {
+            $query->whereNull('permohonan_id')->with('formReklame');
+        }]);
 
         if ($registrasi_reklame->reklame->count() == 0) {
             return redirect()->back()->with('error', 'Belum terdapat data reklame pada nomor registrasi ini');
@@ -119,9 +124,6 @@ class UserReklameController extends Controller
                 $reklame->update([
                     'permohonan_id' => $permohonan->id,
                 ]);
-
-                // delete reklame
-                $reklame->delete();
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -145,7 +147,7 @@ class UserReklameController extends Controller
             return redirect()->back()->with('error', 'Data Registrasi ini bukan milik anda');
         }
 
-        if($registrasi_reklame->reklame->count() > 0) {
+        if ($registrasi_reklame->reklame->count() > 0) {
             return redirect()->back()->with('error', 'Data Registrasi ini masih memiliki data reklame');
         }
 
@@ -175,10 +177,10 @@ class UserReklameController extends Controller
 
     public function createReklame(Request $request, $registrasi_reklame)
     {
-        $registrasi_reklame = RegistrasiReklame::with(['reklame'=> function($query) {
+        $registrasi_reklame = RegistrasiReklame::with(['reklame' => function ($query) {
             $query->with('formReklame')->whereNull('permohonan_id');
         }])
-        ->where('nomor_registrasi', decrypt($registrasi_reklame))->first();
+            ->where('nomor_registrasi', decrypt($registrasi_reklame))->first();
         if (!$registrasi_reklame) {
             return redirect()->back()->with('error', 'Nomor Registrasi tidak ditemukan')->withInput();
         }
