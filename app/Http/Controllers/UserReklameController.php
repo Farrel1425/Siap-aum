@@ -142,7 +142,10 @@ class UserReklameController extends Controller
 
     public function destroy(Request $request, $nomor_registrasi)
     {
-        $registrasi_reklame = RegistrasiReklame::where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
+        $registrasi_reklame = RegistrasiReklame::with(['reklame' => function ($query) {
+            $query->whereNull('permohonan_id');
+        }])
+            ->where('nomor_registrasi', decrypt($nomor_registrasi))->firstOrFail();
         if ($registrasi_reklame->user_id != auth()->id()) {
             return redirect()->back()->with('error', 'Data Registrasi ini bukan milik anda');
         }
