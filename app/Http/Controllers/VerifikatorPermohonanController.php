@@ -119,7 +119,7 @@ class VerifikatorPermohonanController extends Controller
                         }
                     }
                     // all permohonan
-                    if (!$permohonan->surat_rekomendasi_filepath) {
+                    if (!$permohonan->surat_rekomendasi_filepath && $permohonan->jenis_izin_id != 9) {
                         return redirect()->back()->with('error', 'Mohon unggah surat rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::BO->value) {
@@ -280,6 +280,13 @@ class VerifikatorPermohonanController extends Controller
             'berkas_key' => 'required|in:surat_rekomendasi',
             'berkas' => 'required|file|mimes:pdf|max:2048',
         ]);
+
+        if($permohonan->jenis_izin_id == 9){
+            return response()->json([
+                'success' => false,
+                'message' => 'Izin reklame tidak memerlukan surat rekomendasi',
+            ]);
+        }
 
         // get alur
         $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());

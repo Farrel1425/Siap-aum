@@ -151,6 +151,136 @@
                         @endif
                     </div>
                 @endforeach
+                <h5 class="mt-4">Data Berkas Verifikator</h5>
+                @if (
+                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
+                        $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
+                    @if ($is_all_berkas_valid)
+                        <x-dashboard.input-inline-file-upload :is_readonly="false"
+                                                              :is_show_badge="false"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                              label="Surat Permohonan Rekomendasi"
+                                                              name="surat_permohonan_rekomendasi"
+                                                              uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
+                    @else
+                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                              :is_show_badge="false"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                              label="Surat Permohonan Rekomendasi"
+                                                              name="surat_permohonan_rekomendasi" />
+                    @endif
+                @else
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
+                                                          label="Surat Permohonan Rekomendasi"
+                                                          name="surat_permohonan_rekomendasi" />
+                    @if (
+                        $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
+                            $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
+                        {{-- HANDLE REKLAME --}}
+                        @if ($permohonan->jenis_izin_id == 9)
+                            <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->reklame->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
+                                                                  label="SKPD"
+                                                                  name="skpd"
+                                                                  uploadUrl="{{ route('verifikator.verifikasi.upload-skpd', $permohonan->id) }}" />
+                            @if ($permohonan->reklame->skpd_filepath)
+                                <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                      class_input="text-xsm"
+                                                                      downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                                      label="Bukti Bayar SKPD (Opsional)"
+                                                                      name="skpd"
+                                                                      uploadUrl="{{ route('verifikator.verifikasi.upload-bukti-bayar-reklame', $permohonan->id) }}" />
+                            @endif
+                        @endif
+                        {{-- HANDLE ALL PERMOHONAN --}}
+                        @if ($permohonan->jenis_izin_id != 9)
+                            @if ($is_all_berkas_valid)
+                                <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                      class_input="text-xsm"
+                                                                      downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                                      label="Surat Rekomendasi"
+                                                                      name="surat_rekomendasi"
+                                                                      uploadUrl="{{ route('verifikator.verifikasi.upload-surat-rekomendasi', $permohonan->id) }}" />
+                            @else
+                                <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                      :is_show_badge="false"
+                                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                      class_input="text-xsm"
+                                                                      downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                                      label="Surat Rekomendasi"
+                                                                      name="surat_rekomendasi" />
+                            @endif
+                        @endif
+                    @else
+                        @if ($permohonan->jenis_izin_id != 9)
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
+                                                                  label="Surat Rekomendasi"
+                                                                  name="surat_rekomendasi" />
+                        @endif
+                        @if ($permohonan->jenis_izin_id == 9)
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                                  label="Bukti Bayar SKPD"
+                                                                  name="bukti_bayar" />
+                        @endif
+                        @if (
+                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
+                                $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
+                                !$permohonan->is_ttd)
+                            @if ($alur_permohonan->is_done)
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                              :is_show_badge="false"
+                                                                              :is_ttd="$permohonan->is_ttd"
+                                                                              :show_ttd_status="true"
+                                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                              class_input="text-xsm"
+                                                                              downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                                              label="Ijin Terbit"
+                                                                              name="ijin_terbit" />
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="d-block text-xsm btn w-100 btn-primary mb-3"
+                                                onclick="generateUlangIzinTerbit()"
+                                                type="button">
+                                            <i class="isax isax-refresh me-2"></i> Generate Ulang Ijin Terbit
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+                        @elseif($permohonan->template_surat_filepath)
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  :is_ttd="$permohonan->is_ttd"
+                                                                  :show_ttd_status="true"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                                  label="Ijin Terbit"
+                                                                  name="ijin_terbit" />
+                        @endif
+                    @endif
+                @endif
                 @if (
                     $alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::FO->value &&
                         ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value ||
@@ -216,132 +346,6 @@
                                                            value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
                         @endif
                     @endforeach
-                @endif
-                <h5 class="mt-4">Data Berkas Verifikator</h5>
-                @if (
-                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
-                        $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
-                    @if ($is_all_berkas_valid)
-                        <x-dashboard.input-inline-file-upload :is_readonly="false"
-                                                              :is_show_badge="false"
-                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                              class_input="text-xsm"
-                                                              downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                              label="Surat Permohonan Rekomendasi"
-                                                              name="surat_permohonan_rekomendasi"
-                                                              uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
-                    @else
-                        <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                              :is_show_badge="false"
-                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                              class_input="text-xsm"
-                                                              downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                              label="Surat Permohonan Rekomendasi"
-                                                              name="surat_permohonan_rekomendasi" />
-                    @endif
-                @else
-                    <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                          :is_show_badge="false"
-                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                          class_input="text-xsm"
-                                                          downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                          label="Surat Permohonan Rekomendasi"
-                                                          name="surat_permohonan_rekomendasi" />
-                    @if (
-                        $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
-                            $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
-                        {{-- HANDLE REKLAME --}}
-                        @if ($permohonan->jenis_izin_id == 9)
-                            <x-dashboard.input-inline-file-upload :is_show_badge="false"
-                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                  class_input="text-xsm"
-                                                                  downloadUrl="{{ $permohonan->reklame->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
-                                                                  label="SKPD"
-                                                                  name="skpd"
-                                                                  uploadUrl="{{ route('verifikator.verifikasi.upload-skpd', $permohonan->id) }}" />
-                            @if ($permohonan->reklame->skpd_filepath)
-                                <x-dashboard.input-inline-file-upload :is_show_badge="false"
-                                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                      class_input="text-xsm"
-                                                                      downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
-                                                                      label="Bukti Bayar SKPD (Opsional)"
-                                                                      name="skpd"
-                                                                      uploadUrl="{{ route('verifikator.verifikasi.upload-bukti-bayar-reklame', $permohonan->id) }}" />
-                            @endif
-                        @endif
-                        {{-- HANDLE ALL PERMOHONAN --}}
-                        @if ($is_all_berkas_valid)
-                            <x-dashboard.input-inline-file-upload :is_show_badge="false"
-                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                  class_input="text-xsm"
-                                                                  downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                                  label="Surat Rekomendasi"
-                                                                  name="surat_rekomendasi"
-                                                                  uploadUrl="{{ route('verifikator.verifikasi.upload-surat-rekomendasi', $permohonan->id) }}" />
-                        @else
-                            <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                  :is_show_badge="false"
-                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                  class_input="text-xsm"
-                                                                  downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                                  label="Surat Rekomendasi"
-                                                                  name="surat_rekomendasi" />
-                        @endif
-                    @else
-                        <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                              :is_show_badge="false"
-                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                              class_input="text-xsm"
-                                                              downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                              label="Surat Rekomendasi"
-                                                              name="surat_rekomendasi" />
-                        @if ($permohonan->jenis_izin_id == 9)
-                            <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                  :is_show_badge="false"
-                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                  class_input="text-xsm"
-                                                                  downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
-                                                                  label="Bukti Bayar SKPD"
-                                                                  name="bukti_bayar" />
-                        @endif
-                        @if (
-                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
-                                $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
-                                !$permohonan->is_ttd)
-                            @if ($alur_permohonan->is_done)
-                                <div class="row align-items-center">
-                                    <div class="col-9">
-                                        <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                              :is_show_badge="false"
-                                                                              :is_ttd="$permohonan->is_ttd"
-                                                                              :show_ttd_status="true"
-                                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                              class_input="text-xsm"
-                                                                              downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
-                                                                              label="Ijin Terbit"
-                                                                              name="ijin_terbit" />
-                                    </div>
-                                    <div class="col-3">
-                                        <button class="d-block text-xsm btn w-100 btn-primary mb-3"
-                                                onclick="generateUlangIzinTerbit()"
-                                                type="button">
-                                            <i class="isax isax-refresh me-2"></i> Generate Ulang Ijin Terbit
-                                        </button>
-                                    </div>
-                                </div>
-                            @endif
-                        @elseif($permohonan->template_surat_filepath)
-                            <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                  :is_show_badge="false"
-                                                                  :is_ttd="$permohonan->is_ttd"
-                                                                  :show_ttd_status="true"
-                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                  class_input="text-xsm"
-                                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
-                                                                  label="Ijin Terbit"
-                                                                  name="ijin_terbit" />
-                        @endif
-                    @endif
                 @endif
 
                 @if ($is_verifikator_turn && $is_can_verified)
