@@ -38,7 +38,7 @@ class VerifikatorService
     {
         $permohonan->relationLoaded('alurPermohonan') || $permohonan->load('alurPermohonan');
         if ($permohonan->alurPermohonan->where('is_done', true)->isEmpty()) {
-            $alur_permohonan = $permohonan->alurPermohonan->first();
+            $alur_permohonan = $permohonan->alurPermohonan->sortBy('urutan')->first();
         } else {
             $last_urutan_done = $permohonan->alurPermohonan->where('is_done', true)->max('urutan');
             $alur_permohonan = $permohonan->alurPermohonan->where('urutan', $last_urutan_done + 1)->first();

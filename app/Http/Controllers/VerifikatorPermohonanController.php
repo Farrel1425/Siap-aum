@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\User;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
@@ -462,9 +463,9 @@ class VerifikatorPermohonanController extends Controller
 
             // Query
             $query = Permohonan::with(['alurPermohonan'])
-                ->withWhereHas('alurPermohonan', function ($query) {
-                    $query->where('verifikator_id', auth()->user()->id);
-                })
+                // ->withWhereHas('alurPermohonan', function ($query) {
+                //     $query->where('verifikator_id', auth()->user()->id);
+                // })
                 ->whereIn('status', [
                     StatusPermohonanEnum::PERMOHONAN_BARU->value,
                     StatusPermohonanEnum::VERIFIKASI->value,
@@ -499,7 +500,7 @@ class VerifikatorPermohonanController extends Controller
                 ->filter(function ($permohonan) use ($verifikatorService) {
                     return $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
                 })
-                ->map(function ($permohonan) use ($berkasPermohonanService) {
+                ->map(function ($permohonan) use ($berkasPermohonanService, $verifikatorService) {
                     $action = '<a href="' . route('verifikator.verifikasi.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
                     return [
                         'nama_jenis_izin' => $permohonan->nama_jenis_izin,
