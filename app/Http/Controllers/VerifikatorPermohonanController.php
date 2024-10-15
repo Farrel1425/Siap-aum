@@ -110,6 +110,10 @@ class VerifikatorPermohonanController extends Controller
                             return redirect()->back()->with('error', 'Mohon unggah SKPD terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                         }
 
+                        if(!$permohonan->reklame->bukti_bayar_filepath){
+                            return redirect()->back()->with('error', 'Bukti bayar reklame belum diunggah oleh anda atau pemohon. Mohon tunggu pemohon mengunggah bukti bayar atau anda dapat mengunggahnya terlebih dahulu');
+                        }
+
                         $validated = $request->validate($rules, $validation_messages);
 
                         foreach ($validated as $key => $value) {
@@ -233,8 +237,6 @@ class VerifikatorPermohonanController extends Controller
             ]);
         }
     }
-
-
 
     public function uploadSuratPermohonanRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
