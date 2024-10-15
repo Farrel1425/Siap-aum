@@ -6,15 +6,16 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Models\Permohonan;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Collection;
 use App\Enums\StatusPermohonanEnum;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\TemplateProcessor;
+use Illuminate\Http\Client\ConnectionException;
 
 class PermohonanService
 {
@@ -199,11 +200,19 @@ class PermohonanService
             );
 
             foreach ($permohonan->formPermohonan as $formPermohonan) {
-                $array_kode[$formPermohonan->kode_isian] = $formPermohonan->value;
+                if ($formPermohonan->tipe == 'date') {
+                    $array_kode[$formPermohonan->kode_isian] = Carbon::parse($formPermohonan->value)->locale('id')->isoFormat('LL');
+                } else {
+                    $array_kode[$formPermohonan->kode_isian] = $formPermohonan->value;
+                }
             }
 
             foreach ($permohonan->kelengkapanPermohonan as $kelengkapanPermohonan) {
-                $array_kode[$kelengkapanPermohonan->kode_isian] = $kelengkapanPermohonan->value;
+                if ($kelengkapanPermohonan->tipe == 'date') {
+                    $array_kode[$kelengkapanPermohonan->kode_isian] = Carbon::parse($kelengkapanPermohonan->value)->locale('id')->isoFormat('LL');
+                } else {
+                    $array_kode[$kelengkapanPermohonan->kode_isian] = $kelengkapanPermohonan->value;
+                }
             }
 
             foreach ($array_kode as $key => $value) {
