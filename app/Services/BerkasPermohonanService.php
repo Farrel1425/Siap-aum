@@ -184,6 +184,9 @@ class BerkasPermohonanService
         $berkasPermohonan = $alurPermohonan->permohonan->berkasPermohonan
             ->whereNotNull('filepath')
             ->filter(function ($berkasPermohonan) use ($alurPermohonan) {
+                if($alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value || $alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value) {
+                    return true;
+                }
                 return !$this->isLastStatusValidasiBerkasIsValid($alurPermohonan, $berkasPermohonan);
             });
 
