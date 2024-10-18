@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <section class="section">
+        <section class="section mb-1">
             <form action="{{ route('verifikator.verifikasi.verifikasi', $permohonan->id) }}"
                   method="POST">
                 @csrf
@@ -120,7 +120,7 @@
                                 </label>
                             </div>
                             <div class="col-2"></div>
-                            @if ($berkas_permohonan->is_need_validation)
+                            @if ($berkas_permohonan->is_need_validation && $is_verifikator_turn)
                                 <div class="col-2">
                                     <button class="btn btn-sm btn-success d-block w-100"
                                             data-detail-id="{{ encrypt($berkas_permohonan->id) }}"
@@ -189,15 +189,15 @@
                             <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                   class_input="text-xsm"
-                                                                  downloadUrl="{{ $permohonan->reklame->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
+                                                                  downloadUrl="{{ $permohonan->reklame?->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
                                                                   label="SKPD"
                                                                   name="skpd"
                                                                   uploadUrl="{{ route('verifikator.verifikasi.upload-skpd', $permohonan->id) }}" />
-                            @if ($permohonan->reklame->skpd_filepath)
+                            @if ($permohonan->reklame?->skpd_filepath)
                                 <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                       class_input="text-xsm"
-                                                                      downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                                      downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
                                                                       label="Bukti Bayar SKPD (Opsional)"
                                                                       name="skpd"
                                                                       uploadUrl="{{ route('verifikator.verifikasi.upload-bukti-bayar-reklame', $permohonan->id) }}" />
@@ -238,7 +238,7 @@
                                                                   :is_show_badge="false"
                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                   class_input="text-xsm"
-                                                                  downloadUrl="{{ $permohonan->reklame->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                                  downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
                                                                   label="Bukti Bayar SKPD"
                                                                   name="bukti_bayar" />
                         @endif
@@ -297,7 +297,7 @@
                                 ($kelengkapan_permohonan->kode_isian == 'NO_SKPD' ||
                                     $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME_TERBILANG' ||
                                     $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME') &&
-                                $permohonan->reklame->skpd_filepath)
+                                $permohonan->reklame?->skpd_filepath)
                             @if ($kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME')
                                 <x-dashboard.input-inline-text :is_currency=True
                                                                class="bg-white p-2 mx-1 mb-3 text-xsm"

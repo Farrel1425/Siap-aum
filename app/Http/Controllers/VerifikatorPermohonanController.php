@@ -106,11 +106,11 @@ class VerifikatorPermohonanController extends Controller
                             'PAJAK_REKLAME_TERBILANG.required' => 'Mohon unggah pajak reklame terbilang',
                             'NO_SKPD.required' => 'Mohon unggah nomor SKPD',
                         ];
-                        if (!$permohonan->reklame->skpd_filepath) {
+                        if (!$permohonan->reklame?->skpd_filepath) {
                             return redirect()->back()->with('error', 'Mohon unggah SKPD terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                         }
 
-                        if(!$permohonan->reklame->bukti_bayar_filepath){
+                        if (!$permohonan->reklame?->bukti_bayar_filepath) {
                             return redirect()->back()->with('error', 'Bukti bayar reklame belum diunggah oleh anda atau pemohon. Mohon tunggu pemohon mengunggah bukti bayar atau anda dapat mengunggahnya terlebih dahulu');
                         }
 
@@ -283,7 +283,7 @@ class VerifikatorPermohonanController extends Controller
             'berkas' => 'required|file|mimes:pdf|max:2048',
         ]);
 
-        if($permohonan->jenis_izin_id == 9){
+        if ($permohonan->jenis_izin_id == 9) {
             return response()->json([
                 'success' => false,
                 'message' => 'Izin reklame tidak memerlukan surat rekomendasi',
@@ -400,7 +400,10 @@ class VerifikatorPermohonanController extends Controller
             // Query
             $query = Permohonan::whereHas('alurPermohonan', function ($query) {
                 $query->where('verifikator_id', auth()->user()->id);
-            });
+            })
+                ->whereNotIn('status', [
+                    StatusPermohonanEnum::PENDING->value
+                ]);
 
             // Total records
             $totalRecords = $query->count();
@@ -550,12 +553,21 @@ class VerifikatorPermohonanController extends Controller
             'id' => 'required',
         ]);
 
-        $berkas_permohonan = BerkasPermohonan::find(decrypt($request->id));
+        $berkas_permohonan = BerkasPermohonan::with('permohonan')->find(decrypt($request->id));
         if (!$berkas_permohonan) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Berkas tidak ditemukan',
             ], 404);
+        }
+
+        $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($berkas_permohonan->permohonan, auth()->user());
+
+        if (!$is_verifikator_turn) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bukan giliran anda untuk melakukan validasi',
+            ], 403);
         }
 
         try {
@@ -589,12 +601,20 @@ class VerifikatorPermohonanController extends Controller
             'catatan_revisi' => 'required',
         ]);
 
-        $berkas_permohonan = BerkasPermohonan::find(decrypt($request->id));
+        $berkas_permohonan = BerkasPermohonan::with('permohonan')->find(decrypt($request->id));
         if (!$berkas_permohonan) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Berkas tidak ditemukan',
             ], 404);
+        }
+
+        $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($berkas_permohonan->permohonan, auth()->user());
+        if(!$is_verifikator_turn) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bukan giliran anda untuk melakukan revisi',
+            ], 403);
         }
 
         try {

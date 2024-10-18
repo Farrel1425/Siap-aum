@@ -182,7 +182,7 @@ class BerkasPermohonanService
         $alurPermohonan->permohonan->relationLoaded('berkasPermohonan') || $alurPermohonan->permohonan->load('berkasPermohonan.validasiBerkas');
 
         $berkasPermohonan = $alurPermohonan->permohonan->berkasPermohonan
-            ->whereNotNull('filepath')
+            // ->whereNotNull('filepath')
             ->filter(function ($berkasPermohonan) use ($alurPermohonan) {
                 if($alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value || $alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value) {
                     return true;
@@ -205,7 +205,7 @@ class BerkasPermohonanService
         $alurPermohonan->permohonan->relationLoaded('berkasPermohonan') || $alurPermohonan->permohonan->load('berkasPermohonan.validasiBerkas');
 
         $berkasPermohonan = $alurPermohonan->permohonan->berkasPermohonan
-            ->whereNotNull('filepath')
+            // ->whereNotNull('filepath')
             ->filter(function ($berkasPermohonan) use ($alurPermohonan) {
                 return !$this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan);
             });

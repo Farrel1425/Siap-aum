@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <section class="section">
+        <section class="section mb-3">
             <x-landing.progress-stepper-bar :steps=$steps />
             <h5>Data Diri Pemohon</h5>
             <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
