@@ -155,7 +155,7 @@
                 @if (
                     $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
-                    @if ($is_all_berkas_valid)
+                    @if ($is_all_berkas_valid || !$is_verifikator_turn)
                         <x-dashboard.input-inline-file-upload :is_readonly="false"
                                                               :is_show_badge="false"
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -205,7 +205,7 @@
                         @endif
                         {{-- HANDLE ALL PERMOHONAN --}}
                         @if ($permohonan->jenis_izin_id != 9)
-                            @if ($is_all_berkas_valid)
+                            @if ($is_all_berkas_valid || !$is_verifikator_turn)
                                 <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                       class_input="text-xsm"

@@ -94,6 +94,7 @@ class BerkasPermohonanService
         }
 
         $berkasPermohonan->relationLoaded('validasiBerkas') || $berkasPermohonan->load('validasiBerkas');
+        // with trashed validasi berkas
         $berkasPermohonan = $berkasPermohonan
             ->validasiBerkas
             ->where('alur_permohonan_id', $alurPermohonan->id)
@@ -179,12 +180,17 @@ class BerkasPermohonanService
     public function isAllBerkasValidFromVerifikator(AlurPermohonan $alurPermohonan)
     {
         $alurPermohonan->relationLoaded('permohonan') || $alurPermohonan->load('permohonan');
-        $alurPermohonan->permohonan->relationLoaded('berkasPermohonan') || $alurPermohonan->permohonan->load('berkasPermohonan.validasiBerkas');
+        $alurPermohonan->permohonan->relationLoaded('berkasPermohonan') || $alurPermohonan->permohonan->load(['berkasPermohonan' => function ($query) use ($alurPermohonan) {
+            $query->with(['validasiBerkas' => function ($query) use ($alurPermohonan) {
+                $query->withTrashed();
+            }]);
+        }]);
 
+        // with trashed validasi berkas
         $berkasPermohonan = $alurPermohonan->permohonan->berkasPermohonan
             // ->whereNotNull('filepath')
             ->filter(function ($berkasPermohonan) use ($alurPermohonan) {
-                if($alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value || $alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value) {
+                if ($alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value || $alurPermohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value) {
                     return true;
                 }
                 return !$this->isLastStatusValidasiBerkasIsValid($alurPermohonan, $berkasPermohonan);
