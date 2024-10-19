@@ -114,14 +114,14 @@
                         </li>
                     </ul>
                 </li>
-                <li
+                {{-- <li
                     class="sidebar-item actives">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-document-1"></i>
                         <span>Surat Permohonan</span>
                     </a>
-                </li>
+                </li> --}}
             @endif
         </ul>
     </div>
