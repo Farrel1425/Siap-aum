@@ -479,6 +479,9 @@ class VerifikatorPermohonanController extends Controller
                     StatusPermohonanEnum::PERMOHONAN_BARU->value,
                     StatusPermohonanEnum::VERIFIKASI->value,
                     StatusPermohonanEnum::VERIFIKASI_ULANG->value
+                ])
+                ->whereNotIn('status', [
+                    StatusPermohonanEnum::PENDING->value
                 ]);
 
             // order table
