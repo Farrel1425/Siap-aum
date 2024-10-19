@@ -120,19 +120,28 @@
                                 </label>
                             </div>
                             <div class="col-2"></div>
-                            @if (
-                                $berkas_permohonan->is_need_validation &&
-                                    $is_verifikator_turn &&
-                                    $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value)
-                                <div class="col-2">
-                                    <button class="btn btn-sm btn-success d-block w-100"
-                                            data-detail-id="{{ encrypt($berkas_permohonan->id) }}"
-                                            data-nama="{{ $berkas_permohonan->nama }}"
-                                            data-url="{{ Storage::url($berkas_permohonan->filepath) }}"
-                                            onclick="validasiBerkas(this)"
-                                            type="button">
-                                        Verifikasi</button>
-                                </div>
+                            @if ($is_verifikator_turn && $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value)
+                                @if ($berkas_permohonan->is_need_validation)
+                                    <div class="col-2">
+                                        <button class="btn btn-sm btn-success d-block w-100"
+                                                data-detail-id="{{ encrypt($berkas_permohonan->id) }}"
+                                                data-nama="{{ $berkas_permohonan->nama }}"
+                                                data-url="{{ Storage::url($berkas_permohonan->filepath) }}"
+                                                onclick="validasiBerkas(this)"
+                                                type="button">
+                                            Verifikasi</button>
+                                    </div>
+                                @else
+                                    <div class="col-2">
+                                        <button class="btn btn-sm btn-info d-block w-100"
+                                                data-detail-id="{{ encrypt($berkas_permohonan->id) }}"
+                                                data-nama="{{ $berkas_permohonan->nama }}"
+                                                data-url="{{ Storage::url($berkas_permohonan->filepath) }}"
+                                                onclick="validasiBerkas(this)"
+                                                type="button">
+                                            Verifikasi Ulang</button>
+                                    </div>
+                                @endif
                             @else
                                 <div class="col-2"></div>
                             @endif
