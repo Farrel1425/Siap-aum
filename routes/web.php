@@ -6,6 +6,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\KuesionerController;
+use App\Http\Controllers\LayananSkmController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\UserReklameController;
@@ -216,7 +217,20 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{id}', [JenisIzinController::class, 'show'])->name('show');
                     Route::put('/{id}', [JenisIzinController::class, 'update'])->name('update');
                     // Route::delete('/{id}', [JenisIzinController::class, 'destroy'])->name('destroy');
+                });
 
+                // Layanan SKM
+                Route::prefix('layanan-skm')->name('layanan-skm.')->group(function () {
+                    // Table
+                    Route::get('/table', [LayananSkmController::class, 'layananSkmTable'])->name('table');
+
+                    // Resource
+                    Route::get('/', [LayananSkmController::class, 'index'])->name('index');
+                    Route::get('/create', [LayananSkmController::class, 'create'])->name('create');
+                    Route::post('/', [LayananSkmController::class, 'store'])->name('store');
+                    Route::get('/{id}', [LayananSkmController::class, 'show'])->name('show');
+                    Route::put('/{id}', [LayananSkmController::class, 'update'])->name('update');
+                    Route::delete('/{id}', [LayananSkmController::class, 'destroy'])->name('destroy');
                 });
             });
         });

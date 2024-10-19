@@ -127,3 +127,6 @@ WHERE
 		) AS c 
 	);
 ```
+
+php artisan generate:ulid-jenis-izin
+

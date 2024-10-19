@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use App\Models\AlurJenisIzin;
 use App\Models\FormJenisIzin;
 use App\Models\BerkasJenisIzin;
@@ -18,6 +19,17 @@ class JenisIzin extends Model
         'deskripsi',
         'template_surat',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->ulid)) {
+                $model->ulid = (string) Str::ulid();
+            }
+        });
+    }
 
     public function alurJenisIzin()
     {

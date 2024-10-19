@@ -47,6 +47,11 @@
                                href="{{ route('admin.master-data.jenis-izin.index') }}">
                                 Jenis Ijin</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.layanan-skm.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.master-data.layanan-skm.index') }}">
+                                Layanan SKM</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="sidebar-item has-sub actives">
