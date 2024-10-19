@@ -475,9 +475,6 @@ class VerifikatorPermohonanController extends Controller
 
             // Query
             $query = Permohonan::with(['alurPermohonan'])
-                // ->withWhereHas('alurPermohonan', function ($query) {
-                //     $query->where('verifikator_id', auth()->user()->id);
-                // })
                 ->whereIn('status', [
                     StatusPermohonanEnum::PERMOHONAN_BARU->value,
                     StatusPermohonanEnum::VERIFIKASI->value,
@@ -501,11 +498,8 @@ class VerifikatorPermohonanController extends Controller
                 if ($request->input('jenis_izin_id')) {
                     $query = $query->where('jenis_izin_id', $request->input('jenis_izin_id'));
                 }
-                // filtered records count
-                $totalFiltered = $query->count();
-            } else {
-                $totalFiltered = $totalRecords;
             }
+
             // Get data
             $records = $query
                 ->get()

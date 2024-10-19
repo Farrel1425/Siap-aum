@@ -120,7 +120,10 @@
                                 </label>
                             </div>
                             <div class="col-2"></div>
-                            @if ($berkas_permohonan->is_need_validation && $is_verifikator_turn)
+                            @if (
+                                $berkas_permohonan->is_need_validation &&
+                                    $is_verifikator_turn &&
+                                    $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value)
                                 <div class="col-2">
                                     <button class="btn btn-sm btn-success d-block w-100"
                                             data-detail-id="{{ encrypt($berkas_permohonan->id) }}"

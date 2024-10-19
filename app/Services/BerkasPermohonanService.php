@@ -98,6 +98,9 @@ class BerkasPermohonanService
         $berkasPermohonan = $berkasPermohonan
             ->validasiBerkas
             ->where('alur_permohonan_id', $alurPermohonan->id)
+            ->filter(function ($validasiBerkas) {
+                return $validasiBerkas->deleted_at == null;
+            })
             ->sortByDesc('created_at')
             ->first();
 

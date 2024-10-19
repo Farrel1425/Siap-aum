@@ -12,6 +12,7 @@
     'revisi' => '',
     'show_ttd_status' => false,
     'is_ttd' => false,
+    'upload_revisi' => false,
 ])
 
 <div class="form-group row mb-0 align-items-center {{ $class }}"
@@ -36,6 +37,14 @@
                     <span class="badge bg-danger fw-normal"><i class="isax isax-warning-2"></i>
                         Belum ditandatangani</span>
                 @endif
+            @endif
+            @if($revisi && !$upload_revisi)
+                <span class="badge bg-danger fw-normal"><i class="isax isax-tick-circle"></i>
+                    Revisi</span>
+            @endif
+            @if($upload_revisi)
+                <span class="badge bg-info fw-normal"><i class="isax isax-tick-circle"></i>
+                    Sudah revisi</span>
             @endif
         </label>
     @endif

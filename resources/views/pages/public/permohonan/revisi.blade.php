@@ -85,13 +85,16 @@
             @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
                 @if ($berkas_permohonan->is_revisi)
                     <x-dashboard.input-inline-file-upload :required="$berkas_permohonan->is_required"
+                                                          :upload_revisi="$berkas_permohonan->validasiBerkas
+                                                              ->where('status', 'revisi')
+                                                              ->count() == 0"
                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                           class_input="text-xsm"
                                                           downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
                                                           label="{{ $berkas_permohonan->nama }}"
                                                           name="{{ $berkas_permohonan->id }}"
-                                                          uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}"
-                                                          revisi="{{ $berkas_permohonan->catatan }}" />
+                                                          revisi="{{ $berkas_permohonan->catatan }}"
+                                                          uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}" />
                 @else
                     <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                           :required="$berkas_permohonan->is_required"
@@ -112,10 +115,11 @@
                                                readonly
                                                value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
             @endforeach --}}
-            <form action="{{ route('public.permohonan.revisi', $permohonan->id) }}" method="POST">
+            <form action="{{ route('public.permohonan.revisi', $permohonan->id) }}"
+                  method="POST">
                 @csrf
                 <button class="btn btn-primary bg-primary mt-4 w-100 d-block"
-                            type="submit">Simpan dan Lanjutkan Permohonan</button>
+                        type="submit">Simpan dan Lanjutkan Permohonan</button>
             </form>
         </section>
     </div>
