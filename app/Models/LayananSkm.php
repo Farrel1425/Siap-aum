@@ -24,7 +24,7 @@ class LayananSkm extends Model
         });
     }
 
-    public function kuesioners()
+    public function kuesioner()
     {
         return $this->hasMany(Kuesioner::class);
     }
