@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\LayananSkm;
 use App\Models\KuesionerJawaban;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,14 +13,22 @@ class Kuesioner extends Model
 
     protected $fillable = [
         'permohonan_id',
+        'layanan_skm_id',
+        'jenis_izin_id',
         'jenis_kelamin',
         'pendidikan',
         'pekerjaan',
         'jenis_layanan',
+        'is_from_skm',
     ];
 
     public function kuesionerJawaban()
     {
         return $this->hasMany(KuesionerJawaban::class);
+    }
+
+    public function layananSkm()
+    {
+        return $this->belongsTo(LayananSkm::class);
     }
 }

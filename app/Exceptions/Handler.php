@@ -35,6 +35,11 @@ class Handler extends ExceptionHandler
 
         // response internal server error for api
         $this->renderable(function (Throwable $e, $request) {
+            // only handle internal server error for api not validation error
+            if($e instanceof \Illuminate\Validation\ValidationException) {
+                return;
+            }
+
             if ($request->is('api/*')) {
                 return ResponseFormatter::error([
                     'message' => 'Internal server error'

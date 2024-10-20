@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Kuesioner;
 use Illuminate\Support\Str;
 use App\Models\AlurJenisIzin;
 use App\Models\FormJenisIzin;
@@ -29,6 +30,11 @@ class JenisIzin extends Model
                 $model->ulid = (string) Str::ulid();
             }
         });
+    }
+
+    public function kuesioner()
+    {
+        return $this->hasMany(Kuesioner::class);
     }
 
     public function alurJenisIzin()

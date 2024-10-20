@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\OpenApi\AuthenticationController as OpenApiAuthenticationController;
 use App\Http\Controllers\OpenApi\StatistikController;
+use App\Http\Controllers\Skm\SkmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,4 +43,14 @@ Route::prefix('v1')->group(function () {
         // Statistik
         Route::get('/statistik-permohonan', [StatistikController::class, 'index']);
     });
+});
+
+// SKM
+Route::prefix('skm')->middleware(['auth.skm'])->group(function () {
+    Route::get('/jenis-layanan', [SkmController::class, 'jenisLayanan']);
+    Route::get('/pertanyaan-opsi', [SkmController::class, 'pertanyaanOpsi']);
+    Route::get('/jenis-pekerjaan', [SkmController::class, 'jenisPekerjaan']);
+    Route::get('/pendidikan', [SkmController::class, 'pendidikan']);
+    Route::get('/jenis-kelamin', [SkmController::class, 'jenisKelamin']);
+    Route::post('/survey-layanan', [SkmController::class, 'surveyLayanan']);
 });

@@ -24,6 +24,14 @@ trait EnumToArray
         return array_combine(self::values(), self::descriptions());
     }
 
+    public static function arrayValues(): array
+    {
+        return array_map(fn($value, $description) => [
+            'key' => $value,
+            'value' => $description
+        ], self::values(), self::descriptions());
+    }
+
     public static function arrayWithout($key)
     {
         $array = self::array();
