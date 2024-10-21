@@ -350,7 +350,7 @@
                                                                value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
                             @endif
                         @else
-                            @if ($permohonan->jenis_izin_id != 9)
+                            @if ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value)
                                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                class_input="border-0 text-end text-xsm"
                                                                label="{{ $kelengkapan_permohonan->label }}"
