@@ -183,7 +183,7 @@ class BerkasPermohonanService
     public function isAllBerkasValidFromVerifikator(AlurPermohonan $alurPermohonan)
     {
         $alurPermohonan->relationLoaded('permohonan') || $alurPermohonan->load('permohonan');
-        if($alur_permohonan->is_done) {
+        if($alurPermohonan->is_done) {
             return true;
         }
         $alurPermohonan->permohonan->relationLoaded('berkasPermohonan') || $alurPermohonan->permohonan->load(['berkasPermohonan' => function ($query) use ($alurPermohonan) {
