@@ -52,5 +52,6 @@ Route::prefix('skm')->middleware(['auth.skm'])->group(function () {
     Route::get('/jenis-pekerjaan', [SkmController::class, 'jenisPekerjaan']);
     Route::get('/pendidikan', [SkmController::class, 'pendidikan']);
     Route::get('/jenis-kelamin', [SkmController::class, 'jenisKelamin']);
+    Route::get('/group-layanan-skm', [SkmController::class, 'groupLayananSkm']);
     Route::post('/survey-layanan', [SkmController::class, 'surveyLayanan']);
 });

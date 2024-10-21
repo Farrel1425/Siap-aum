@@ -7,6 +7,7 @@ use App\Models\LayananSkm;
 use Illuminate\Http\Request;
 use App\Enums\PendidikanEnum;
 use App\Enums\JenisKelaminEnum;
+use App\Models\GroupLayananSkm;
 use App\Enums\JenisPekerjaanEnum;
 use App\Helpers\ResponseFormatter;
 use Illuminate\Support\Facades\DB;
@@ -19,17 +20,19 @@ class SkmController extends Controller
 {
     public function jenisLayanan(Request $request)
     {
-        $jenisIzin = JenisIzin::all()->map(function ($item) {
+        $jenisIzin = JenisIzin::get()->map(function ($item) {
             return [
                 'id' => $item->ulid,
+                'group_id' => null,
                 'nama' => $item->nama,
                 'is_layanan_skm' => false,
             ];
         });
 
-        $layananSkm = LayananSkm::all()->map(function ($item) {
+        $layananSkm = LayananSkm::with('groupLayananSkm')->get()->map(function ($item) {
             return [
                 'id' => $item->ulid,
+                'group_id' => $item->groupLayananSkm->ulid,
                 'nama' => $item->nama,
                 'is_layanan_skm' => true,
             ];
@@ -89,6 +92,27 @@ class SkmController extends Controller
         return ResponseFormatter::success(
             $jenisKelamin,
             'Data jenis kelamin berhasil diambil'
+        );
+    }
+
+    public function groupLayananSkm(Request $request)
+    {
+        $groupLayananSkm = GroupLayananSkm::with('layananSkm')->get()->map(function ($item) {
+            return [
+                'id' => $item->ulid,
+                'nama' => $item->nama,
+                'jenis_layanan' => $item->layananSkm->map(function ($layanan) {
+                    return [
+                        'id' => $layanan->ulid,
+                        'nama' => $layanan->nama,
+                    ];
+                }),
+            ];
+        });
+
+        return ResponseFormatter::success(
+            $groupLayananSkm,
+            'Data group layanan skm berhasil diambil'
         );
     }
 

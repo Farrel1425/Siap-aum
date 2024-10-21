@@ -12,7 +12,24 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->is_admin) {
-            return view('pages.admin.dashboard.index');
+            $total_permohonan = Permohonan::whereNotIn('status', [
+                StatusPermohonanEnum::PENDING->value,
+                StatusPermohonanEnum::EXPIRED->value
+            ])->count();
+
+            $permohonan_diproses = Permohonan::whereNotIn('status', [
+                StatusPermohonanEnum::PENDING->value,
+                StatusPermohonanEnum::EXPIRED->value,
+                StatusPermohonanEnum::SELESAI->value,
+            ])->count();
+
+            $permohonan_selesai = Permohonan::where('status', StatusPermohonanEnum::SELESAI->value)
+                ->count();
+            return view('pages.admin.dashboard.index', compact(
+                'total_permohonan',
+                'permohonan_diproses',
+                'permohonan_selesai'
+            ));
         } else if (auth()->user()->is_public) {
             $dashboardUserController = new DashboardUserController();
             return $dashboardUserController->index($request);

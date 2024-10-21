@@ -12,7 +12,7 @@
         </div>
         <section class="section">
             <div class="row">
-                <div class="col-12 col-lg-8">
+                <div class="col-12">
                     <div class="row">
                         <div class="col-4 col-md-4">
                             <div class="card">
@@ -24,7 +24,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8 col-xxl-7 d-flex flex-column gap-2">
-                                            <h5 class="font-extrabold mb-0">112.000</h5>
+                                            <h5 class="font-extrabold mb-0">{{ number_format($total_permohonan, 0, ',', '.') }}</h5>
                                             <h6 class="text-muted fw-normal">Usulan Masuk</h6>
                                         </div>
                                     </div>
@@ -41,8 +41,8 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8 col-xxl-7 d-flex flex-column gap-2">
-                                            <h5 class="font-extrabold mb-0">112.000</h5>
-                                            <h6 class="text-muted fw-normal">Usulan Masuk</h6>
+                                            <h5 class="font-extrabold mb-0">{{ number_format($permohonan_diproses, 0, ',', '.') }}</h5>
+                                            <h6 class="text-muted fw-normal">Usulan Diproses</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -58,19 +58,12 @@
                                             </div>
                                         </div>
                                         <div class="col-md-8 col-xxl-7 d-flex flex-column gap-2">
-                                            <h5 class="font-extrabold mb-0">112.000</h5>
-                                            <h6 class="text-muted fw-normal">Usulan Masuk</h6>
+                                            <h5 class="font-extrabold mb-0">{{ number_format($permohonan_selesai, 0, ',', '.') }}</h5>
+                                            <h6 class="text-muted fw-normal">Usulan Selesai</h6>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="d-inline">Histori Aktivitas</h3>
                         </div>
                     </div>
                 </div>

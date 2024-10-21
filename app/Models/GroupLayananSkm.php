@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\Kuesioner;
+use App\Models\LayananSkm;
 use Illuminate\Support\Str;
-use App\Models\GroupLayananSkm;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class LayananSkm extends Model
+class GroupLayananSkm extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nama',
+        'nama'
     ];
 
     protected static function boot()
@@ -25,13 +24,8 @@ class LayananSkm extends Model
         });
     }
 
-    public function kuesioner()
+    public function layananSkm()
     {
-        return $this->hasMany(Kuesioner::class);
-    }
-
-    public function groupLayananSkm()
-    {
-        return $this->belongsTo(GroupLayananSkm::class);
+        return $this->hasMany(LayananSkm::class);
     }
 }

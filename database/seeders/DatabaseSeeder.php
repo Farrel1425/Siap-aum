@@ -26,5 +26,12 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             OpenApiUserSeeder::class,
         ]);
+
+        // generate group layanan skm
+        if(config('app.env') != 'production') {
+            $this->call([
+                GroupLayananSkmSeeder::class,
+            ]);
+        }
     }
 }
