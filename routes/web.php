@@ -223,6 +223,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::prefix('layanan-skm')->name('layanan-skm.')->group(function () {
                     // Table
                     Route::get('/table', [LayananSkmController::class, 'layananSkmTable'])->name('table');
+                    Route::get('/group-skm-table', [LayananSkmController::class, 'groupSkmTable'])->name('group-skm-table');
 
                     // Resource
                     Route::get('/', [LayananSkmController::class, 'index'])->name('index');
@@ -231,6 +232,12 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{id}', [LayananSkmController::class, 'show'])->name('show');
                     Route::put('/{id}', [LayananSkmController::class, 'update'])->name('update');
                     Route::delete('/{id}', [LayananSkmController::class, 'destroy'])->name('destroy');
+
+                    // group layanan skm
+                    Route::get('/group-skm/create', [LayananSkmController::class, 'createGroupSkm'])->name('group-skm.create');
+                    Route::post('/group-skm', [LayananSkmController::class, 'storeGroupSkm'])->name('group-skm.store');
+                    Route::get('/group-skm/{id}', [LayananSkmController::class, 'showGroupSkm'])->name('group-skm.show');
+                    Route::put('/group-skm/{id}', [LayananSkmController::class, 'updateGroupSkm'])->name('group-skm.update');
                 });
             });
         });
