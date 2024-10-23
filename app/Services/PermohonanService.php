@@ -136,6 +136,7 @@ class PermohonanService
             $file = file_get_contents(storage_path('app/' . $permohonan->template_surat_filepath));
             $response = Http::withBasicAuth(config('app.esign_username'), config('app.esign_password'))
                 ->attach('file', $file, 'test.pdf')
+                ->timeout(30)
                 ->post(config('app.esign_url') . '/api/sign/pdf', [
                     'nik' => $user->nik,
                     'passphrase' => $passphrase,
@@ -231,7 +232,7 @@ class PermohonanService
             $pdfPathStorage = storage_path('app/' . $pdfPath);
 
             // Path to LibreOffice soffice executable
-            if (config('app.env') == 'local') {
+            if (config('app.os_server') == 'windows') {
                 $sofficePath = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
             } else {
                 $sofficePath = '/usr/bin/soffice';

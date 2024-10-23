@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\SektorIzin;
+use App\Models\KategoriIzin;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\OpenApiUserSeeder;
@@ -14,13 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
@@ -28,10 +24,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // generate group layanan skm
-        if(config('app.env') != 'production') {
+        if (config('app.env') != 'production') {
             $this->call([
                 GroupLayananSkmSeeder::class,
             ]);
+            if (KategoriIzin::count() < 5) {
+                KategoriIzin::factory()->count(5)->has(
+                    SektorIzin::factory()->count(5)
+                )->create();
+            }
         }
     }
 }

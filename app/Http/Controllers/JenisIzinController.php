@@ -7,6 +7,8 @@ use App\Models\JenisIzin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Enums\JenisVerifikatorEnum;
+use App\Models\KategoriIzin;
+use App\Models\SektorIzin;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -20,13 +22,15 @@ class JenisIzinController extends Controller
 
     public function create(Request $request)
     {
-        return view('pages.admin.master-data.jenis-izin.create');
+        $kategori_izins = KategoriIzin::with('sektorIzin')->get();
+        return view('pages.admin.master-data.jenis-izin.create', compact('kategori_izins'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|unique:jenis_izins,nama',
+            'sektor_izin_id' => 'required|exists:sektor_izins,id',
             'deskripsi' => 'required|string',
             'syarat_form' => 'required',
             'syarat_form.*.nama' => 'required',
@@ -60,6 +64,9 @@ class JenisIzinController extends Controller
         DB::beginTransaction();
         try {
             $jenis_izin = new JenisIzin();
+            $sektor_izin = SektorIzin::with('kategoriIzin')->findOrFail($request->sektor_izin_id);
+            $jenis_izin->sektor_izin_id = $request->sektor_izin_id;
+            $jenis_izin->kategori_izin_id = $sektor_izin->kategoriIzin->id;
             $jenis_izin->nama = $request->nama;
             $jenis_izin->deskripsi = $request->deskripsi;
 
@@ -113,7 +120,7 @@ class JenisIzinController extends Controller
             return redirect()->route('admin.master-data.jenis-izin.index')->with('success', 'Data berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             return redirect()->back()->with('error', 'Kesalahan pada server. Hubungi Administrator')->withInput();
         }
     }
@@ -134,6 +141,8 @@ class JenisIzinController extends Controller
                 return $q->orderBy('urutan');
             },
         ])->findOrFail($id);
+
+        $kategori_izins = KategoriIzin::with('sektorIzin')->get();
 
         $jenis_izin->formJenisIzin = $jenis_izin->formJenisIzin->map(function ($formJenisIzin) {
             return collect([
@@ -171,13 +180,14 @@ class JenisIzinController extends Controller
             ]);
         });
 
-        return view('pages.admin.master-data.jenis-izin.show', compact('jenis_izin'));
+        return view('pages.admin.master-data.jenis-izin.show', compact('jenis_izin', 'kategori_izins'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama' => 'required|string',
+            'sektor_izin_id' => 'required|exists:sektor_izins,id',
             'deskripsi' => 'required|string',
             'syarat_form.*' => 'required',
             'syarat_form.*.nama' => 'required',
@@ -232,6 +242,9 @@ class JenisIzinController extends Controller
 
         DB::beginTransaction();
         try {
+            $sektor_izin = SektorIzin::with('kategoriIzin')->findOrFail($request->sektor_izin_id);
+            $jenis_izin->sektor_izin_id = $request->sektor_izin_id;
+            $jenis_izin->kategori_izin_id = $sektor_izin->kategoriIzin->id;
             $jenis_izin->nama = $request->nama;
             $jenis_izin->deskripsi = $request->deskripsi;
 
@@ -310,7 +323,7 @@ class JenisIzinController extends Controller
             $search = $request->input('search');
 
             // Query
-            $query = JenisIzin::query();
+            $query = JenisIzin::with('sektorIzin');
 
             // Total records
             $totalRecords = $query->count();
@@ -343,6 +356,8 @@ class JenisIzinController extends Controller
                     return [
                         'id' => $jenisIzin->id,
                         'nama' => $jenisIzin->nama,
+                        'nama_kategori_izin' => $jenisIzin->sektorIzin?->kategoriIzin?->nama ?? '-',
+                        'nama_sektor_izin' => $jenisIzin->sektorIzin?->nama ?? '-',
                         'created_at' => $jenisIzin->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
                         'action' => $action,
                     ];

@@ -47,6 +47,16 @@
                                href="{{ route('admin.master-data.jenis-izin.index') }}">
                                 Jenis Ijin</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.sektor-izin.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.master-data.sektor-izin.index') }}">
+                                Sektor Ijin</a>
+                        </li>
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.kategori-izin.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.master-data.kategori-izin.index') }}">
+                                Kategori Ijin</a>
+                        </li>
                         <li class="submenu-item {{ request()->routeIs('admin.master-data.layanan-skm.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.layanan-skm.index') }}">

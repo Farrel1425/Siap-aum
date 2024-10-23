@@ -20,6 +20,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Jenis Ijin</th>
+                                    <th>kategori</th>
+                                    <th>Sektor</th>
                                     <th>Waktu Pembuatan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -57,6 +59,18 @@
                     {
                         data: 'nama',
                         name: 'nama',
+                        className: 'text-start',
+                        orderable: false,
+                    },
+                    {
+                        data: 'nama_kategori_izin',
+                        name: 'nama_kategori_izin',
+                        className: 'text-start',
+                        orderable: false,
+                    },
+                    {
+                        data: 'nama_sektor_izin',
+                        name: 'nama_sektor_izin',
                         className: 'text-start',
                         orderable: false,
                     },

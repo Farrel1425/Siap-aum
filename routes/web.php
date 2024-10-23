@@ -8,8 +8,10 @@ use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\LayananSkmController;
 use App\Http\Controllers\PermohonanController;
+use App\Http\Controllers\SektorIzinController;
 use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\UserReklameController;
+use App\Http\Controllers\KategoriIzinController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\UserPermohonanController;
@@ -217,6 +219,34 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{id}', [JenisIzinController::class, 'show'])->name('show');
                     Route::put('/{id}', [JenisIzinController::class, 'update'])->name('update');
                     // Route::delete('/{id}', [JenisIzinController::class, 'destroy'])->name('destroy');
+                });
+
+                // Sektor Izin
+                Route::prefix('sektor-izin')->name('sektor-izin.')->group(function () {
+                    // Table
+                    Route::get('/table', [SektorIzinController::class, 'sektorIzinTable'])->name('table');
+
+                    // Resource
+                    Route::get('/', [SektorIzinController::class, 'index'])->name('index');
+                    Route::get('/create', [SektorIzinController::class, 'create'])->name('create');
+                    Route::post('/', [SektorIzinController::class, 'store'])->name('store');
+                    Route::get('/{id}', [SektorIzinController::class, 'show'])->name('show');
+                    Route::put('/{id}', [SektorIzinController::class, 'update'])->name('update');
+                    Route::delete('/{id}', [SektorIzinController::class, 'destroy'])->name('destroy');
+                });
+
+                // Kateogri Izin
+                Route::prefix('kategori-izin')->name('kategori-izin.')->group(function () {
+                    // Table
+                    Route::get('/table', [KategoriIzinController::class, 'kategoriIzinTable'])->name('table');
+
+                    // Resource
+                    Route::get('/', [KategoriIzinController::class, 'index'])->name('index');
+                    Route::get('/create', [KategoriIzinController::class, 'create'])->name('create');
+                    Route::post('/', [KategoriIzinController::class, 'store'])->name('store');
+                    Route::get('/{id}', [KategoriIzinController::class, 'show'])->name('show');
+                    Route::put('/{id}', [KategoriIzinController::class, 'update'])->name('update');
+                    Route::delete('/{id}', [KategoriIzinController::class, 'destroy'])->name('destroy');
                 });
 
                 // Layanan SKM

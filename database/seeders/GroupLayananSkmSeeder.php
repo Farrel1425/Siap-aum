@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\GroupLayananSkm;
 use Illuminate\Database\Seeder;
+use PHPUnit\Framework\Attributes\Group;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class GroupLayananSkmSeeder extends Seeder
 {
@@ -16,8 +18,11 @@ class GroupLayananSkmSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         // generate group layanan skm
+        if(GroupLayananSkm::count() > 5) {
+            return;
+        }
         for ($i = 0; $i < 5; $i++) {
-            \App\Models\GroupLayananSkm::create([
+            GroupLayananSkm::create([
                 'nama' => $faker->sentence(2),
             ])->layananSkm()->createMany([
                 [

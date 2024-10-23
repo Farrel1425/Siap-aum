@@ -34,6 +34,24 @@
                 </div>
                 <div class="card mb-3">
                     <div class="card-body p-4">
+                        <x-dashboard.input-inline-select-group :options="$kategori_izins->map(function ($kategori) {
+                            return [
+                                'key' => $kategori->nama,
+                                'value' => $kategori->sektorIzin->mapWithKeys(function ($sektor) {
+                                    return [$sektor->id => $sektor->nama];
+                                }),
+                            ];
+                        })"
+                                                               :required=True
+                                                               id="kategori"
+                                                               label="Kategori"
+                                                               name="sektor_izin_id"
+                                                               placeholder="Pilih sektor ijin"
+                                                               value="{{ old('sektor_izin_id') }}" />
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body p-4">
                         <x-dashboard.input-inline-ckeditor :required=True
                                                            id="deskripsi"
                                                            label="Masukkan deskripsi syarat ijin"

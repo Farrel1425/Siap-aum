@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\Kuesioner;
+use App\Models\SektorIzin;
 use Illuminate\Support\Str;
+use App\Models\KategoriIzin;
 use App\Models\AlurJenisIzin;
 use App\Models\FormJenisIzin;
 use App\Models\BerkasJenisIzin;
@@ -30,6 +32,16 @@ class JenisIzin extends Model
                 $model->ulid = (string) Str::ulid();
             }
         });
+    }
+
+    public function kategoriIzin()
+    {
+        return $this->belongsTo(KategoriIzin::class);
+    }
+
+    public function sektorIzin()
+    {
+        return $this->belongsTo(SektorIzin::class);
     }
 
     public function kuesioner()
