@@ -32,6 +32,17 @@
                                                        value="{{ old('nama') }}" />
                     </div>
                 </div>
+                <div class="card mb-3">
+                    <div class="card-body p-3">
+                        <x-dashboard.input-inline-file :required=True
+                                                       class=""
+                                                       id="image"
+                                                       label="Icon Group"
+                                                       name="image"
+                                                       placeholder="Masukkan image group layanan skm"
+                                                       value="{{ old('image') }}" />
+                    </div>
+                </div>
                 <button class="btn btn-primary w-100 d-block mb-3 fw-bold"
                         type="submit">Simpan Group Layanan SKM</button>
             </form>

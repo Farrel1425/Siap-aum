@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\LayananSkm;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class GroupLayananSkm extends Model
@@ -12,7 +13,8 @@ class GroupLayananSkm extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama'
+        'nama',
+        'image_filepath',
     ];
 
     protected static function boot()
@@ -27,5 +29,10 @@ class GroupLayananSkm extends Model
     public function layananSkm()
     {
         return $this->hasMany(LayananSkm::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image_filepath ? asset(Storage::url($this->image_filepath)) : null;
     }
 }

@@ -101,6 +101,7 @@ class SkmController extends Controller
             return [
                 'id' => $item->ulid,
                 'nama' => $item->nama,
+                'image_url' => $item->image_url,
                 'jenis_layanan' => $item->layananSkm->map(function ($layanan) {
                     return [
                         'id' => $layanan->ulid,

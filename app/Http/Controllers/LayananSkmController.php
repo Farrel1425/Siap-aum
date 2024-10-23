@@ -6,6 +6,7 @@ use App\Models\LayananSkm;
 use Illuminate\Http\Request;
 use App\Models\GroupLayananSkm;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class LayananSkmController extends Controller
 {
@@ -90,11 +91,19 @@ class LayananSkmController extends Controller
     {
         $request->validate([
             'nama' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imagePath = $image->store('group_layanan_skm', 'public');
+            }
+
             $groupLayananSkm = new GroupLayananSkm();
             $groupLayananSkm->nama = $request->nama;
+            $groupLayananSkm->image_filepath = $imagePath ?? null;
             $groupLayananSkm->save();
 
             return redirect()->route('admin.master-data.layanan-skm.index')->with('success', 'Berhasil menambahkan group layanan skm');
@@ -114,11 +123,18 @@ class LayananSkmController extends Controller
     {
         $request->validate([
             'nama' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imagePath = $image->store('group_layanan_skm', 'public');
+            }
+
             $groupLayananSkm = GroupLayananSkm::findOrFail($id);
             $groupLayananSkm->nama = $request->nama;
+            $groupLayananSkm->image_filepath = $imagePath ?? null;
             $groupLayananSkm->save();
 
             return redirect()->route('admin.master-data.layanan-skm.index')->with('success', 'Berhasil mengubah group layanan skm');
@@ -143,10 +159,10 @@ class LayananSkmController extends Controller
             $totalRecords = $query->count();
 
             // Search
-            if($search){
+            if ($search) {
                 $query = $query->where('nama', 'like', '%' . $search . '%');
                 $totalFiltered = $query->count();
-            }else{
+            } else {
                 $totalFiltered = $query->count();
             }
 
@@ -197,10 +213,10 @@ class LayananSkmController extends Controller
             $totalRecords = $query->count();
 
             // Search
-            if($search){
+            if ($search) {
                 $query = $query->where('nama', 'like', '%' . $search . '%');
                 $totalFiltered = $query->count();
-            }else{
+            } else {
                 $totalFiltered = $query->count();
             }
 
@@ -218,6 +234,7 @@ class LayananSkmController extends Controller
                     return [
                         'id' => $group_layanan_skm->id,
                         'nama' => $group_layanan_skm->nama,
+                        'image_url' => $group_layanan_skm->image_url,
                         'created_at' => $group_layanan_skm->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
                         'action' => $action,
                     ];

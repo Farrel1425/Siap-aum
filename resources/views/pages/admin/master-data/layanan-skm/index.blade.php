@@ -31,6 +31,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
+                                            <th>Icon</th>
                                             <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
@@ -86,6 +87,21 @@
                         className: 'text-center',
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    //image
+                    {
+                        data: 'image_url',
+                        name: 'image_url',
+                        className: 'text-center',
+                        orderable: false,
+                        render: function(data, type, row) {
+                            if (!data) {
+                                return `-`;
+                            }else{
+                                return `<img src="${data}" alt="${row.nama}" class="img-fluid"
+                                            style="max-width: 50px;">`;
+                            }
                         }
                     },
                     {
