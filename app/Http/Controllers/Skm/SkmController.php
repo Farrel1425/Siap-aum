@@ -169,6 +169,9 @@ class SkmController extends Controller
             }
 
             $kuesioner = $layanan->kuesioner()->create([
+                'nama' => $request->nama,
+                'nomor_telepon' => $request->nomor_telepon,
+                'email' => $request->email,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'jenis_layanan' => $layanan->nama,
                 'pendidikan' => $request->pendidikan,

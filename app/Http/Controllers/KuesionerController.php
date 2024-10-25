@@ -48,6 +48,9 @@ class KuesionerController extends Controller
         DB::beginTransaction();
         try {
             $kuesioner = $permohonan->kuesioner()->create([
+                'nama' => $permohonan->user->name,
+                'nomor_telepon' => $permohonan->user->telepon,
+                'email' => $permohonan->user->email,
                 'jenis_kelamin' => $permohonan->user->jenis_kelamin,
                 'jenis_layanan' => $permohonan->jenisIzin->nama,
                 'pendidikan' => $request->pendidikan,

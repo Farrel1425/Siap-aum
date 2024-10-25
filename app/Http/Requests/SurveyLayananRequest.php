@@ -27,6 +27,9 @@ class SurveyLayananRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'nama' => 'required',
+            'nomor_telepon' => 'required',
+            'email' => 'required|email',
             'pendidikan' => 'required|in:' . implode(',', PendidikanEnum::values()),
             'pekerjaan' => 'required|in:' . implode(',', JenisPekerjaanEnum::values()),
             'jenis_kelamin' => 'required|in: ' . implode(',', JenisKelaminEnum::values()),
