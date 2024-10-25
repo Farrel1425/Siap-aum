@@ -39,7 +39,6 @@
 @push('scripts')
     <script>
         $('#jenis-ijin-table').DataTable({
-            responsive: true,
             processing: true,
             serverSide: true,
             ajax: {
