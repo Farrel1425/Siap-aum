@@ -11,7 +11,10 @@ class SektorIzin extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kategori_izin_id', 'nama'];
+    protected $fillable = [
+        'kategori_izin_id',
+        'nama'
+    ];
 
     public function kategoriIzin()
     {

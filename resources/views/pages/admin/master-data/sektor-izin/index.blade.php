@@ -6,8 +6,8 @@
         <div class="page-title mb-3">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last d-flex align-items-center">
-                    <h2 class="d-inline mb-0">Kategori Ijin</h2>
-                    <a href="{{ route('admin.master-data.kategori-izin.create') }}" class="ms-4 btn btn-primary rounded"><i class="isax isax-element-plus"></i> Tambah</a>
+                    <h2 class="d-inline mb-0">Sektor Ijin</h2>
+                    <a href="{{ route('admin.master-data.sektor-izin.create') }}" class="ms-4 btn btn-primary rounded"><i class="isax isax-element-plus"></i> Tambah</a>
                 </div>
             </div>
         </div>
@@ -19,6 +19,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Sektor Ijin</th>
                                     <th>Kategori Ijin</th>
                                     <th>Waktu Pembuatan</th>
                                     <th class="text-center">Aksi</th>
@@ -39,7 +40,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ route('admin.master-data.kategori-izin.table') }}',
+                    url: '{{ route('admin.master-data.sektor-izin.table') }}',
                     data: function(d) {
                         d.search = $('#dt-search-0').val();
                     }
@@ -57,6 +58,12 @@
                     {
                         data: 'nama',
                         name: 'nama',
+                        className: 'text-start',
+                        orderable: false,
+                    },
+                    {
+                        data: 'nama_kategori_izin',
+                        name: 'nama_kategori_izin',
                         className: 'text-start',
                         orderable: false,
                     },
