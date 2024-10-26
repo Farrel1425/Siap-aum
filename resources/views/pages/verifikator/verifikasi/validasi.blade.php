@@ -367,9 +367,10 @@
                 @if ($is_verifikator_turn && $is_can_verified)
                     <div class="mt-4">
                         @if ($alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::PENANDATANGAN->value)
-                            <input id="passphrase"
+                            <input autocomplete="off"
+                                   id="passphrase"
                                    name="passphrase"
-                                   type="hidden">
+                                   type="hidden" />
                             <button class="d-block btn w-100 btn-primary"
                                     onclick="promptTtd()">
                                 <i class="isax isax-tick-circle me-2"></i> Tanda Tangan dan Selesaikan Permohonan
