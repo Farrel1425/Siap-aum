@@ -105,7 +105,7 @@ class PermohonanService
                 'id' => 0,
                 'nama' => 'Pemohon',
                 'urutan' => 0,
-                'is_done' => $permohonan->pengajuan_at ? true : false,
+                'is_done' => $permohonan->status == StatusPermohonanEnum::REVISI->value ? false : ($permohonan->pengajuan_at ? true : false),
                 'done_at' => $permohonan->pengajuan_at ? $permohonan->pengajuan_at->setTimezone('GMT+8')->format('d-m-Y H:i:s') : '-',
             ]);
 
