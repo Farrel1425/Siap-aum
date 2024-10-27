@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Kuesioner;
+use App\Models\Permohonan;
 use App\Models\SektorIzin;
 use Illuminate\Support\Str;
 use App\Models\KategoriIzin;
@@ -67,5 +68,10 @@ class JenisIzin extends Model
     public function kelengkapanJenisIzin()
     {
         return $this->hasMany(KelengkapanJenisIzin::class);
+    }
+
+    public function permohonan()
+    {
+        return $this->hasMany(Permohonan::class);
     }
 }

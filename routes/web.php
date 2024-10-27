@@ -1,6 +1,9 @@
 <?php
 
+use App\Services\LaporanService;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DashboardController;
@@ -11,6 +14,7 @@ use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\SektorIzinController;
 use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\UserReklameController;
+use App\Exports\Laporan\PermohonanBulananExport;
 use App\Http\Controllers\KategoriIzinController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
@@ -29,6 +33,15 @@ use App\Http\Controllers\VerifikatorPermohonanController;
 */
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
+
+Route::get('/test/{tahun}', function (Request $request, $tahun) {
+    $a = new LaporanService();
+    return $a->laporanPermohonanBulanan($tahun);
+});
+
+Route::get('/test-excel', function () {
+    return Excel::download(new PermohonanBulananExport(2024), 'permohonan-bulanan.xlsx');
+});
 
 Route::get('/panduan-pengguna', [LandingController::class, 'userGuideIndex'])->name('user-guide');;
 
