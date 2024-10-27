@@ -67,7 +67,8 @@
                                 </a>
                                 <p class="text-xsm text-primary fw-bold mb-0">${row.nomor_registrasi}</p>
                                 <p class="text-xsm text-muted mb-0">Tanggal Masuk: ${row.tanggal_masuk}</p>
-                                <p class="text-xsm text-muted mb-0 d-inline">${row.status_badge}</p>
+                                <p class="text-xsm text-muted mb-1">${row.status_badge}</p>
+                                <p class="text-xsm text-primary mb-0">A/N ${row.nama}</p>
                             </div>
                             ` + (row.status == 'pending' ? `
                                 <form action="${row.delete_url}" }} method="POST" id="permohonan-${row.id}">
