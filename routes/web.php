@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisIzinController;
 use App\Http\Controllers\KuesionerController;
@@ -40,7 +41,7 @@ Route::get('/test/{tahun}', function (Request $request, $tahun) {
 });
 
 Route::get('/test-excel', function () {
-    return Excel::download(new PermohonanBulananExport(2024), 'permohonan-bulanan.xlsx');
+    return Excel::download(new PermohonanBulananExport(2025), 'permohonan-bulanan.xlsx');
 });
 
 Route::get('/panduan-pengguna', [LandingController::class, 'userGuideIndex'])->name('user-guide');;
@@ -281,6 +282,15 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/group-skm', [LayananSkmController::class, 'storeGroupSkm'])->name('group-skm.store');
                     Route::get('/group-skm/{id}', [LayananSkmController::class, 'showGroupSkm'])->name('group-skm.show');
                     Route::put('/group-skm/{id}', [LayananSkmController::class, 'updateGroupSkm'])->name('group-skm.update');
+                });
+            });
+
+            // Laporan
+            Route::prefix('laporan')->name('laporan.')->group(function () {
+                // Ijin terbit bulanan
+                Route::prefix('ijin-terbit-bulanan')->name('ijin-terbit-bulanan.')->group(function () {// Resource
+                    Route::get('/', [LaporanController::class, 'ijinTerbitBulananIndex'])->name('index');
+                    Route::get('/export', [LaporanController::class, 'ijinTerbitBulananExport'])->name('export');
                 });
             });
         });

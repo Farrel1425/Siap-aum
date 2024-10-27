@@ -64,16 +64,16 @@
                         </li>
                     </ul>
                 </li>
-                <li class="sidebar-item has-sub actives">
+                <li class="sidebar-item has-sub {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-task-square"></i>
                         <span>Laporan</span>
                     </a>
                     <ul class="submenu">
-                        <li class="submenu-item actives">
+                        <li class="submenu-item {{ request()->routeIs('admin.laporan.ijin-terbit-bulanan.*') ? 'active' : '' }}">
                             <a class="submenu-link"
-                               href="#">
+                               href="{{ route('admin.laporan.ijin-terbit-bulanan.index') }}">
                                 Ijin Terbit Bulanan</a>
                         </li>
                         <li class="submenu-item actives">
