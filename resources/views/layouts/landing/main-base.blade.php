@@ -14,6 +14,7 @@
     <link href="{{ asset('assets/images/logo.png') }}"
           rel="shortcut icon"
           type="image/x-icon">
+    @stack('styles')
 </head>
 
 <body id="app">

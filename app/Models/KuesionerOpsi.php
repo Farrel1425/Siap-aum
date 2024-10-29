@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\KuesionerPertanyaan;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KuesionerOpsi extends Model
 {
@@ -14,4 +15,9 @@ class KuesionerOpsi extends Model
         'opsi',
         'point',
     ];
+
+    public function kuesionerPertanyaan()
+    {
+        return $this->belongsTo(KuesionerPertanyaan::class);
+    }
 }

@@ -31,4 +31,9 @@ class Kuesioner extends Model
     {
         return $this->belongsTo(LayananSkm::class);
     }
+
+    public function jenisIzin()
+    {
+        return $this->belongsTo(JenisIzin::class);
+    }
 }

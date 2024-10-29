@@ -37,7 +37,7 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 
 Route::get('/test/{tahun}', function (Request $request, $tahun) {
     $a = new LaporanService();
-    return $a->laporanPermohonanBulanan($tahun);
+    return $a->laporanSurveyBulananPublic();
 });
 
 Route::get('/test-excel', function () {

@@ -21,4 +21,9 @@ class LaporanController extends Controller
         $tahun = $request->tahun;
         return Excel::download(new PermohonanBulananExport($tahun), 'laporan_ijin_terbit_bulanan_' . $tahun . '.xlsx');
     }
+
+    public function surveyBulanan(Request $request)
+    {
+        return view('pages.admin.laporan.survey-bulanan.index');
+    }
 }

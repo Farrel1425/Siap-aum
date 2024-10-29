@@ -107,6 +107,11 @@ class Permohonan extends Model
 
     public function getStatusBadgeAttribute()
     {
+        if($this->jenis_izin_id == 9) {
+            if($this->reklame->skpd_filepath && !$this->reklame->bukti_bayar_filepath) {
+                return '<span class="badge bg-warning">Menunggu Pembayaran</span>';
+            }
+        }
         switch ($this->status) {
             case StatusPermohonanEnum::PENDING->value:
                 return '<span class="badge bg-warning">Pending</span>';

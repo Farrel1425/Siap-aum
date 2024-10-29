@@ -38,6 +38,8 @@ class KuesionerController extends Controller
             'kuesioner.*' => 'required|integer',
         ]);
 
+        $permohonan->load('user');
+
         // validate if all kuesioner id is inputted correctly as key in kuesioner request
         $kuesionerIds = KuesionerPertanyaan::pluck('id')->toArray();
         $diff = array_diff(array_keys($request->kuesioner), $kuesionerIds);
@@ -55,6 +57,7 @@ class KuesionerController extends Controller
                 'jenis_layanan' => $permohonan->jenisIzin->nama,
                 'pendidikan' => $request->pendidikan,
                 'pekerjaan' => $request->pekerjaan,
+                'jenis_izin_id' => $permohonan->jenis_izin_id,
             ]);
 
             // validate value in kuesioner is belong to kuesioner opsi key

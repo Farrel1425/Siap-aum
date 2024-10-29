@@ -9,10 +9,11 @@ use Illuminate\Http\Request;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use App\Http\Controllers\Controller;
+use App\Services\LaporanService;
 
 class LandingController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, LaporanService $laporan_srvice)
     {
         $user_count = User::whereIn('role_id', [
             RoleEnum::PUBLIC->value,
@@ -25,11 +26,14 @@ class LandingController extends Controller
             ]
         )->count();
         $permohonan_selesai_count = $permohonan_count - $permohonan_proses_count;
+
+        $laporan_survey = $laporan_srvice->laporanSurveyBulananPublic();
         return view('pages.landing.index', compact(
             'user_count',
             'permohonan_count',
             'permohonan_proses_count',
-            'permohonan_selesai_count'
+            'permohonan_selesai_count',
+            'laporan_survey'
         ));
     }
 

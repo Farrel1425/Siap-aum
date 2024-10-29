@@ -29,78 +29,78 @@ class SinkronisasiDataSiajaibLegacyService
     public function __construct()
     {
         // USERS
-        $start = microtime(true);
-        Log::info('Start Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
-        Log::info('==================================================================');
-        Log::info('Start Sinkronisasi Data Users');
-        $start = microtime(true);
-        $this->sinkronRoles();
-        Log::info('Finish Sinkronisasi Data Users : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Jenis Izin');
-        $start = microtime(true);
-        $this->sinkronUsers();
-        Log::info('Finish Sinkronisasi Data Users : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // $start = microtime(true);
+        // Log::info('Start Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
+        // Log::info('==================================================================');
+        // Log::info('Start Sinkronisasi Data Users');
+        // $start = microtime(true);
+        // $this->sinkronRoles();
+        // Log::info('Finish Sinkronisasi Data Users : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronUsers();
+        // Log::info('Finish Sinkronisasi Data Users : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
 
-        // JENIS IZIN
-        Log::info('Start Sinkronisasi Data Jenis Izin');
-        $start = microtime(true);
-        $this->sinkronJenizIzin();
-        Log::info('Finish Sinkronisas Data Jenis Izin : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Form Jenis Izin');
-        $start = microtime(true);
-        $this->sinkronFormJenisIzin();
-        Log::info('Finish Sinkronisas Data Form Jenis Izin : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Berkas Jenis Izin');
-        $start = microtime(true);
-        $this->sinkronBerkasJenisIzin();
-        Log::info('Finish Sinkronisas Data Berkas Jenis Izin : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Alur Jenis Izin');
-        $start = microtime(true);
-        $this->sinkronKelengkapanJenisIzin();
-        Log::info('Finish Sinkronisas Data Alur Jenis Izin : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Kelengkapan Jenis Izin');
-        $start = microtime(true);
-        $this->sinkronAlurJenisIzin();
-        Log::info('Finish Sinkronisas Data Kelengkapan Jenis Izin : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // // JENIS IZIN
+        // Log::info('Start Sinkronisasi Data Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronJenizIzin();
+        // Log::info('Finish Sinkronisas Data Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Form Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronFormJenisIzin();
+        // Log::info('Finish Sinkronisas Data Form Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Berkas Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronBerkasJenisIzin();
+        // Log::info('Finish Sinkronisas Data Berkas Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Alur Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronKelengkapanJenisIzin();
+        // Log::info('Finish Sinkronisas Data Alur Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kelengkapan Jenis Izin');
+        // $start = microtime(true);
+        // $this->sinkronAlurJenisIzin();
+        // Log::info('Finish Sinkronisas Data Kelengkapan Jenis Izin : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
 
         // PERMOHONAN
-        Log::info('Start Sinkronisasi Data Permohonan');
-        $start = microtime(true);
-        $this->sinkronPermohonan();
-        Log::info('Finish Sinkronisas Data Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Form Permohonan');
-        $start = microtime(true);
-        $this->sinkronFormPermohonan();
-        Log::info('Finish Sinkronisas Data Form Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Berkas Permohonan');
-        $start = microtime(true);
-        $this->sinkronBerkasPermohonan();
-        Log::info('Finish Sinkronisas Data Berkas Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Alur Permohonan');
-        $start = microtime(true);
-        $this->sinkronAlurPermohonan();
-        Log::info('Finish Sinkronisas Data Alur Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Validasi Berkas Permohonan');
-        $start = microtime(true);
-        $this->sinkronValidasiBerkasPermohonan();
-        Log::info('Finish Sinkronisas Validasi Berkas Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Kelengkapan Permohonan');
-        $start = microtime(true);
-        $this->sinkronKelengkapanPermohonan();
-        Log::info('Finish Sinkronisas Data Kelengkapan Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // Log::info('Start Sinkronisasi Data Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronPermohonan();
+        // Log::info('Finish Sinkronisas Data Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Form Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronFormPermohonan();
+        // Log::info('Finish Sinkronisas Data Form Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Berkas Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronBerkasPermohonan();
+        // Log::info('Finish Sinkronisas Data Berkas Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Alur Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronAlurPermohonan();
+        // Log::info('Finish Sinkronisas Data Alur Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Validasi Berkas Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronValidasiBerkasPermohonan();
+        // Log::info('Finish Sinkronisas Validasi Berkas Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kelengkapan Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronKelengkapanPermohonan();
+        // Log::info('Finish Sinkronisas Data Kelengkapan Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
 
         // Kuesioner
         Log::info('Start Sinkronisasi Data Kuesioner');
@@ -125,20 +125,20 @@ class SinkronisasiDataSiajaibLegacyService
         Log::info('================');
 
         // Reklame
-        Log::info('Start Sinkronisasi Data Reklame');
-        $start = microtime(true);
-        $this->sinkronRegistrasiReklame();
-        Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Pembayaran Reklame');
-        $start = microtime(true);
-        $this->sinkronPembayaranReklame();
-        Log::info('Finish Sinkronisas Data Pembayaran Reklame : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // Log::info('Start Sinkronisasi Data Reklame');
+        // $start = microtime(true);
+        // $this->sinkronRegistrasiReklame();
+        // Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Pembayaran Reklame');
+        // $start = microtime(true);
+        // $this->sinkronPembayaranReklame();
+        // Log::info('Finish Sinkronisas Data Pembayaran Reklame : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
 
 
-        Log::info('Finish Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
-        Log::info('==================================================================');
+        // Log::info('Finish Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
+        // Log::info('==================================================================');
     }
 
     private function sinkronRoles()
@@ -162,7 +162,7 @@ class SinkronisasiDataSiajaibLegacyService
         $usersLegacy = DB::connection('siajaib_legacy')->table('users')->get();
 
         foreach ($usersLegacy as $user) {
-            if(config('app.env') == 'dev' || config('app.env') == 'local'){
+            if (config('app.env') == 'dev' || config('app.env') == 'local') {
                 $user->password = bcrypt('P@ssw0rd');
             }
             $user = [
@@ -512,7 +512,13 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKuesioner()
     {
-        $kuesionerLegacy = DB::connection('siajaib_legacy')->table('kuisioner')->whereNull('id_skm')->get();
+        $kuesionerLegacy = DB::connection('siajaib_legacy')
+            ->table('kuisioner')
+            ->selectRaw('kuisioner.*, permohonan.id_jenis_izin, users.name as nama_user, users.email as email_user, users.telepon as telepon_user')
+            ->whereNull('id_skm')
+            ->join('permohonan', 'kuisioner.id_permohonan', '=', 'permohonan.id')
+            ->join('users', 'permohonan.id_user', '=', 'users.id')
+            ->get();
 
         foreach ($kuesionerLegacy as $kuesioner) {
             $kuesioner = [
@@ -524,6 +530,10 @@ class SinkronisasiDataSiajaibLegacyService
                 'jenis_layanan' => $kuesioner->jenis_layanan,
                 'created_at' => $kuesioner->created_at,
                 'updated_at' => $kuesioner->updated_at,
+                'jenis_izin_id' => $kuesioner->id_jenis_izin,
+                'nama' => $kuesioner->nama_user,
+                'email' => $kuesioner->email_user,
+                'nomor_telepon' => $kuesioner->telepon_user,
             ];
 
             // insert or update data with id
@@ -572,8 +582,9 @@ class SinkronisasiDataSiajaibLegacyService
     private function sinkronKuesionerJawaban()
     {
         $kuesionerJawabanLegacy = DB::connection('siajaib_legacy')
-            ->table('kuisioner_jawaban')
-            ->join('kuisioner', 'kuisioner_jawaban.id_kuisioner', '=', 'kuisioner.id')
+            ->table('kuisioner_jawaban', 'a')
+            ->selectRaw('a.*')
+            ->join('kuisioner', 'a.id_kuisioner', '=', 'kuisioner.id')
             ->whereNull('kuisioner.id_skm')
             ->get();
 
