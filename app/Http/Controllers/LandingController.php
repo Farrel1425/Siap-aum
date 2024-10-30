@@ -67,4 +67,9 @@ class LandingController extends Controller
             ]);
         }
     }
+
+    public function berkasNotFound(Request $request)
+    {
+        return view('pages.berkas-not-found');
+    }
 }

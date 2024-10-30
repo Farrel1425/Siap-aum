@@ -35,14 +35,6 @@ use App\Http\Controllers\VerifikatorPermohonanController;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
 
-Route::get('/test/{tahun}', function (Request $request, $tahun) {
-    $a = new LaporanService();
-    return $a->laporanSurveyBulananPublic();
-});
-
-Route::get('/test-excel', function () {
-    return Excel::download(new PermohonanBulananExport(2025), 'permohonan-bulanan.xlsx');
-});
 
 Route::get('/panduan-pengguna', [LandingController::class, 'userGuideIndex'])->name('user-guide');;
 
@@ -50,6 +42,8 @@ Route::prefix('cek-permohonan')->name('cek-permohonan.')->group(function () {
     Route::get('/', [LandingController::class, 'cekPermohonanIndex'])->name('index');
     Route::post('/', [LandingController::class, 'cekPermohonanStore'])->name('store');
 });
+
+Route::get('/berkas-not-found', [LandingController::class, 'berkasNotFound'])->name('berkas-not-found');
 
 Route::middleware(['guest'])->group(function () {
     // login

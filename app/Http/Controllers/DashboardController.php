@@ -41,14 +41,6 @@ class DashboardController extends Controller
                 $q->where('verifikator_id', auth()->user()->id);
             })->count();
 
-            $permohonan_diproses = Permohonan::whereNotIn('status', [
-                StatusPermohonanEnum::PENDING->value,
-                StatusPermohonanEnum::EXPIRED->value,
-                StatusPermohonanEnum::SELESAI->value,
-            ])->whereHas('alurPermohonan', function ($q) {
-                $q->where('verifikator_id', auth()->user()->id);
-            })->count();
-
             $permohonan_selesai = Permohonan::where('status', StatusPermohonanEnum::SELESAI->value)
                 ->whereHas('alurPermohonan', function ($q) {
                     $q->where('verifikator_id', auth()->user()->id);
@@ -56,7 +48,6 @@ class DashboardController extends Controller
 
             return view('pages.verifikator.dashboard.index', compact(
                 'total_permohonan',
-                'permohonan_diproses',
                 'permohonan_selesai'
             ));
         } else {
