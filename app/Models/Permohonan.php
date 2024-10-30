@@ -114,7 +114,7 @@ class Permohonan extends Model
         }
         switch ($this->status) {
             case StatusPermohonanEnum::PENDING->value:
-                return '<span class="badge bg-warning">Pending</span>';
+                return '<span class="badge bg-warning">Draft</span>';
             case StatusPermohonanEnum::PERMOHONAN_BARU->value:
                 return '<span class="badge bg-primary">Permohonan Baru</span>';
             case StatusPermohonanEnum::SELESAI->value:
@@ -141,7 +141,7 @@ class Permohonan extends Model
         }
         switch ($this->status) {
             case StatusPermohonanEnum::PENDING->value:
-                return '<span class="badge bg-warning">Pending</span>';
+                return '<span class="badge bg-warning">Draft</span>';
             case StatusPermohonanEnum::PERMOHONAN_BARU->value:
                 return '<span class="badge bg-info">Verifikasi</span>';
             case StatusPermohonanEnum::SELESAI->value:
