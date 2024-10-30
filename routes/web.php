@@ -292,6 +292,13 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/', [LaporanController::class, 'ijinTerbitBulananIndex'])->name('index');
                     Route::get('/export', [LaporanController::class, 'ijinTerbitBulananExport'])->name('export');
                 });
+
+                // Survey Layanan
+                Route::prefix('survey-layanan')->name('survey-layanan.')->group(function () {
+                    // Resource
+                    Route::get('/', [LaporanController::class, 'surveyLayananIndex'])->name('index');
+                    Route::get('/export', [LaporanController::class, 'surveyLayananExport'])->name('export');
+                });
             });
         });
     });
