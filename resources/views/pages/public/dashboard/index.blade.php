@@ -90,7 +90,7 @@
                     let html = '';
                     steps.forEach((step, index) => {
                         html += `
-                                <div class="stepper-item ${step.is_done ? 'completed fw-bold' : ''}" style="overflow-x:hidden;">
+                                <div class="stepper-item ${step.is_done ? 'completed fw-bold' : ''}">
                                     <div class="step-counter ${step.is_done ? 'bg-primary text-white' : ''}">${index + 1}</div>
                                     <div class="step-name">${step.nama}</div>
                                     <p class="text-xsm text-center fw-normal">${step.done_at}</p>
