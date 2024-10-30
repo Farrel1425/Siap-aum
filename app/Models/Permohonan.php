@@ -132,6 +132,33 @@ class Permohonan extends Model
         }
     }
 
+    public function getStatusBadgeMergeUsulanBaruToVerifikasiAttribute()
+    {
+        if ($this->jenis_izin_id == 9) {
+            if ($this->reklame->skpd_filepath && !$this->reklame->bukti_bayar_filepath) {
+                return '<span class="badge bg-warning">Menunggu Pembayaran</span>';
+            }
+        }
+        switch ($this->status) {
+            case StatusPermohonanEnum::PENDING->value:
+                return '<span class="badge bg-warning">Pending</span>';
+            case StatusPermohonanEnum::PERMOHONAN_BARU->value:
+                return '<span class="badge bg-info">Verifikasi</span>';
+            case StatusPermohonanEnum::SELESAI->value:
+                return '<span class="badge bg-success">Selesai</span>';
+            case StatusPermohonanEnum::REVISI->value:
+                return '<span class="badge bg-danger">Revisi</span>';
+            case StatusPermohonanEnum::VERIFIKASI_ULANG->value:
+                return '<span class="badge bg-info">Verifikasi Ulang</span>';
+            case StatusPermohonanEnum::EXPIRED->value:
+                return '<span class="badge bg-secondary">Expired</span>';
+            case StatusPermohonanEnum::VERIFIKASI->value:
+                return '<span class="badge bg-info">Verifikasi</span>';
+            default:
+                return '<span class="badge bg-secondary">Undefined</span>';
+        }
+    }
+
     public function getMemohonUntukAttribute()
     {
         return $this->surat_kuasa_filepath ? 'Orang Lain' : 'Diri Sendiri';

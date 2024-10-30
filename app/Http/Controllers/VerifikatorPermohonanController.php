@@ -420,7 +420,15 @@ class VerifikatorPermohonanController extends Controller
                         ->orWhere('nama', 'like', '%' . $search . '%');
                 }
                 if ($request->input('status')) {
-                    $query = $query->where('status', $request->input('status'));
+                    if ($request->input('status') == StatusPermohonanEnum::VERIFIKASI->value) {
+                        $query = $query->whereIn('status', [
+                            StatusPermohonanEnum::PERMOHONAN_BARU->value,
+                            StatusPermohonanEnum::VERIFIKASI->value,
+                            StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+                        ]);
+                    } else {
+                        $query = $query->where('status', $request->input('status'));
+                    }
                 }
                 if ($request->input('jenis_izin_id')) {
                     $query = $query->where('jenis_izin_id', $request->input('jenis_izin_id'));
@@ -450,7 +458,7 @@ class VerifikatorPermohonanController extends Controller
                         'nama_pemohon' => $permohonan->nama,
                         'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
                         'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
-                        'status_badge' => $permohonan->status_badge,
+                        'status_badge' => $permohonan->status_badge_merge_usulan_baru_to_verifikasi,
                         'action' => $action,
                     ];
                 })->values();
@@ -607,7 +615,7 @@ class VerifikatorPermohonanController extends Controller
         }
 
         $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($berkas_permohonan->permohonan, auth()->user());
-        if(!$is_verifikator_turn) {
+        if (!$is_verifikator_turn) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Bukan giliran anda untuk melakukan revisi',

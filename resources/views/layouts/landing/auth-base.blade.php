@@ -15,6 +15,7 @@
           rel="shortcut icon"
           type="image/x-icon">
     {!! ReCaptcha::htmlScriptTagJsApi() !!}
+    @stack('styles')
 </head>
 
 <body id="app">

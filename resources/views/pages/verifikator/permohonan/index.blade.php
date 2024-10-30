@@ -19,10 +19,6 @@
                 <button class="btn fw-bold text-primary"
                         data-value="">Semua</button>
                 <button class="btn"
-                        data-value="pending">Pending</button>
-                <button class="btn"
-                        data-value="permohonan_baru">Usulan Baru</button>
-                <button class="btn"
                         data-value="verifikasi">Verifikasi</button>
                 <button class="btn"
                         data-value="revisi">Revisi</button>
