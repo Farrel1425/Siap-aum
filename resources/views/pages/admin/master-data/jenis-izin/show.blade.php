@@ -52,6 +52,20 @@
                     </div>
                 </div>
                 <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+                            <input name="is_pas_foto_required"
+                                   type="hidden"
+                                   value="{{ old('is_pas_foto_required', $jenis_izin->is_pas_foto_required) ? 1 : 0 }}">
+                            <label class="form-check-label"
+                                   for="is_pas_foto_required"">Pemohon wajib melakukan upload pas foto 4 x 6 CM</label>
+                            <input class="form-check-input pas-foto-checkbox"
+                                   id="is_pas_foto_required"
+                                   type="checkbox">
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
                     <div class="card-body p-4">
                         <x-dashboard.input-inline-ckeditor :required=True
                                                            id="deskripsi"
@@ -133,5 +147,17 @@
                 @endforeach
             @endif
         });
+
+        $(document).on('change', '.pas-foto-checkbox', function() {
+            if ($(this).is(':checked')) {
+                $('input[name="is_pas_foto_required"]').val(1);
+            } else {
+                $('input[name="is_pas_foto_required"]').val(0);
+            }
+        });
+
+        @if (old('is_pas_foto_required', $jenis_izin->is_pas_foto_required))
+            $('.pas-foto-checkbox').prop('checked', true);
+        @endif
     </script>
 @endpush

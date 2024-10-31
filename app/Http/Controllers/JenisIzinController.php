@@ -32,6 +32,7 @@ class JenisIzinController extends Controller
             'nama' => 'required|string|unique:jenis_izins,nama',
             'sektor_izin_id' => 'required|exists:sektor_izins,id',
             'deskripsi' => 'required|string',
+            'is_pas_foto_required' => 'required|in:0,1',
             'syarat_form' => 'required',
             'syarat_form.*.nama' => 'required',
             'syarat_form.*.kode_isian' => 'required',
@@ -67,6 +68,7 @@ class JenisIzinController extends Controller
             $sektor_izin = SektorIzin::with('kategoriIzin')->findOrFail($request->sektor_izin_id);
             $jenis_izin->sektor_izin_id = $request->sektor_izin_id;
             $jenis_izin->kategori_izin_id = $sektor_izin->kategoriIzin->id;
+            $jenis_izin->is_pas_foto_required = $request->is_pas_foto_required;
             $jenis_izin->nama = $request->nama;
             $jenis_izin->deskripsi = $request->deskripsi;
 
@@ -188,6 +190,7 @@ class JenisIzinController extends Controller
         $request->validate([
             'nama' => 'required|string',
             'sektor_izin_id' => 'required|exists:sektor_izins,id',
+            'is_pas_foto_required' => 'required|in:0,1',
             'deskripsi' => 'required|string',
             'syarat_form.*' => 'required',
             'syarat_form.*.nama' => 'required',
@@ -244,8 +247,9 @@ class JenisIzinController extends Controller
         try {
             $sektor_izin = SektorIzin::with('kategoriIzin')->findOrFail($request->sektor_izin_id);
             $jenis_izin->sektor_izin_id = $request->sektor_izin_id;
-            $jenis_izin->kategori_izin_id = $sektor_izin->kategoriIzin->id;
             $jenis_izin->nama = $request->nama;
+            $jenis_izin->kategori_izin_id = $sektor_izin->kategoriIzin->id;
+            $jenis_izin->is_pas_foto_required = $request->is_pas_foto_required;
             $jenis_izin->deskripsi = $request->deskripsi;
 
             if ($request->template_laporan) {

@@ -22,6 +22,7 @@ class JenisIzin extends Model
         'nama',
         'deskripsi',
         'template_surat',
+        'is_pas_foto_required',
     ];
 
     protected static function boot()
