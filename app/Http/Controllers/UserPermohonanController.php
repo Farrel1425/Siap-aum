@@ -68,13 +68,6 @@ class UserPermohonanController extends Controller
 
     public function submitForm(Request $request, JenisIzin $jenis_izin, PermohonanService $permohonan_service)
     {
-        $jenis_izin->load([
-            'formJenisIzin',
-            'alurJenisIzin',
-            'berkasJenisIzin',
-            'kelengkapanJenisIzin',
-        ]);
-
         // validasi input form
         $request->validate([
             'memohon_untuk' => 'required|in:0,1',
@@ -91,6 +84,19 @@ class UserPermohonanController extends Controller
                 'surat_kuasa' => 'required|file|mimes:pdf|max:2048',
             ]);
         }
+
+        if($jenis_izin->is_pas_foto_required){
+            $request->validate([
+                'pas_foto' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            ]);
+        }
+
+        $jenis_izin->load([
+            'formJenisIzin',
+            'alurJenisIzin',
+            'berkasJenisIzin',
+            'kelengkapanJenisIzin',
+        ]);
 
         // validasi tiap field form jenis izin
         $form_jenis_izin = $jenis_izin->formJenisIzin;

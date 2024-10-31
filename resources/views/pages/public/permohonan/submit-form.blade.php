@@ -68,6 +68,13 @@
                                                placeholder="Masukkan tempat lahir pemohon"
                                                required
                                                value="{{ old('tempat_lahir') }}" />
+                @if ($jenis_izin->is_pas_foto_required)
+                    <x-dashboard.input-inline-file class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                   class_input="text-xsm"
+                                                   label="Pas Foto 4x6"
+                                                   name="pas_foto"
+                                                   required />
+                @endif
                 <h5 class="mt-4">Data Detail Permohonan</h5>
                 @foreach ($jenis_izin->formJenisIzin as $form_jenis_izin)
                     <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
