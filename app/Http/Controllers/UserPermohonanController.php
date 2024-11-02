@@ -135,6 +135,16 @@ class UserPermohonanController extends Controller
                 ]);
             }
 
+            // store pas foto
+            if($jenis_izin->is_pas_foto_required){
+                $pas_foto = $request->file('pas_foto');
+                $pas_foto_path = $pas_foto->store('public/pas_foto');
+                $permohonan->update([
+                    'is_pas_foto_required' => 1,
+                    'pas_foto_filepath' => $pas_foto_path,
+                ]);
+            }
+
             // copy all form jenis izin to form permohonan
             foreach ($form_jenis_izin as $form) {
                 $permohonan->formPermohonan()->create([

@@ -37,6 +37,8 @@ class Permohonan extends Model
         'is_expired',
         'is_legacy_data',
         'pengajuan_at',
+        'is_pas_foto_required',
+        'pas_foto_filepath',
     ];
 
     protected $casts = [

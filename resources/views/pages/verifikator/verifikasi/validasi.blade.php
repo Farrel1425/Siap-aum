@@ -86,6 +86,21 @@
                                                    readonly
                                                    value="{{ $permohonan->tempat_lahir }}" />
                 @endif
+                <div class="card">
+                    <div class="card-body">
+                        @if ($permohonan->is_pas_foto_required)
+                            <div class="form-group row align-items-center justify-content-between">
+                                <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
+                                       for="pas_foto">Pas Foto 4x6</label>
+                                <div class="col-8 col-md-9 col-lg-10 text-end">
+                                    <img alt=""
+                                         class="img-thumbnail w-25"
+                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}">
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
                 <h5 class="mt-4">Data Detail Permohonan</h5>
                 @foreach ($permohonan->formPermohonan as $form_permohonan)
                     <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -122,11 +137,12 @@
                                 </label>
                             </div>
                             <div class="col-2"></div>
-                            @if ($is_verifikator_turn && $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value && (
-                                $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value ||
-                                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value ||
-                                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value
-                            ))
+                            @if (
+                                $is_verifikator_turn &&
+                                    $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value &&
+                                    ($alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value ||
+                                        $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value ||
+                                        $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value))
                                 @if ($berkas_permohonan->is_need_validation)
                                     <div class="col-2">
                                         <button class="btn btn-sm btn-success d-block w-100"
