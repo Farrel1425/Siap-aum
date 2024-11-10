@@ -14,6 +14,10 @@ class KuesionerJawaban extends Model
     protected $fillable = [
         'kuesioner_id',
         'kuesioner_opsi_id',
+        'pertanyaan',
+        'opsi',
+        'point',
+        'state',
     ];
 
     public function kuesioner()

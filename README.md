@@ -130,3 +130,5 @@ WHERE
 
 php artisan generate:ulid-jenis-izin
 
+php artisan kuesioner:normalization
+

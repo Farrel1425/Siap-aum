@@ -19,6 +19,7 @@ use App\Exports\Laporan\PermohonanBulananExport;
 use App\Http\Controllers\KategoriIzinController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserPermohonanController;
 use App\Http\Controllers\VerifikatorPermohonanController;
 
@@ -276,6 +277,19 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/group-skm', [LayananSkmController::class, 'storeGroupSkm'])->name('group-skm.store');
                     Route::get('/group-skm/{id}', [LayananSkmController::class, 'showGroupSkm'])->name('group-skm.show');
                     Route::put('/group-skm/{id}', [LayananSkmController::class, 'updateGroupSkm'])->name('group-skm.update');
+                });
+
+                // Survey
+                Route::prefix('survey')->name('survey.')->group(function () {
+                    // Table
+                    Route::get('/table', [SurveyController::class, 'surveyTable'])->name('table');
+
+                    // Resource
+                    Route::get('/', [SurveyController::class, 'index'])->name('index');
+                    Route::get('/create', [SurveyController::class, 'create'])->name('create');
+                    Route::get('/{id}', [SurveyController::class, 'show'])->name('show');
+                    Route::post('/', [SurveyController::class, 'store'])->name('store');
+                    Route::put('/{id}', [SurveyController::class, 'update'])->name('update');
                 });
             });
 

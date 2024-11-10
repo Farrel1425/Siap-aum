@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\LayananSkm;
 use Illuminate\Support\Str;
+use App\Models\KuesionerPertanyaan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,9 +31,14 @@ class GroupLayananSkm extends Model
     {
         return $this->hasMany(LayananSkm::class);
     }
+    public function kuesionerPertanyaan()
+    {
+        return $this->hasMany(KuesionerPertanyaan::class);
+    }
 
     public function getImageUrlAttribute()
     {
         return $this->image_filepath ? asset(Storage::url($this->image_filepath)) : null;
     }
+
 }

@@ -62,6 +62,11 @@
                                href="{{ route('admin.master-data.layanan-skm.index') }}">
                                 Layanan SKM</a>
                         </li>
+                        <li class="submenu-item {{ request()->routeIs('admin.master-data.survey.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.master-data.survey.index') }}">
+                                Survey</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="sidebar-item has-sub {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
@@ -88,14 +93,14 @@
                         </li>
                     </ul>
                 </li>
-                <li
+                {{-- <li
                     class="sidebar-item actives">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-radar"></i>
                         <span>Log Aktivitas</span>
                     </a>
-                </li>
+                </li> --}}
             @endif
 
             @if (auth()->user()->is_verifikator)
