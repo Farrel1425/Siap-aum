@@ -29,7 +29,7 @@ class KuesionerPertanyaan extends Model
         return $this->belongsTo(GroupLayananSkm::class);
     }
 
-    public function kuesionerJawaaban()
+    public function kuesionerJawaban()
     {
         return $this->hasMany(KuesionerJawaban::class);
     }

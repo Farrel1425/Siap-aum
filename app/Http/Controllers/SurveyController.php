@@ -54,6 +54,13 @@ class SurveyController extends Controller
             return redirect()->back()->with('error', 'Layanan SKM tidak ditemukan');
         }
 
+        $kuesionerPertanyaan = KuesionerPertanyaan::where('group_layanan_skm_id', $layanan_skm->id)
+            ->first();
+
+        if ($kuesionerPertanyaan) {
+            return redirect()->back()->with('error', 'Group layanan ini telah terdapat dalam survey khusus. Silahkan gunakan fitur edit untuk mengubah data')->withInput();
+        }
+
         DB::beginTransaction();
         try {
             $state = Str::random(10);
@@ -135,7 +142,10 @@ class SurveyController extends Controller
         }
 
         // check if kuesioner jawaban in kuesioner pertanyaan this group layanan skm is exist
-        $kuesionerPertanyaan = KuesionerPertanyaan::where('group_layanan_skm_id', $layanan_skm->id)->whereHas('kuesionerJawaaban')->first();
+        $kuesionerPertanyaan = KuesionerPertanyaan::where('group_layanan_skm_id', $layanan_skm->id)
+            ->whereHas('kuesionerJawaban')
+            ->first();
+
         if ($kuesionerPertanyaan) {
             return redirect()->back()->with('error', 'Data tidak dapat diubah karena sudah ada data survey yang terisi');
         }
@@ -188,5 +198,4 @@ class SurveyController extends Controller
 
         return redirect()->route('admin.master-data.survey.index')->with('success', 'Berhasil menyimpan data');
     }
-
 }

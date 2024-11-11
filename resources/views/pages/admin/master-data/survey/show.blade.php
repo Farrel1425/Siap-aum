@@ -17,11 +17,12 @@
         </div>
         <section class="section">
             <div class="row">
-                <form action="{{ route('admin.master-data.survey.store') }}"
+                <form action="{{ route('admin.master-data.survey.update', $group_layanan_skm->id) }}"
                       enctype="multipart/form-data"
                       id="form-survey"
                       method="POST">
                     @csrf
+                    @method('PUT')
                     <x-dashboard.input-inline-select :options="$layananSkm->mapWithKeys(function ($layanan) {
                         return [$layanan->id => $layanan->nama];
                     })"

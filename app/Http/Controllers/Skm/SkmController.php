@@ -48,20 +48,39 @@ class SkmController extends Controller
 
     public function pertanyaanOpsi(Request $request)
     {
-        $pertanyaan = KuesionerPertanyaan::with('kuesionerOpsi')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'pertanyaan' => $item->pertanyaan,
-                    'opsi' => $item->kuesionerOpsi->map(function ($opsi) {
-                        return [
-                            'id' => $opsi->id,
-                            'opsi' => $opsi->opsi,
-                        ];
-                    }),
-                ];
-            });
+        if ($request->has('group_layanan_skm_id')) {
+            $groupLayananSkm = GroupLayananSkm::with('kuesionerPertanyaan')->where('ulid', $request->group_layanan_skm_id)->first();
+            if (!$groupLayananSkm) {
+                return ResponseFormatter::error(
+                    null,
+                    'Group layanan skm tidak ditemukan',
+                    404
+                );
+            }
+
+            if ($groupLayananSkm->kuesionerPertanyaan->isEmpty()) {
+                $pertanyaan = KuesionerPertanyaan::with('kuesionerOpsi')
+                    ->get();
+            } else {
+                $pertanyaan = $groupLayananSkm->kuesionerPertanyaan;
+            }
+        } else {
+            $pertanyaan = KuesionerPertanyaan::with('kuesionerOpsi')
+                ->get();
+        }
+
+        $pertanyaan = $pertanyaan->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'pertanyaan' => $item->pertanyaan,
+                'opsi' => $item->kuesionerOpsi->map(function ($opsi) {
+                    return [
+                        'id' => $opsi->id,
+                        'opsi' => $opsi->opsi,
+                    ];
+                }),
+            ];
+        });
         return ResponseFormatter::success(
             $pertanyaan,
             'Data pertanyaan jawaban berhasil diambil'
@@ -119,7 +138,7 @@ class SkmController extends Controller
 
     public function surveyLayanan(SurveyLayananRequest $request)
     {
-        $layananSkm = LayananSkm::where('ulid', $request->jenis_layanan_id)->first();
+        $layananSkm = LayananSkm::with('groupLayananSkm')->where('ulid', $request->jenis_layanan_id)->first();
         $layananJenisIzin = JenisIzin::where('ulid', $request->jenis_layanan_id)->first();
         if (!$layananSkm && !$layananJenisIzin) {
             return ResponseFormatter::error(
@@ -129,8 +148,12 @@ class SkmController extends Controller
             );
         }
 
-        $kuesioner = KuesionerPertanyaan::with('kuesionerOpsi')->get();
-        $kuesionerIds = $kuesioner->pluck('id')->toArray();
+        $kuesionerPertanyaans = KuesionerPertanyaan::with('kuesionerOpsi')->where('group_layanan_skm_id', $layananSkm->groupLayananSkm->id)->get();
+        if($kuesionerPertanyaans->isEmpty()) {
+            $kuesionerPertanyaans = KuesionerPertanyaan::with('kuesionerOpsi')->get();
+        }
+
+        $kuesionerIds = $kuesionerPertanyaans->pluck('id')->toArray();
         // validate all pertanyaan id is exists in request
         $diff = array_diff($kuesionerIds, array_column($request->jawaban, 'pertanyaan_id'));
         if (!empty($diff)) {
@@ -150,7 +173,7 @@ class SkmController extends Controller
             }
         }
 
-        if (!empty($invalidIds)){
+        if (!empty($invalidIds)) {
             return ResponseFormatter::error(
                 [
                     'invalid_pertanyaaan_id' => $invalidIds,
@@ -192,10 +215,13 @@ class SkmController extends Controller
             }
 
             $kuesioner->kuesionerJawaban()->createMany(
-                array_map(function ($jawaban) {
+                array_map(function ($jawaban)  use ($kuesionerPertanyaans) {
                     return [
                         'kuesioner_pertanyaan_id' => $jawaban['pertanyaan_id'],
                         'kuesioner_opsi_id' => $jawaban['opsi_id'],
+                        'pertanyaan' => $kuesionerPertanyaans->where('id', $jawaban['pertanyaan_id'])->first()?->pertanyaan,
+                        'opsi' => $kuesionerPertanyaans->where('id', $jawaban['pertanyaan_id'])->first()?->kuesionerOpsi->where('id', $jawaban['opsi_id'])->first()?->opsi,
+                        'point' => $kuesionerPertanyaans->where('id', $jawaban['pertanyaan_id'])->first()?->kuesionerOpsi->where('id', $jawaban['opsi_id'])->first()?->point,
                     ];
                 }, $request->jawaban)
             );
