@@ -60,12 +60,14 @@ class SkmController extends Controller
 
             if ($groupLayananSkm->kuesionerPertanyaan->isEmpty()) {
                 $pertanyaan = KuesionerPertanyaan::with('kuesionerOpsi')
+                    ->whereNull('group_layanan_skm_id')
                     ->get();
             } else {
                 $pertanyaan = $groupLayananSkm->kuesionerPertanyaan;
             }
         } else {
             $pertanyaan = KuesionerPertanyaan::with('kuesionerOpsi')
+                ->whereNull('group_layanan_skm_id')
                 ->get();
         }
 
@@ -150,7 +152,7 @@ class SkmController extends Controller
 
         $kuesionerPertanyaans = KuesionerPertanyaan::with('kuesionerOpsi')->where('group_layanan_skm_id', $layananSkm->groupLayananSkm->id)->get();
         if($kuesionerPertanyaans->isEmpty()) {
-            $kuesionerPertanyaans = KuesionerPertanyaan::with('kuesionerOpsi')->get();
+            $kuesionerPertanyaans = KuesionerPertanyaan::whereNull('group_layanan_skm_id')->with('kuesionerOpsi')->get();
         }
 
         $kuesionerIds = $kuesionerPertanyaans->pluck('id')->toArray();
