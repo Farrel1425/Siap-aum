@@ -21,7 +21,7 @@ class KuesionerController extends Controller
             return redirect()->back()->with('error', 'Kuesioner sudah diisi');
         }
 
-        $kuesioners = KuesionerPertanyaan::with('kuesionerOpsi')->get();
+        $kuesioners = KuesionerPertanyaan::with('kuesionerOpsi')->whereNull('group_layanan_skm_id')->get();
 
         return view('pages.public.kuesioner.create', compact(
             'permohonan',
@@ -41,7 +41,7 @@ class KuesionerController extends Controller
         $permohonan->load('user');
 
         // validate if all kuesioner id is inputted correctly as key in kuesioner request
-        $kuesionerIds = KuesionerPertanyaan::pluck('id')->toArray();
+        $kuesionerIds = KuesionerPertanyaan::whereNull('group_layanan_skm_id')->pluck('id')->toArray();
         $diff = array_diff(array_keys($request->kuesioner), $kuesionerIds);
         if (!empty($diff)) {
             return redirect()->back()->with('error', 'Kuesioner tidak valid');
@@ -62,7 +62,7 @@ class KuesionerController extends Controller
 
             // validate value in kuesioner is belong to kuesioner opsi key
             foreach ($request->kuesioner as $kuesionerId => $kuesionerOpsiId) {
-                $kuesionerPertanyaan = KuesionerPertanyaan::find($kuesionerId);
+                $kuesionerPertanyaan = KuesionerPertanyaan::whereNull('group_layanan_skm_id')->find($kuesionerId);
                 if (!$kuesionerPertanyaan->kuesionerOpsi->contains('id', $kuesionerOpsiId)) {
                     DB::rollBack();
                     return redirect()->back()->with('error', 'Kuesioner tidak valid');
@@ -85,5 +85,6 @@ class KuesionerController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
         }
 
-        return redirect()->route('public.permohonan.show', $permohonan)->with('success', 'Kuesioner berhasil diisi');}
+        return redirect()->route('public.permohonan.show', $permohonan)->with('success', 'Kuesioner berhasil diisi');
+    }
 }
