@@ -151,7 +151,7 @@ class SkmController extends Controller
         }
 
         $kuesionerPertanyaans = KuesionerPertanyaan::with('kuesionerOpsi')->where('group_layanan_skm_id', $layananSkm->groupLayananSkm->id)->get();
-        if($kuesionerPertanyaans->isEmpty()) {
+        if ($kuesionerPertanyaans->isEmpty()) {
             $kuesionerPertanyaans = KuesionerPertanyaan::whereNull('group_layanan_skm_id')->with('kuesionerOpsi')->get();
         }
 
@@ -201,6 +201,7 @@ class SkmController extends Controller
                 'jenis_layanan' => $layanan->nama,
                 'pendidikan' => $request->pendidikan,
                 'pekerjaan' => $request->pekerjaan,
+                'is_from_skm' => true,
             ]);
 
             // validate value in kuesioner is belong to kuesioner opsi key

@@ -41,7 +41,8 @@ class KuesionerController extends Controller
         $permohonan->load('user');
 
         // validate if all kuesioner id is inputted correctly as key in kuesioner request
-        $kuesionerIds = KuesionerPertanyaan::whereNull('group_layanan_skm_id')->pluck('id')->toArray();
+        $kuesionerPertanyaans = KuesionerPertanyaan::with('kuesionerOpsi')->whereNull('group_layanan_skm_id')->get();
+        $kuesionerIds = $kuesionerPertanyaans->pluck('id')->toArray();
         $diff = array_diff(array_keys($request->kuesioner), $kuesionerIds);
         if (!empty($diff)) {
             return redirect()->back()->with('error', 'Kuesioner tidak valid');
@@ -70,10 +71,13 @@ class KuesionerController extends Controller
             }
 
             $kuesioner->kuesionerJawaban()->createMany(
-                array_map(function ($kuesionerId, $kuesionerOpsiId) {
+                array_map(function ($kuesionerId, $kuesionerOpsiId)  use ($kuesionerPertanyaans) {
                     return [
                         'kuesioner_pertanyaan_id' => $kuesionerId,
                         'kuesioner_opsi_id' => $kuesionerOpsiId,
+                        'pertanyaan' => $kuesionerPertanyaans->where('id', $kuesionerId)->first()?->pertanyaan,
+                        'opsi' => $kuesionerPertanyaans->where('id', $kuesionerId)->first()?->kuesionerOpsi->where('id', $kuesionerOpsiId)->first()?->opsi,
+                        'point' => $kuesionerPertanyaans->where('id', $kuesionerId)->first()?->kuesionerOpsi->where('id', $kuesionerOpsiId)->first()?->point,
                     ];
                 }, array_keys($request->kuesioner), $request->kuesioner)
             );

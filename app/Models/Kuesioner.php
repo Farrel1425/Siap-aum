@@ -20,6 +20,9 @@ class Kuesioner extends Model
         'pekerjaan',
         'jenis_layanan',
         'is_from_skm',
+        'nama',
+        'nomor_telepon',
+        'email',
     ];
 
     public function kuesionerJawaban()

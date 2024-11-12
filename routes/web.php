@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Support\Carbon;
+use App\Models\GroupLayananSkm;
 use App\Services\LaporanService;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DashboardController;
@@ -13,13 +15,9 @@ use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\LayananSkmController;
 use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\SektorIzinController;
-use App\Http\Controllers\Api\ReklameController;
 use App\Http\Controllers\UserReklameController;
-use App\Exports\Laporan\PermohonanBulananExport;
 use App\Http\Controllers\KategoriIzinController;
-use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\UserPermohonanController;
 use App\Http\Controllers\VerifikatorPermohonanController;
 
@@ -33,6 +31,14 @@ use App\Http\Controllers\VerifikatorPermohonanController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/test/{id}', function (Request $request, $id) {
+    $a = new LaporanService();
+    return $a->laporanSurveyBulanan([
+        now()->subYear()->format('Y'),
+        now()->format('Y'),
+    ], GroupLayananSkm::find($id));
+});
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
 
@@ -296,7 +302,7 @@ Route::middleware(['auth'])->group(function () {
             // Laporan
             Route::prefix('laporan')->name('laporan.')->group(function () {
                 // Ijin terbit bulanan
-                Route::prefix('ijin-terbit-bulanan')->name('ijin-terbit-bulanan.')->group(function () {// Resource
+                Route::prefix('ijin-terbit-bulanan')->name('ijin-terbit-bulanan.')->group(function () { // Resource
                     Route::get('/', [LaporanController::class, 'ijinTerbitBulananIndex'])->name('index');
                     Route::get('/export', [LaporanController::class, 'ijinTerbitBulananExport'])->name('export');
                 });

@@ -9,8 +9,8 @@ enum PendidikanEnum: string
     use EnumToArray;
     case SD = 'SD';
     case SMP = 'SMP';
-    case SMA = 'SMA';
-    case DIPLOMA = 'Diploma';
+    case SMA = 'SMA/SMK';
+    case DIPLOMA = 'DIPLOMA';
     case S1 = 'S1';
     case S2 = 'S2';
     case LAINNYA = 'Lain-lain';
@@ -20,7 +20,7 @@ enum PendidikanEnum: string
         return match ($this) {
             self::SD => 'Sekolah Dasar',
             self::SMP => 'Sekolah Menengah Pertama',
-            self::SMA => 'Sekolah Menengah Atas',
+            self::SMA => 'Sekolah Menengah Atas/Kejuruan',
             self::DIPLOMA => 'Diploma',
             self::S1 => 'Sarjana',
             self::S2 => 'Magister',

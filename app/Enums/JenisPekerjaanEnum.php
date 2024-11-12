@@ -9,9 +9,9 @@ enum JenisPekerjaanEnum: string
     case PNS = 'PNS';
     case TNI = 'TNI';
     case POLRI = 'POLRI';
-    case SWASTA = 'Swasta';
-    case WIRASWASTA = 'Wiraswasta';
-    case LAINNYA = 'Lain-lain';
+    case SWASTA = 'SWASTA';
+    case WIRASWASTA = 'WIRASWASTA';
+    case LAINNYA = 'LAINNYA';
 
     public function deskripsi(): string
     {

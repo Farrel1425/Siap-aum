@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\Kuesioner;
 use App\Models\KategoriIzin;
+use App\Enums\PendidikanEnum;
 use Illuminate\Support\Carbon;
+use App\Enums\JenisKelaminEnum;
+use App\Models\GroupLayananSkm;
+use App\Enums\JenisPekerjaanEnum;
+use App\Models\KuesionerPertanyaan;
 use Illuminate\Support\Facades\Cache;
 
 class LaporanService
@@ -85,13 +90,92 @@ class LaporanService
             });
     }
 
-    public function laporanSurveyBulanan($filter)
+    public function laporanSurveyBulanan($filter, ?GroupLayananSkm $groupLayananSkm = null)
     {
-        // generate hash cache key based on filter
-        $hash = md5(json_encode($filter));
+        // generate hash cache key based on filter and groupLayananSkm
+        $hash = md5(json_encode($filter) . ($groupLayananSkm ? $groupLayananSkm->id : null));
 
-        $data = Cache::remember('laporan_survey_bulanan_' . $hash, 5, function () use ($filter) {
-            return $this->queryLaporanSurveyBulanan($filter);
+        $data = Cache::remember('laporan_survey_bulanan_' . $hash, 5, function () use ($filter, $groupLayananSkm) {
+            $data_laporan =  $this->queryLaporanSurveyBulanan($filter, $groupLayananSkm);
+            $statistik = collect();
+
+            // JENIS KELAMIN
+            $jenis_kelamin_keys = JenisKelaminEnum::descriptions();
+            $statistik->put(
+                'jenis_kelamin',
+                $data_laporan['kuesioners']->groupBy('jenis_kelamin')
+                    ->mapWithKeys(function ($item, $key) {
+                        return collect([JenisKelaminEnum::from($key)->deskripsi() => $item->count()]);
+                    })
+            );
+            // fill all keys with 0 if not exist
+            $statistik->put(
+                'jenis_kelamin',
+                collect($jenis_kelamin_keys)
+                    ->mapWithKeys(function ($key) use ($statistik) {
+                        return [$key => $statistik->get('jenis_kelamin')->get($key, 0)];
+                    })
+            );
+            // statistik percentage jenis kelamin
+            $total_jenis_kelamin = $statistik->get('jenis_kelamin')->sum();
+            $statistik->put(
+                'jenis_kelamin_presentasi',
+                $statistik->get('jenis_kelamin')->mapWithKeys(function ($item, $key) use ($total_jenis_kelamin) {
+                    return [$key => $item ? ($item / $total_jenis_kelamin) * 100 : 0];
+                })
+            );
+
+            // PENDIDIKAN TERAKHIR
+            $pendidikan_terakhir_keys = PendidikanEnum::descriptions();
+            $statistik->put(
+                'pendidingan_terakhir',
+                $data_laporan['kuesioners']->groupBy('pendidikan')->mapWithKeys(function ($item, $key) {
+                    return [PendidikanEnum::from($key)->deskripsi() => $item->count()];
+                })
+            );
+            $statistik->put(
+                'pendidingan_terakhir',
+                collect($pendidikan_terakhir_keys)
+                    ->mapWithKeys(function ($key) use ($statistik) {
+                        return [$key => $statistik->get('pendidingan_terakhir')->get($key, 0)];
+                    })
+            );
+            $total_pendidikan_terakhir = $statistik->get('pendidingan_terakhir')->sum();
+            $statistik->put(
+                'pendidingan_terakhir_presentasi',
+                $statistik->get('pendidingan_terakhir')->mapWithKeys(function ($item, $key) use ($total_pendidikan_terakhir) {
+                    return [$key => $item ? ($item / $total_pendidikan_terakhir) * 100 : 0];
+                })
+            );
+
+            // JENIS PEKERJAAN
+            $jenis_pekerjaan_keys = JenisPekerjaanEnum::descriptions();
+            $statistik->put(
+                'jenis_pekerjaan',
+                $data_laporan['kuesioners']->groupBy('pekerjaan')->mapWithKeys(function ($item, $key) {
+                    return [JenisPekerjaanEnum::from($key)->deskripsi() => $item->count()];
+                })
+            );
+            $statistik->put(
+                'jenis_pekerjaan',
+                collect($jenis_pekerjaan_keys)
+                    ->mapWithKeys(function ($key) use ($statistik) {
+                        return [$key => $statistik->get('jenis_pekerjaan')->get($key, 0)];
+                    })
+            );
+            $total_jenis_pekerjaan = $statistik->get('jenis_pekerjaan')->sum();
+            $statistik->put(
+                'jenis_pekerjaan_presentasi',
+                $statistik->get('jenis_pekerjaan')->mapWithKeys(function ($item, $key) use ($total_jenis_pekerjaan) {
+                    return [$key => $item ? ($item / $total_jenis_pekerjaan) * 100 : 0];
+                })
+            );
+
+
+            return [
+                'statistik' => $statistik,
+                'data' => $data_laporan,
+            ];
         });
 
         return $data;
@@ -123,7 +207,7 @@ class LaporanService
             $totalKuesioners = $groupedKuesioners->sum();
 
             // Sort by total kuesioner per group, take top 5, and calculate percentage
-            $top5Kuesioners = $groupedKuesioners->sortDesc()->take(5)->map(function ($count) use ($totalKuesioners) {
+            $top5Kuesioners = $groupedKuesioners->sortDesc()->take(5)->map(function (int $count) use ($totalKuesioners) {
                 return [
                     'count' => $count,
                     'percentage' => ($count / $totalKuesioners) * 100,
@@ -159,10 +243,31 @@ class LaporanService
         return $data;
     }
 
-    public function queryLaporanSurveyBulanan($filter = [])
+    public function queryLaporanSurveyBulanan($filter = [], ?GroupLayananSkm $groupLayananSkm = null)
     {
         // Query data laporan survey bulanan
-        $kuesioners = Kuesioner::with(['kuesionerJawaban.kuesionerOpsi.kuesionerPertanyaan', 'layananSkm', 'jenisIzin']);
+        if ($groupLayananSkm) {
+            $is_pertanyaan_custom_exist = KuesionerPertanyaan::where('group_layanan_skm_id', $groupLayananSkm->id)->exists();
+            if (!$is_pertanyaan_custom_exist) {
+                $kuesioners = Kuesioner::with(['kuesionerJawaban.kuesionerOpsi'])
+                    ->whereHas('layananSkm', function ($query) use ($groupLayananSkm) {
+                        $query->where('group_layanan_skm_id', $groupLayananSkm->id);
+                    })
+                    ->whereHas('kuesionerJawaban.kuesionerPertanyaan')
+                    ->whereHas('jenisIzin');
+            } else {
+                $kuesioners = Kuesioner::with(['kuesionerJawaban.kuesionerOpsi'])
+                    ->whereHas('kuesionerJawaban.kuesionerPertanyaan')
+                    ->whereHas('layananSkm', function ($query) use ($groupLayananSkm) {
+                        $query->where('group_layanan_skm_id', $groupLayananSkm->id);
+                    });
+            }
+        } else {
+            $kuesioners = Kuesioner::with(['kuesionerJawaban.kuesionerOpsi'])
+                ->whereDoesntHave('layananSkm')
+                ->whereHas('kuesionerJawaban.kuesionerPertanyaan')
+                ->whereHas('jenisIzin');
+        }
 
         if (isset($filter['tanggal_awal'])) {
             $tanggal_awal = Carbon::parse($filter['tanggal_awal']);
@@ -216,7 +321,7 @@ class LaporanService
         if ($totalKuesioner === 0) {
             $persentaseNilaiIKM = 0;
         } else {
-            $persentaseNilaiIKM = ($sumJmlNilaiUnsur / ($totalKuesioner * 9 * 4)) * 100;
+            $persentaseNilaiIKM = ($sumJmlNilaiUnsur / ($totalKuesioner * count($nrrUnsur) * 4)) * 100;
         }
 
         return [

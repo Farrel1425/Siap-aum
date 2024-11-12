@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
 
         foreach ($users as $user) {
             User::firstOrCreate($user, [
-                'password' => bcrypt('password'),
+                'password' => bcrypt('P@ssw0rd'),
                 'is_filled_data_register' => true,
             ]);
         }
