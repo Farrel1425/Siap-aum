@@ -427,7 +427,7 @@
                         title: 'Masukkan passphrase',
                         input: 'password',
                         inputAttributes: {
-                            autocapitalize: 'off'
+                            autocomplete: 'off'
                         },
                         showCancelButton: true,
                         confirmButtonText: 'Tanda Tangan',
