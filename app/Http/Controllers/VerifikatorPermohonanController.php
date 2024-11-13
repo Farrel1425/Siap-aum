@@ -88,10 +88,10 @@ class VerifikatorPermohonanController extends Controller
 
         if ($verifikatorService->isJenisVerifikatorApprovable($alur_permohonan)) {
             if ($berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan)) {
-                // JF wajib sudah upload surat permohonan rekomendasi
+                // JF wajib sudah upload Surat pengantar permohonan rekomendasi
                 if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::FO->value) {
                     if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
-                        return redirect()->back()->with('error', 'Mohon unggah surat permohonan rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                        return redirect()->back()->with('error', 'Mohon unggah Surat pengantar permohonan rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
                     // handle reklame harus upload pajak reklame, skpd
@@ -251,18 +251,18 @@ class VerifikatorPermohonanController extends Controller
         // check is all berkas valid
         $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
-        // cek apakah jenis verifikator FO, jika ya maka wajib upload surat permohonan rekomendasi
+        // cek apakah jenis verifikator FO, jika ya maka wajib upload Surat pengantar permohonan rekomendasi
         if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah surat permohonan rekomendasi',
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah Surat pengantar permohonan rekomendasi',
             ]);
         }
 
         if (!$is_all_berkas_valid) {
             return response()->json([
                 'success' => false,
-                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah surat permohonan rekomendasi',
+                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah Surat pengantar permohonan rekomendasi',
             ]);
         } else {
             $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
@@ -271,7 +271,7 @@ class VerifikatorPermohonanController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Surat permohonan rekomendasi berhasil diunggah',
+            'message' => 'Surat pengantar permohonan rekomendasi berhasil diunggah',
         ]);
     }
 
