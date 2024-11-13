@@ -319,7 +319,7 @@
                     $alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::FO->value &&
                         ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value ||
                             $permohonan->jenis_izin_id == 9))
-                    <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
+                    <h5 class="mt-4">Data Kelengkapan Draft SK</h5>
                     @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
                         {{-- HANDLE REKLAME --}}
                         @if (
