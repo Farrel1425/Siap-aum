@@ -202,6 +202,13 @@ class PermohonanService
                 'NO_REGISTRASI' => $permohonan->no_registrasi
             );
 
+            // Pas foto
+            if($permohonan->is_pas_foto_required) {
+                $templateProcessor->setImageValue('PAS_FOTO', [
+                    'path' => storage_path('app/' . $permohonan->pas_foto_filepath),
+                ]);
+            }
+
             foreach ($permohonan->formPermohonan as $formPermohonan) {
                 if ($formPermohonan->tipe == 'date') {
                     $array_kode[$formPermohonan->kode_isian] = Carbon::parse($formPermohonan->value)->locale('id')->isoFormat('LL');
