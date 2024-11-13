@@ -86,9 +86,9 @@
                                href="#">
                                 Rekap Permohonan</a>
                         </li>
-                        <li class="submenu-item actives">
+                        <li class="submenu-item {{ request()->routeIs('admin.laporan.survey-layanan.*') ? 'active' : '' }}">
                             <a class="submenu-link"
-                               href="#">
+                               href="{{ route('admin.laporan.survey-layanan.index') }}">
                                 Survey Layanan</a>
                         </li>
                     </ul>

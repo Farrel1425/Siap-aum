@@ -61,5 +61,40 @@
                 unformatOnSubmit: true,
             });
         @endif
+        @if ($type == 'daterange')
+            $('#{{ $name }}').daterangepicker({
+                autoUpdateInput: false,
+                locale: {
+                    cancelLabel: 'Clear'
+                },
+                ranges: {
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month')
+                        .endOf(
+                            'month')
+                    ],
+                    'This Year': [moment().startOf('year'), moment().endOf('year')],
+                    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf(
+                        'year')]
+                },
+                // max 7 days
+                maxSpan: {
+                    days: 365
+                },
+                alwaysShowCalendars: true,
+            });
+
+            $('#{{ $name }}').val(moment().subtract(1, 'months').format('DD/MM/YYYY') + ' - ' + moment().format(
+                'DD/MM/YYYY'));
+            $('#{{ $name }}').data('daterangepicker').setStartDate(moment().subtract(1, 'months'));
+
+            $('#{{ $name }}').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
+                        'DD/MM/YYYY'))
+                    .trigger('change');
+            });
+        @endif
     </script>
 @endpush

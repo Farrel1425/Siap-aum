@@ -311,7 +311,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::prefix('survey-layanan')->name('survey-layanan.')->group(function () {
                     // Resource
                     Route::get('/', [LaporanController::class, 'surveyLayananIndex'])->name('index');
-                    Route::get('/export', [LaporanController::class, 'surveyLayananExport'])->name('export');
+                    Route::post('/export', [LaporanController::class, 'surveyLayananExport'])->name('export');
                 });
             });
         });

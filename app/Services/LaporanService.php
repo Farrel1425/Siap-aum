@@ -90,13 +90,13 @@ class LaporanService
             });
     }
 
-    public function laporanSurveyBulanan($filter, ?GroupLayananSkm $groupLayananSkm = null)
+    public function laporanSurvey($filter, ?GroupLayananSkm $groupLayananSkm = null)
     {
         // generate hash cache key based on filter and groupLayananSkm
         $hash = md5(json_encode($filter) . ($groupLayananSkm ? $groupLayananSkm->id : null));
 
         $data = Cache::remember('laporan_survey_bulanan_' . $hash, 5, function () use ($filter, $groupLayananSkm) {
-            $data_laporan =  $this->queryLaporanSurveyBulanan($filter, $groupLayananSkm);
+            $data_laporan =  $this->queryLaporanSurvey($filter, $groupLayananSkm);
             $statistik = collect();
 
             // JENIS KELAMIN
@@ -128,22 +128,22 @@ class LaporanService
             // PENDIDIKAN TERAKHIR
             $pendidikan_terakhir_keys = PendidikanEnum::descriptions();
             $statistik->put(
-                'pendidingan_terakhir',
+                'pendidikan_terakhir',
                 $data_laporan['kuesioners']->groupBy('pendidikan')->mapWithKeys(function ($item, $key) {
                     return [PendidikanEnum::from($key)->deskripsi() => $item->count()];
                 })
             );
             $statistik->put(
-                'pendidingan_terakhir',
+                'pendidikan_terakhir',
                 collect($pendidikan_terakhir_keys)
                     ->mapWithKeys(function ($key) use ($statistik) {
-                        return [$key => $statistik->get('pendidingan_terakhir')->get($key, 0)];
+                        return [$key => $statistik->get('pendidikan_terakhir')->get($key, 0)];
                     })
             );
-            $total_pendidikan_terakhir = $statistik->get('pendidingan_terakhir')->sum();
+            $total_pendidikan_terakhir = $statistik->get('pendidikan_terakhir')->sum();
             $statistik->put(
-                'pendidingan_terakhir_presentasi',
-                $statistik->get('pendidingan_terakhir')->mapWithKeys(function ($item, $key) use ($total_pendidikan_terakhir) {
+                'pendidikan_terakhir_presentasi',
+                $statistik->get('pendidikan_terakhir')->mapWithKeys(function ($item, $key) use ($total_pendidikan_terakhir) {
                     return [$key => $item ? ($item / $total_pendidikan_terakhir) * 100 : 0];
                 })
             );
@@ -188,7 +188,7 @@ class LaporanService
             // last 3 month
             $tanggal_awal = Carbon::now()->subMonths(10)->startOfMonth();
             $tanggal_akhir = Carbon::now()->endOfMonth();
-            $data = $this->queryLaporanSurveyBulanan([
+            $data = $this->queryLaporanSurvey([
                 'tanggal_awal' => $tanggal_awal,
                 'tanggal_akhir' => $tanggal_akhir,
             ]);
@@ -243,7 +243,7 @@ class LaporanService
         return $data;
     }
 
-    public function queryLaporanSurveyBulanan($filter = [], ?GroupLayananSkm $groupLayananSkm = null)
+    public function queryLaporanSurvey($filter = [], ?GroupLayananSkm $groupLayananSkm = null)
     {
         // Query data laporan survey bulanan
         if ($groupLayananSkm) {
