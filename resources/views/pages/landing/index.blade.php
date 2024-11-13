@@ -93,7 +93,7 @@
                 <div class="col-lg-9">
                     <x-landing.card class="d-flex flex-column text-center">
                         <h5>Hasil Survey Kepuasan Masyarakat terhadap Pelayanan Publik</h5>
-                        <p>Mal Pelayanan Publik Pasar Banyusari Lantai 3</p>
+                        <p>Mall Pelayanan Publik (MPP) Kabupaten Buleleng</p>
                         <div class="d-flex flex-column gap-2">
                             @foreach ($laporan_survey['nrrTertbgUnsurPercentage'] as $layanan => $value)
                                 <div class="progress">
