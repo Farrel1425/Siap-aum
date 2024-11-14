@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\RoleEnum;
 use App\Models\User;
+use App\Enums\RoleEnum;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
+use App\Services\LaporanService;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use App\Http\Controllers\Controller;
-use App\Services\LaporanService;
+use Illuminate\Support\Facades\Cache;
 
 class LandingController extends Controller
 {
@@ -18,13 +19,23 @@ class LandingController extends Controller
         $user_count = User::whereIn('role_id', [
             RoleEnum::PUBLIC->value,
         ])->count();
-        $permohonan_count = Permohonan::count();
-        $permohonan_proses_count = Permohonan::whereNotIn(
-            'status',
-            [
-                StatusPermohonanEnum::SELESAI->value
-            ]
-        )->count();
+        $permohonan_count = Cache::remember('permohonan_count', 60, function () {
+            return Permohonan::whereIn('status', [
+                StatusPermohonanEnum::PERMOHONAN_BARU->value,
+                StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+                StatusPermohonanEnum::VERIFIKASI->value,
+                StatusPermohonanEnum::REVISI->value,
+                StatusPermohonanEnum::SELESAI->value,
+            ])->count();
+        });
+        $permohonan_proses_count = Cache::remember('permohonan_proses_count', 60, function () {
+            return Permohonan::whereIn('status', [
+                StatusPermohonanEnum::PERMOHONAN_BARU->value,
+                StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+                StatusPermohonanEnum::VERIFIKASI->value,
+                StatusPermohonanEnum::REVISI->value,
+            ])->count();
+        });
         $permohonan_selesai_count = $permohonan_count - $permohonan_proses_count;
 
         $laporan_survey = $laporan_srvice->laporanSurveyBulananPublic();
