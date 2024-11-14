@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\JenisVerifikatorEnum;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\JenisIzin;
@@ -23,6 +24,7 @@ use App\Models\KuesionerPertanyaan;
 use Illuminate\Support\Facades\Log;
 use App\Models\KelengkapanJenisIzin;
 use App\Models\KelengkapanPermohonan;
+use App\Models\ValidasiForm;
 
 class SinkronisasiDataSiajaibLegacyService
 {
@@ -100,6 +102,9 @@ class SinkronisasiDataSiajaibLegacyService
         $start = microtime(true);
         $this->sinkronKelengkapanPermohonan();
         Log::info('Finish Sinkronisas Data Kelengkapan Permohonan : ' . (microtime(true) - $start) . 's');
+        Log::info('================');
+        $this->sinkronValidasiFormPermohonan();
+        Log::info('Finish Sinkronisas Data Validasi Form Permohonan : ' . (microtime(true) - $start) . 's');
         Log::info('================');
 
         // Kuesioner
@@ -535,6 +540,32 @@ class SinkronisasiDataSiajaibLegacyService
 
             // insert or update data with id
             KelengkapanPermohonan::upsert($kelengkapanPermohonan, ['id']);
+        }
+    }
+
+    private function sinkronValidasiFormPermohonan()
+    {
+        $alurPermohonanExisting = AlurPermohonan::query()
+            ->whereIn('jenis_verifikator', [
+                JenisVerifikatorEnum::FO->value,
+                JenisVerifikatorEnum::OPD->value,
+                JenisVerifikatorEnum::BO->value,
+            ])
+            ->where('is_done', true)
+            ->get();
+
+
+        foreach ($alurPermohonanExisting as $alurPermohonan) {
+            $validasiBerkas = [
+                'id' => $alurPermohonan->id,
+                'alur_permohonan_id' => $alurPermohonan->id,
+                'status' => 'valid',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            // insert or update data with id
+            ValidasiForm::upsert($validasiBerkas, ['id']);
         }
     }
 
