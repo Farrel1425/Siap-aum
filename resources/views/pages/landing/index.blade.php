@@ -84,7 +84,7 @@
                     <x-landing.card
                                     class="h-100 d-flex flex-column align-items-center justify-content-center text-center score-card">
                         <span
-                              class="score">{{ number_format((float) ($laporan_survey['persentaseNilaiIKM'] > 84 ? $laporan_survey['persentaseNilaiIKM'] : 84), 2, '.', '') }}</span>
+                              class="score">{{ number_format((float) ($laporan_survey['persentaseNilaiIKM'] < 84 ? $laporan_survey['persentaseNilaiIKM'] : 84), 2, '.', '') }}</span>
                         <span class="description">Sangat Baik</span>
                         <span class="respondent-count">dari {{ $laporan_survey['totalKuesioner'] }} responden (data 6 bulan
                             terakhir)</span>
@@ -102,8 +102,8 @@
                                          aria-valuenow="25"
                                          class="progress-bar"
                                          role="progressbar"
-                                         style="width: {{ ($laporan_survey['persentaseNilaiIKM'] > 84 ? $value : 84) }}%">
-                                        {{ $layanan }} : {{ number_format((float) ($laporan_survey['persentaseNilaiIKM'] > 84 ? $value : 84), 2, '.', '') }}
+                                         style="width: {{ ($laporan_survey['persentaseNilaiIKM'] < 84 ? $value : 84) }}%">
+                                        {{ $layanan }} : {{ number_format((float) ($laporan_survey['persentaseNilaiIKM'] < 84 ? $value : 84), 2, '.', '') }}
                                     </div>
                                 </div>
                             @endforeach
