@@ -28,6 +28,13 @@
                             type="submit">Masuk</button>
                     <p class="mt-2 text-main">Belum Punya Akun? <a class="text-danger fw-bold"
                            href="{{ route('register.index') }}">Daftar Akun</a></p>
+
+                    <img alt=""
+                         src="{{ asset('assets/images/maiharta.png') }}"
+                         width="125px" class="me-2"/>
+                    <img alt=""
+                         src="{{ asset('assets/images/bsre.png') }}"
+                         width="125px" />
                 </form>
             </div>
         </div>
