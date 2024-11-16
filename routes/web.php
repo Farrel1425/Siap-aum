@@ -123,6 +123,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/submit-berkas/{permohonan}', [UserPermohonanController::class, 'submitBerkas'])->name('submit-berkas');
                     Route::post('/revisi/{permohonan}', [UserPermohonanController::class, 'revisi'])->name('revisi');
                     Route::delete('/delete/{permohonan}', [UserPermohonanController::class, 'destroy'])->name('destroy');
+                    Route::post('/submit-revisi-form/{permohonan}', [UserPermohonanController::class, 'submitRevisiForm'])->name('submit-revisi-form');
 
                     // Ajax
                     Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');

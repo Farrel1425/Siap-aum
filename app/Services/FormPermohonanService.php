@@ -6,6 +6,7 @@ use App\Enums\StatusValidasiEnum;
 use App\Models\AlurPermohonan;
 use App\Models\Permohonan;
 use App\Models\ValidasiForm;
+use Illuminate\Database\Eloquent\Collection;
 
 class FormPermohonanService
 {
@@ -37,14 +38,22 @@ class FormPermohonanService
     {
         $alurPermohonan->relationLoaded('permohonan') || $alurPermohonan->load('permohonan');
 
-        if (!$alurPermohonan->validasiForm()->exists()) {
+        // if (!$alurPermohonan->validasiForm->dd()->withTrashed()->dd()->exists()) {
+        //     return null;
+        // }
+
+        $alurPermohonan->load(['validasiForm' => function ($query) {
+            $query->withTrashed()->orderBy('created_at', 'desc');
+        }]);
+
+        if ($alurPermohonan->validasiForm->isEmpty()) {
             return null;
         }
 
         return $alurPermohonan->validasiForm->first();
     }
 
-    public function getLastValidationFormByPermohonan(Permohonan $permohonan): ?ValidasiForm
+    public function getLastValidationFormByPermohonan(Permohonan $permohonan)
     {
         $permohonan->relationLoaded('alurPermohonan') || $permohonan->load('alurPermohonan');
         if ($permohonan->alurPermohonan->isNotEmpty() && !$permohonan->alurPermohonan->first()->relationLoaded('validasiForm')) {
@@ -55,7 +64,9 @@ class FormPermohonanService
             return null;
         }
 
-        return $permohonan->alurPermohonan->first()->validasiForm->sortByDesc('created_at')->first();
+        // get all validasi form from alur permohonan
+        return $permohonan->alurPermohonan->where('is_done', false)->first()->validasiForm->first() ?? null;
+
     }
 
     public function isFormValidatedByVerifikator(AlurPermohonan $alurPermohonan)

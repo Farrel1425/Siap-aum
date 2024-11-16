@@ -72,7 +72,7 @@
                                            name="tempat_lahir"
                                            readonly
                                            value="{{ $permohonan->tempat_lahir }}" />
-            <form action="{{ route('public.permohonan.revisi', $permohonan->id) }}"
+            <form action="{{ route('public.permohonan.submit-revisi-form', $permohonan->id) }}"
                   enctype="multipart/form-data"
                   method="POST">
                 @csrf
@@ -80,7 +80,7 @@
                 @if ($last_validation_form)
                     <div class="mb-3">
                         @if ($last_validation_form->status == App\Enums\StatusValidasiEnum::REVISI->value)
-                            <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                            <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
                                 {{ $last_validation_form->catatan }}</span>
                         @else
                             <span class="badge bg-success w-100 d-block mt-2 fw-normal text-xsm">Valid</span>
@@ -119,7 +119,7 @@
                                         <x-dashboard.input-inline-file class="bg-white text-xsm"
                                                                        class_input="text-xsm"
                                                                        label="Pas Foto 4x6 (Jika ada revisi)"
-                                                                       name="pas_foto"/>
+                                                                       name="pas_foto" />
                                     </div>
                                 </div>
                             </div>
@@ -135,6 +135,14 @@
                         </div>
                     @endif
                 @endif
+                @if($is_form_need_revisi)
+                    <button class="btn btn-primary btn-sm mt-3 w-100 d-block"
+                            type="submit">Simpan revisi form permohonan</button>
+                @endif
+            </form>
+            <form action="{{ route('public.permohonan.revisi', $permohonan->id) }}"
+                  method="POST">
+                @csrf
                 <h5 class="mt-4">Data Berkas Permohonan</h5>
                 @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
                     @if ($berkas_permohonan->is_revisi)

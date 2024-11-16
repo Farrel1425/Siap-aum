@@ -126,7 +126,7 @@
                         ($alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value ||
                             $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value ||
                             $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value))
-                    @if ($last_validation_form)
+                    @if ($last_validation_form && !$last_validation_form->deleted_at)
                         <button class="btn btn-sm btn-info d-block w-100 mb-3"
                                 data-nama="Verifikasi detail permohonan"
                                 data-permohonan-id="{{ encrypt($permohonan->id) }}"

@@ -271,8 +271,16 @@ class UserPermohonanController extends Controller
         return redirect()->back()->with('success', 'Permohonan berhasil dihapus');
     }
 
-    public function revisi(Request $request, Permohonan $permohonan, FormPermohonanService $formPermohonanService)
+    public function submitRevisiForm(Request $request, Permohonan $permohonan, FormPermohonanService $formPermohonanService)
     {
+        if ($permohonan->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses');
+        }
+
+        if($permohonan->status != StatusPermohonanEnum::REVISI->value) {
+            return redirect()->back()->with('error', 'Permohonan tidak dalam status revisi');
+        }
+
         // validasi form revisi
         if ($formPermohonanService->isFormOnRevisi($permohonan)) {
             $form_permohonan = FormPermohonan::where('permohonan_id', $permohonan->id)
@@ -284,6 +292,58 @@ class UserPermohonanController extends Controller
                     $form->kode_isian => 'required',
                 ]);
             }
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($formPermohonanService->isFormOnRevisi($permohonan)) {
+                // update form permohonan
+                foreach ($form_permohonan as $form) {
+                    $form->update([
+                        'value' => $request->{$form->kode_isian}
+                    ]);
+                }
+                // update pas_foto
+                if ($permohonan->is_pas_foto_required) {
+                    if ($request->pas_foto) {
+                        $request->validate([
+                            'pas_foto' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+                        ]);
+                        $pas_foto = $request->file('pas_foto');
+                        $pas_foto_path = $pas_foto->store('public/pas_foto');
+                        $permohonan->update([
+                            'pas_foto_filepath' => $pas_foto_path,
+                        ]);
+                    }
+                }
+                // delete validasi form revisi
+                $permohonan->alurPermohonan->each(function ($alur) {
+                    $alur->validasiForm()->where('status', StatusValidasiEnum::REVISI->value)->delete();
+                });
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kegagalan sistem, silahkan hubungi administrator');
+        }
+
+        return redirect()->back()->with('success', 'Form berhasil direvisi');
+    }
+
+    public function revisi(Request $request, Permohonan $permohonan, FormPermohonanService $formPermohonanService)
+    {
+        // // validasi form revisi
+        if ($formPermohonanService->isFormOnRevisi($permohonan)) {
+            return redirect()->back()->with('error', 'Mohon melakukan revisi pada data detail permohonan');
+        }
+
+        if ($permohonan->user_id != auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses');
+        }
+
+        if($permohonan->status != StatusPermohonanEnum::REVISI->value) {
+            return redirect()->back()->with('error', 'Permohonan tidak dalam status revisi');
         }
 
         $permohonan->load([
@@ -303,10 +363,6 @@ class UserPermohonanController extends Controller
                     ->where('is_done', 0);
             }
         ]);
-
-        if ($permohonan->user_id != auth()->id()) {
-            return redirect()->back()->with('error', 'Anda tidak memiliki akses');
-        }
 
         $is_all_uploaded = $permohonan
             ->berkasPermohonan
@@ -330,28 +386,31 @@ class UserPermohonanController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($formPermohonanService->isFormOnRevisi($permohonan)) {
-                // update form permohonan
-                foreach ($form_permohonan as $form) {
-                    $form->update([
-                        'value' => $request->{$form->kode_isian}
-                    ]);
-                }
-                // update pas_foto
-                if ($permohonan->is_pas_foto_required) {
-                    if ($request->pas_foto) {
-                        $pas_foto = $request->file('pas_foto');
-                        $pas_foto_path = $pas_foto->store('public/pas_foto');
-                        $permohonan->update([
-                            'pas_foto_filepath' => $pas_foto_path,
-                        ]);
-                    }
-                }
-                // delete validasi form revisi
-                $permohonan->alurPermohonan->each(function ($alur) {
-                    $alur->validasiForm()->where('status', StatusValidasiEnum::REVISI->value)->delete();
-                });
-            }
+            // if ($formPermohonanService->isFormOnRevisi($permohonan)) {
+            //     // update form permohonan
+            //     foreach ($form_permohonan as $form) {
+            //         $form->update([
+            //             'value' => $request->{$form->kode_isian}
+            //         ]);
+            //     }
+            //     // update pas_foto
+            //     if ($permohonan->is_pas_foto_required) {
+            //         if ($request->pas_foto) {
+            //             $request->validate([
+            //                 'pas_foto' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            //             ]);
+            //             $pas_foto = $request->file('pas_foto');
+            //             $pas_foto_path = $pas_foto->store('public/pas_foto');
+            //             $permohonan->update([
+            //                 'pas_foto_filepath' => $pas_foto_path,
+            //             ]);
+            //         }
+            //     }
+            //     // delete validasi form revisi
+            //     $permohonan->alurPermohonan->each(function ($alur) {
+            //         $alur->validasiForm()->where('status', StatusValidasiEnum::REVISI->value)->delete();
+            //     });
+            // }
             $permohonan->update([
                 'pengajuan_at' => now(),
                 'status' => StatusPermohonanEnum::VERIFIKASI_ULANG->value,

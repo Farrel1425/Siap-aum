@@ -91,6 +91,6 @@
         </div>
     </div>
     @if ($revisi)
-        <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir: {{ $revisi }}</span>
+        <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir: {{ $revisi }}</span>
     @endif
 </div>
