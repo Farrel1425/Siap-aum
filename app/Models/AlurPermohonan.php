@@ -39,4 +39,9 @@ class AlurPermohonan extends Model
     {
         return $this->hasMany(ValidasiBerkas::class);
     }
+
+    public function validasiForm()
+    {
+        return $this->hasMany(ValidasiForm::class);
+    }
 }

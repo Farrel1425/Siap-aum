@@ -16,6 +16,7 @@ use App\Exceptions\ServiceException;
 use App\Services\VerifikatorService;
 use Illuminate\Support\Facades\Storage;
 use App\Services\BerkasPermohonanService;
+use App\Services\FormPermohonanService;
 
 class VerifikatorPermohonanController extends Controller
 {
@@ -35,7 +36,7 @@ class VerifikatorPermohonanController extends Controller
         ));
     }
 
-    public function show(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    public function show(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService, FormPermohonanService $formPermohonanService)
     {
         try {
             $permohonan->load('user', 'alurPermohonan');
@@ -48,11 +49,14 @@ class VerifikatorPermohonanController extends Controller
                 $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::JF->value ||
                 $alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::PENANDATANGAN->value
             ) {
+                $is_form_valid = true;
                 $is_all_berkas_valid = true;
             } else {
+                $is_form_valid = $formPermohonanService->isFormValidFromVerifikator($alur_permohonan);
                 $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
             }
-
+            $last_validation_form = $formPermohonanService->getLastValidationFormByVerifikator($alur_permohonan);
+            $is_form_need_validation = $formPermohonanService->isFormNeedValidationFromVerifikator($alur_permohonan);
             $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
             return view('pages.verifikator.verifikasi.validasi', compact(
                 'permohonan',
@@ -62,17 +66,20 @@ class VerifikatorPermohonanController extends Controller
                 'is_verifikator_turn',
                 'alur_permohonan',
                 'is_can_verified',
+                'is_form_valid',
+                'last_validation_form',
+                'is_form_need_validation',
                 'is_all_berkas_valid',
             ));
         } catch (ServiceException $e) {
             return redirect()->back()->with('error', $e->getMessage());
         } catch (Exception $e) {
-            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage() . $e->getTraceAsString());
             return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
         }
     }
 
-    public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    public function simpanVerifikasi(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService, FormPermohonanService $formPermohonanService)
     {
         $permohonan->load([
             'kelengkapanPermohonan'
@@ -87,7 +94,9 @@ class VerifikatorPermohonanController extends Controller
 
 
         if ($verifikatorService->isJenisVerifikatorApprovable($alur_permohonan)) {
-            if ($berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan)) {
+            if ($berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan) &&
+                $formPermohonanService->isFormValidFromVerifikator($alur_permohonan)
+            ) {
                 // JF wajib sudah upload Surat pengantar permohonan rekomendasi
                 if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::FO->value) {
                     if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
@@ -173,6 +182,9 @@ class VerifikatorPermohonanController extends Controller
             } else {
                 if (!$berkasPermohonanService->isAllBerkasVerifiedFromVerifikator($alur_permohonan)) {
                     return redirect()->back()->with('error', 'Mohon validasi semua berkas terlebih dahulu sebelum melanjutkan');
+                }
+                if (!$formPermohonanService->isFormValidatedByVerifikator($alur_permohonan)) {
+                    return redirect()->back()->with('error', 'Mohon validasi form detail permohonan terlebih dahulu sebelum melanjutkan');
                 }
                 $permohonan->status = StatusPermohonanEnum::REVISI->value;
                 $permohonan->save();
@@ -552,6 +564,98 @@ class VerifikatorPermohonanController extends Controller
     }
 
     // AJAX
+    public function validForm(Request $request, VerifikatorService $verifikatorService, FormPermohonanService $formPermohonanService)
+    {
+        $request->validate([
+            'id' => 'required',
+        ]);
+
+        $permohonan = Permohonan::find(decrypt($request->id));
+        if (!$permohonan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Permohonan tidak ditemukan',
+            ], 404);
+        }
+
+        $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
+
+        if (!$is_verifikator_turn) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bukan giliran anda untuk melakukan validasi',
+            ], 403);
+        }
+
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+
+        try {
+            $formPermohonanService->validFormByVerifikator($alur_permohonan);
+        } catch (ServiceException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 400);
+        } catch (\Exception $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Form berhasil divalidasi',
+        ]);
+    }
+
+    public function revisiForm(Request $request, VerifikatorService $verifikatorService, FormPermohonanService $formPermohonanService)
+    {
+        $request->validate([
+            'id' => 'required',
+            'catatan_revisi' => 'required',
+        ]);
+
+        $permohonan = Permohonan::find(decrypt($request->id));
+        if (!$permohonan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Permohonan tidak ditemukan',
+            ], 404);
+        }
+
+        $is_verifikator_turn = $verifikatorService->isVerifikatorTurn($permohonan, auth()->user());
+        if (!$is_verifikator_turn) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bukan giliran anda untuk melakukan revisi',
+            ], 403);
+        }
+
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+
+        try {
+            $formPermohonanService->revisiFormByVerifikator($alur_permohonan, $request->catatan_revisi);
+        } catch (ServiceException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 400);
+        } catch (\Exception $e) {
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Form berhasil direvisi',
+        ]);
+    }
+
     public function validBerkas(Request $request, VerifikatorService $verifikatorService, BerkasPermohonanService $berkasPermohonanService)
     {
         $request->validate([

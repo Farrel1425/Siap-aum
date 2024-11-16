@@ -176,8 +176,10 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/simpan-verifikasi/{permohonan}', [VerifikatorPermohonanController::class, 'simpanVerifikasi'])->name('verifikasi');
 
                     // Ajax
+                    Route::post('/valid-form', [VerifikatorPermohonanController::class, 'validForm'])->name('valid-form');
+                    Route::post('/revisi-form', [VerifikatorPermohonanController::class, 'revisiForm'])->name('revisi-form');
                     Route::post('/valid-berkas', [VerifikatorPermohonanController::class, 'validBerkas'])->name('valid-berkas');
-                    Route::post('/revision-berkas', [VerifikatorPermohonanController::class, 'revisiBerkas'])->name('revisi-berkas');
+                    Route::post('/revisi-berkas', [VerifikatorPermohonanController::class, 'revisiBerkas'])->name('revisi-berkas');
                     Route::post('/upload-surat-permohonan-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratPermohonanRekomendasi'])->name('upload-surat-permohonan-rekomendasi');
                     Route::post('/upload-surat-rekomendasi/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSuratRekomendasi'])->name('upload-surat-rekomendasi');
                     Route::post('/upload-skpd/{permohonan}', [VerifikatorPermohonanController::class, 'uploadSkpd'])->name('upload-skpd');

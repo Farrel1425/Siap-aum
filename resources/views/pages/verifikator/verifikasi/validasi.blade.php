@@ -86,22 +86,17 @@
                                                    readonly
                                                    value="{{ $permohonan->tempat_lahir }}" />
                 @endif
-                <div class="card">
-                    <div class="card-body">
-                        @if ($permohonan->is_pas_foto_required)
-                            <div class="form-group row align-items-center justify-content-between">
-                                <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
-                                       for="pas_foto">Pas Foto 4x6</label>
-                                <div class="col-8 col-md-9 col-lg-10 text-end">
-                                    <img alt=""
-                                         class="img-thumbnail w-25"
-                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}">
-                                </div>
-                            </div>
+                <h5 class="mt-4">Data Detail Permohonan</h5>
+                @if ($last_validation_form)
+                    <div class="mb-3">
+                        @if ($last_validation_form->status == App\Enums\StatusValidasiEnum::REVISI->value)
+                            <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                                {{ $last_validation_form->catatan }}</span>
+                        @else
+                            <span class="badge bg-success w-100 d-block mt-2 fw-normal text-xsm">Valid</span>
                         @endif
                     </div>
-                </div>
-                <h5 class="mt-4">Data Detail Permohonan</h5>
+                @endif
                 @foreach ($permohonan->formPermohonan as $form_permohonan)
                     <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                    class_input="border-0 text-end text-xsm"
@@ -110,6 +105,43 @@
                                                    readonly
                                                    value="{{ $form_permohonan->value ?? '-' }}" />
                 @endforeach
+                <div class="card mb-2">
+                    <div class="card-body">
+                        @if ($permohonan->is_pas_foto_required)
+                            <div class="form-group row align-items-center justify-content-between">
+                                <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
+                                       for="pas_foto">Pas Foto 4x6</label>
+                                <div class="col-8 col-md-9 col-lg-10 text-end">
+                                    <img alt=""
+                                         class="img-thumbnail w-10"
+                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}">
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                @if (
+                    $is_verifikator_turn &&
+                        $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value &&
+                        ($alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value ||
+                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value ||
+                            $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value))
+                    @if ($last_validation_form)
+                        <button class="btn btn-sm btn-info d-block w-100 mb-3"
+                                data-nama="Verifikasi detail permohonan"
+                                data-permohonan-id="{{ encrypt($permohonan->id) }}"
+                                onclick="validasiForm(this)"
+                                type="button">
+                            Verifikasi Ulang Detail Permohonan</button>
+                    @else
+                        <button class="btn btn-sm btn-success d-block w-100 mb-3"
+                                data-nama="Verifikasi detail permohonan"
+                                data-permohonan-id="{{ encrypt($permohonan->id) }}"
+                                onclick="validasiForm(this)"
+                                type="button">
+                            Verifikasi Detail Permohonan</button>
+                    @endif
+                @endif
                 <h5 class="mt-4">Data Berkas Permohonan</h5>
                 @foreach ($berkas_permohonans as $berkas_permohonan)
                     <div class="form-group mb-3 mx-1 p-3 bg-white text-xsm">
@@ -189,7 +221,7 @@
                 @if (
                     $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
-                    @if ($is_all_berkas_valid || !$is_verifikator_turn)
+                    @if (($is_all_berkas_valid && $is_form_valid) || !$is_verifikator_turn)
                         <x-dashboard.input-inline-file-upload :is_readonly="false"
                                                               :is_show_badge="false"
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -239,7 +271,7 @@
                         @endif
                         {{-- HANDLE ALL PERMOHONAN --}}
                         @if ($permohonan->jenis_izin_id != 9)
-                            @if ($is_all_berkas_valid || !$is_verifikator_turn)
+                            @if (($is_all_berkas_valid && $is_form_valid) || !$is_verifikator_turn)
                                 <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                       class_input="text-xsm"
@@ -327,6 +359,7 @@
                                 $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
                                 $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                                 $is_all_berkas_valid &&
+                                $is_form_valid &&
                                 $is_verifikator_turn &&
                                 ($kelengkapan_permohonan->kode_isian == 'NO_SKPD' ||
                                     $kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME_TERBILANG' ||
@@ -352,6 +385,7 @@
                             $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
                                 $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                                 $is_all_berkas_valid &&
+                                $is_form_valid &&
                                 $is_verifikator_turn)
                             @if ($kelengkapan_permohonan->tipe == 'text')
                                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -405,7 +439,8 @@
             </form>
 
             @if ($is_verifikator_approvable_berkas)
-                @include('components.dashboard.modal-validasi')
+                @include('components.dashboard.modal-validasi-berkas')
+                @include('components.dashboard.modal-validasi-form')
             @endif
         </section>
     </div>
