@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\StatusPermohonanEnum;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
+use App\Models\FormPermohonan;
 use Illuminate\Support\Facades\DB;
+use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use Illuminate\Support\Facades\Log;
+use App\Services\FormPermohonanService;
 
 class UserPermohonanController extends Controller
 {
@@ -21,12 +23,12 @@ class UserPermohonanController extends Controller
     {
         if ($jenis_izin->id == 9) {
             return redirect()->route('public.reklame.index');
-        }else{
+        } else {
             return view('pages.public.permohonan.submit-form', compact('jenis_izin'));
         }
     }
 
-    public function show(Permohonan $permohonan, PermohonanService $permohonan_service)
+    public function show(Permohonan $permohonan, PermohonanService $permohonan_service, FormPermohonanService $form_permohonan_service)
     {
         $permohonan->load([
             'jenisIzin',
@@ -53,9 +55,13 @@ class UserPermohonanController extends Controller
                 'is_all_uploaded'
             ));
         } else if ($permohonan->status == StatusPermohonanEnum::REVISI->value) {
+            $is_form_need_revisi = $form_permohonan_service->isFormOnRevisi($permohonan);
+            $last_validation_form = $form_permohonan_service->getLastValidationFormByPermohonan($permohonan);
             return view('pages.public.permohonan.revisi', compact(
                 'permohonan',
-                'steps'
+                'steps',
+                'is_form_need_revisi',
+                'last_validation_form'
             ));
         } else {
             return view('pages.public.permohonan.show', compact(
@@ -85,7 +91,7 @@ class UserPermohonanController extends Controller
             ]);
         }
 
-        if($jenis_izin->is_pas_foto_required){
+        if ($jenis_izin->is_pas_foto_required) {
             $request->validate([
                 'pas_foto' => 'required|file|mimes:jpeg,jpg,png|max:2048',
             ]);
@@ -136,7 +142,7 @@ class UserPermohonanController extends Controller
             }
 
             // store pas foto
-            if($jenis_izin->is_pas_foto_required){
+            if ($jenis_izin->is_pas_foto_required) {
                 $pas_foto = $request->file('pas_foto');
                 $pas_foto_path = $pas_foto->store('public/pas_foto');
                 $permohonan->update([
@@ -240,7 +246,7 @@ class UserPermohonanController extends Controller
             ]);
         }
 
-        if($permohonan->status != StatusPermohonanEnum::PENDING->value){
+        if ($permohonan->status != StatusPermohonanEnum::PENDING->value) {
             return response()->json([
                 'success' => false,
                 'message' => 'Hanya permohonan dengan status pending yang dapat dihapus'
@@ -266,6 +272,16 @@ class UserPermohonanController extends Controller
 
     public function revisi(Request $request, Permohonan $permohonan)
     {
+        $form_permohonan = FormPermohonan::where('permohonan_id', $permohonan->id)
+            ->get();
+
+        // validate kode isian each form
+        foreach ($form_permohonan as $form) {
+            $request->validate([
+                $form->kode_isian => 'required',
+            ]);
+        }
+
         $permohonan->load([
             'berkasPermohonan' => function ($query) {
                 $query->with([
@@ -310,13 +326,27 @@ class UserPermohonanController extends Controller
 
         DB::beginTransaction();
         try {
+            // update form permohonan
+            foreach ($form_permohonan as $form) {
+                $form->update([
+                    'value' => $request->{$form->kode_isian}
+                ]);
+            }
+
+            // update pas_foto
+            if ($permohonan->is_pas_foto_required) {
+                if ($request->pas_foto) {
+                    $pas_foto = $request->file('pas_foto');
+                    $pas_foto_path = $pas_foto->store('public/pas_foto');
+                    $permohonan->update([
+                        'pas_foto_filepath' => $pas_foto_path,
+                    ]);
+                }
+            }
             $permohonan->update([
                 'pengajuan_at' => now(),
                 'status' => StatusPermohonanEnum::VERIFIKASI_ULANG->value,
             ]);
-            // $permohonan->alurPermohonan->map(function ($alur) {
-            //     $alur->validasiBerkas()->where('status', 'revisi')->delete();
-            // });
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

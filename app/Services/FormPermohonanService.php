@@ -44,6 +44,20 @@ class FormPermohonanService
         return $alurPermohonan->validasiForm->first();
     }
 
+    public function getLastValidationFormByPermohonan(Permohonan $permohonan): ?ValidasiForm
+    {
+        $permohonan->relationLoaded('alurPermohonan') || $permohonan->load('alurPermohonan');
+        if ($permohonan->alurPermohonan->isNotEmpty() && !$permohonan->alurPermohonan->first()->relationLoaded('validasiForm')) {
+            $permohonan->alurPermohonan->first()->load('validasiForm');
+        }
+
+        if ($permohonan->alurPermohonan->isEmpty()) {
+            return null;
+        }
+
+        return $permohonan->alurPermohonan->first()->validasiForm->sortByDesc('created_at')->first();
+    }
+
     public function isFormValidatedByVerifikator(AlurPermohonan $alurPermohonan)
     {
         $alurPermohonan->relationLoaded('permohonan') || $alurPermohonan->load('permohonan');
@@ -86,7 +100,7 @@ class FormPermohonanService
 
         // check every alurPermohonan on validasi form is revisi exist
         return $permohonan->alurPermohonan->filter(function ($alurPermohonan) {
-            return $alurPermohonan->validasiForm->status == StatusValidasiEnum::REVISI->value;
+            return $alurPermohonan->validasiForm->where('status', StatusValidasiEnum::REVISI->value)->isNotEmpty();
         })->isNotEmpty();
     }
 }

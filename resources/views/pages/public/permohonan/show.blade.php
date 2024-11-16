@@ -90,6 +90,21 @@
                                                readonly
                                                value="{{ $form_permohonan->value ?? '-' }}" />
             @endforeach
+            @if ($permohonan->is_pas_foto_required)
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="form-group row align-items-center justify-content-between">
+                            <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
+                                   for="pas_foto">Pas Foto 4x6</label>
+                            <div class="col-8 col-md-9 col-lg-10 text-end">
+                                <img alt=""
+                                     class="img-thumbnail w-10"
+                                     src="{{ Storage::url($permohonan->pas_foto_filepath) }}" width="200px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
             <h5 class="mt-4">Data Berkas Permohonan</h5>
             @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
                 <div class="form-group mb-3 bg-white p-2">

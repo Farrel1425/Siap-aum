@@ -72,52 +72,94 @@
                                            name="tempat_lahir"
                                            readonly
                                            value="{{ $permohonan->tempat_lahir }}" />
-            <h5 class="mt-4">Data Detail Permohonan</h5>
-            @foreach ($permohonan->formPermohonan as $form_permohonan)
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="{{ $form_permohonan->label }}"
-                                               name="{{ $form_permohonan->kode_isian }}"
-                                               readonly
-                                               value="{{ $form_permohonan->value ?? '-' }}" />
-            @endforeach
-            <h5 class="mt-4">Data Berkas Permohonan</h5>
-            @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
-                @if ($berkas_permohonan->is_revisi)
-                    <x-dashboard.input-inline-file-upload :required="$berkas_permohonan->is_required"
-                                                          :upload_revisi="$berkas_permohonan->validasiBerkas
-                                                              ->where('status', 'revisi')
-                                                              ->count() == 0"
-                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                          class_input="text-xsm"
-                                                          downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
-                                                          label="{{ $berkas_permohonan->nama }}"
-                                                          name="{{ $berkas_permohonan->id }}"
-                                                          revisi="{{ $berkas_permohonan->catatan }}"
-                                                          uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}" />
-                @else
-                    <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                          :required="$berkas_permohonan->is_required"
-                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                          class_input="text-xsm"
-                                                          downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
-                                                          label="{{ $berkas_permohonan->nama }}"
-                                                          name="{{ $berkas_permohonan->id }}"
-                                                          uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}" />
-                @endif
-            @endforeach
-            {{-- <h5 class="mt-4">Data Kelengkapan Verifikator</h5>
-            @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="{{ $kelengkapan_permohonan->label }}"
-                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                               readonly
-                                               value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
-            @endforeach --}}
             <form action="{{ route('public.permohonan.revisi', $permohonan->id) }}"
+                  enctype="multipart/form-data"
                   method="POST">
                 @csrf
+                <h5 class="mt-4">Data Detail Permohonan</h5>
+                @if ($last_validation_form)
+                    <div class="mb-3">
+                        @if ($last_validation_form->status == App\Enums\StatusValidasiEnum::REVISI->value)
+                            <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                                {{ $last_validation_form->catatan }}</span>
+                        @else
+                            <span class="badge bg-success w-100 d-block mt-2 fw-normal text-xsm">Valid</span>
+                        @endif
+                    </div>
+                @endif
+                @foreach ($permohonan->formPermohonan as $form_permohonan)
+                    @if ($is_form_need_revisi)
+                        <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                       class_input="text-xsm"
+                                                       label="{{ $form_permohonan->label }}"
+                                                       name="{{ $form_permohonan->kode_isian }}"
+                                                       value="{{ $form_permohonan->value ?? '-' }}" />
+                    @endif
+                @endforeach
+                @if ($permohonan->is_pas_foto_required)
+                    @if (!$is_form_need_revisi)
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="form-group row align-items-center justify-content-between">
+                                    <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
+                                           for="pas_foto">Pas Foto 4x6</label>
+                                    <div class="col-8 col-md-9 col-lg-10 text-end">
+                                        <img alt=""
+                                             class="img-thumbnail w-10"
+                                             src="{{ Storage::url($permohonan->pas_foto_filepath) }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <x-dashboard.input-inline-file class="bg-white text-xsm"
+                                                                       class_input="text-xsm"
+                                                                       label="Pas Foto 4x6 (Jika ada revisi)"
+                                                                       name="pas_foto"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="card mb-2">
+                                    <div class="card-body text-center">
+                                        <img alt=""
+                                             src="{{ Storage::url($permohonan->pas_foto_filepath) }}"
+                                             width="50px">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+                <h5 class="mt-4">Data Berkas Permohonan</h5>
+                @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
+                    @if ($berkas_permohonan->is_revisi)
+                        <x-dashboard.input-inline-file-upload :required="$berkas_permohonan->is_required"
+                                                              :upload_revisi="$berkas_permohonan->validasiBerkas
+                                                                  ->where('status', 'revisi')
+                                                                  ->count() == 0"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
+                                                              label="{{ $berkas_permohonan->nama }}"
+                                                              name="{{ $berkas_permohonan->id }}"
+                                                              revisi="{{ $berkas_permohonan->catatan }}"
+                                                              uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}" />
+                    @else
+                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                              :required="$berkas_permohonan->is_required"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ $berkas_permohonan->filepath ? Storage::url($berkas_permohonan->filepath) : '' }}"
+                                                              label="{{ $berkas_permohonan->nama }}"
+                                                              name="{{ $berkas_permohonan->id }}"
+                                                              uploadUrl="{{ route('public.permohonan.store-berkas', $permohonan->id) }}" />
+                    @endif
+                @endforeach
                 <button class="btn btn-primary bg-primary mt-4 w-100 d-block"
                         type="submit">Simpan dan Lanjutkan Permohonan</button>
             </form>
