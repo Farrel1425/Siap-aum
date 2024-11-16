@@ -114,7 +114,7 @@
                                 <div class="col-8 col-md-9 col-lg-10 text-end">
                                     <img alt=""
                                          class="img-thumbnail w-10"
-                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}">
+                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}" width="200px">
                                 </div>
                             </div>
                         @endif

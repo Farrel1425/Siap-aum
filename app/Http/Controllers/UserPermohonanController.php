@@ -6,6 +6,7 @@ use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
 use App\Models\FormPermohonan;
+use App\Enums\StatusValidasiEnum;
 use Illuminate\Support\Facades\DB;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
@@ -270,16 +271,19 @@ class UserPermohonanController extends Controller
         return redirect()->back()->with('success', 'Permohonan berhasil dihapus');
     }
 
-    public function revisi(Request $request, Permohonan $permohonan)
+    public function revisi(Request $request, Permohonan $permohonan, FormPermohonanService $formPermohonanService)
     {
-        $form_permohonan = FormPermohonan::where('permohonan_id', $permohonan->id)
-            ->get();
+        // validasi form revisi
+        if ($formPermohonanService->isFormOnRevisi($permohonan)) {
+            $form_permohonan = FormPermohonan::where('permohonan_id', $permohonan->id)
+                ->get();
 
-        // validate kode isian each form
-        foreach ($form_permohonan as $form) {
-            $request->validate([
-                $form->kode_isian => 'required',
-            ]);
+            // validate kode isian each form
+            foreach ($form_permohonan as $form) {
+                $request->validate([
+                    $form->kode_isian => 'required',
+                ]);
+            }
         }
 
         $permohonan->load([
@@ -326,22 +330,27 @@ class UserPermohonanController extends Controller
 
         DB::beginTransaction();
         try {
-            // update form permohonan
-            foreach ($form_permohonan as $form) {
-                $form->update([
-                    'value' => $request->{$form->kode_isian}
-                ]);
-            }
-
-            // update pas_foto
-            if ($permohonan->is_pas_foto_required) {
-                if ($request->pas_foto) {
-                    $pas_foto = $request->file('pas_foto');
-                    $pas_foto_path = $pas_foto->store('public/pas_foto');
-                    $permohonan->update([
-                        'pas_foto_filepath' => $pas_foto_path,
+            if ($formPermohonanService->isFormOnRevisi($permohonan)) {
+                // update form permohonan
+                foreach ($form_permohonan as $form) {
+                    $form->update([
+                        'value' => $request->{$form->kode_isian}
                     ]);
                 }
+                // update pas_foto
+                if ($permohonan->is_pas_foto_required) {
+                    if ($request->pas_foto) {
+                        $pas_foto = $request->file('pas_foto');
+                        $pas_foto_path = $pas_foto->store('public/pas_foto');
+                        $permohonan->update([
+                            'pas_foto_filepath' => $pas_foto_path,
+                        ]);
+                    }
+                }
+                // delete validasi form revisi
+                $permohonan->alurPermohonan->each(function ($alur) {
+                    $alur->validasiForm()->where('status', StatusValidasiEnum::REVISI->value)->delete();
+                });
             }
             $permohonan->update([
                 'pengajuan_at' => now(),
@@ -350,7 +359,7 @@ class UserPermohonanController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kegagalan sistem, silahkan hubungi administrator');
         }
 
