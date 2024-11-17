@@ -8,15 +8,16 @@ use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
 use App\Models\BerkasPermohonan;
+use Illuminate\Support\Facades\DB;
 use App\Enums\JenisVerifikatorEnum;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
 use App\Services\VerifikatorService;
+use App\Services\FormPermohonanService;
 use Illuminate\Support\Facades\Storage;
 use App\Services\BerkasPermohonanService;
-use App\Services\FormPermohonanService;
 
 class VerifikatorPermohonanController extends Controller
 {
@@ -58,6 +59,8 @@ class VerifikatorPermohonanController extends Controller
             $last_validation_form = $formPermohonanService->getLastValidationFormByVerifikator($alur_permohonan);
             $is_form_need_validation = $formPermohonanService->isFormNeedValidationFromVerifikator($alur_permohonan);
             $berkas_permohonans = $berkasPermohonanService->getLastStatusAllBerkasByAlur($alur_permohonan);
+            $is_all_jf_done = $permohonan->alurPermohonan->where('jenis_verifikator', JenisVerifikatorEnum::JF->value)->where('is_done', false)->isEmpty();
+            $is_all_bo_done = $permohonan->alurPermohonan->where('jenis_verifikator', JenisVerifikatorEnum::BO->value)->where('is_done', false)->isEmpty();
             return view('pages.verifikator.verifikasi.validasi', compact(
                 'permohonan',
                 'berkas_permohonans',
@@ -70,6 +73,8 @@ class VerifikatorPermohonanController extends Controller
                 'last_validation_form',
                 'is_form_need_validation',
                 'is_all_berkas_valid',
+                'is_all_jf_done',
+                'is_all_bo_done',
             ));
         } catch (ServiceException $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -94,7 +99,8 @@ class VerifikatorPermohonanController extends Controller
 
 
         if ($verifikatorService->isJenisVerifikatorApprovable($alur_permohonan)) {
-            if ($berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan) &&
+            if (
+                $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan) &&
                 $formPermohonanService->isFormValidFromVerifikator($alur_permohonan)
             ) {
                 // JF wajib sudah upload Surat pengantar permohonan rekomendasi
@@ -218,6 +224,59 @@ class VerifikatorPermohonanController extends Controller
                 return redirect()->back()->with('error', 'Permohonan tidak dapat diverifikasi');
             }
         }
+    }
+
+    public function updateDraftSk(Request $request, Permohonan $permohonan, PermohonanService $permohonanService, VerifikatorService $verifikatorService)
+    {
+        // validasi apakah user adalah verifikaor BO
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::BO->value) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses');
+        }
+
+        // validasi apakah seluruh bo sudah selesai dan jf belum selesai
+        $is_all_bo_done = $permohonan->alurPermohonan->where('jenis_verifikator', JenisVerifikatorEnum::BO->value)->where('is_done', false)->isEmpty();
+        $is_all_jf_done = $permohonan->alurPermohonan->where('jenis_verifikator', JenisVerifikatorEnum::JF->value)->where('is_done', false)->isEmpty();
+        if (!($is_all_bo_done && !$is_all_jf_done)) {
+            return redirect()->back()->with('error', 'Tidak dapat mengupdate draft SK sebelum BO selesai verifikasi dan JF belum selesai');
+        }
+
+        // validasi permohonan sedang dalam status verifikasi
+        if ($permohonan->status != StatusPermohonanEnum::VERIFIKASI->value) {
+            return redirect()->back()->with('error', 'Permohonan tidak dalam status verifikasi');
+        }
+
+        $permohonan->load(['kelengkapanPermohonan']);
+
+        foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan) {
+            $rules[$kelengkapan_permohonan->kode_isian] = 'required';
+            $validation_messages[$kelengkapan_permohonan->kode_isian . '.required'] = 'Mohon unggah ' . $kelengkapan_permohonan->label;
+        }
+
+        DB::beginTransaction();
+        try {
+            $validated = $request->validate($rules, $validation_messages);
+            foreach ($validated as $key => $value) {
+                $kelengkapan_permohonan = $permohonan->kelengkapanPermohonan->where('kode_isian', $key)->first();
+                $kelengkapan_permohonan->value = $value;
+                $kelengkapan_permohonan->save();
+            }
+
+            // generate pdf template for ijin terbit
+            $filepath = $permohonanService->generateIzinTerbit($permohonan);
+            $permohonan->template_surat_filepath = $filepath;
+            $permohonan->save();
+
+            DB::commit();
+        } catch (ServiceException $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage() . $e->getTraceAsString());
+            return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
+        }
+        return redirect()->back()->with('success', 'Draft SK berhasil diupdate');
     }
 
     public function generateUlangIzinTerbit(Request $request, $permohonan, PermohonanService $permohonanService)

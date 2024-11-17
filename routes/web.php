@@ -175,6 +175,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/', [VerifikatorPermohonanController::class, 'verifikasiIndex'])->name('index');
                     Route::get('/show/{permohonan}', [VerifikatorPermohonanController::class, 'show'])->name('show');
                     Route::post('/simpan-verifikasi/{permohonan}', [VerifikatorPermohonanController::class, 'simpanVerifikasi'])->name('verifikasi');
+                    Route::post('/update-draft-sk/{permohonan}', [VerifikatorPermohonanController::class, 'updateDraftSk'])->name('update-draft-sk');
 
                     // Ajax
                     Route::post('/valid-form', [VerifikatorPermohonanController::class, 'validForm'])->name('valid-form');

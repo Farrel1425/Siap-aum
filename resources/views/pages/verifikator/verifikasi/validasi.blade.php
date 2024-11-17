@@ -114,7 +114,8 @@
                                 <div class="col-8 col-md-9 col-lg-10 text-end">
                                     <img alt=""
                                          class="img-thumbnail w-10"
-                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}" width="200px">
+                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}"
+                                         width="200px">
                                 </div>
                             </div>
                         @endif
@@ -406,7 +407,9 @@
                                                                value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
                             @endif
                         @else
-                            @if ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value)
+                            @if (
+                                $alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value &&
+                                    ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::BO->value || $is_all_jf_done))
                                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                class_input="border-0 text-end text-xsm"
                                                                label="{{ $kelengkapan_permohonan->label }}"
@@ -437,6 +440,43 @@
                     </div>
                 @endif
             </form>
+
+            @if (
+                $is_all_bo_done &&
+                    !$is_all_jf_done &&
+                    $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value &&
+                    $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value)
+                <form action="{{ route('verifikator.verifikasi.update-draft-sk', $permohonan->id) }}"
+                      method="POST">
+                    @csrf
+                    @foreach ($permohonan->kelengkapanPermohonan as $kelengkapan_permohonan)
+                        @if ($kelengkapan_permohonan->tipe == 'text')
+                            <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                           class_input="text-xsm"
+                                                           label="{{ $kelengkapan_permohonan->label }}"
+                                                           name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                           placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                           value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                        @elseif($kelengkapan_permohonan->tipe == 'date')
+                            <x-dashboard.input-inline-text :required=True
+                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                           class_input="text-start text-xsm"
+                                                           id="{{ $kelengkapan_permohonan->id }}"
+                                                           label="{{ $kelengkapan_permohonan->label }}"
+                                                           name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                           placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                           type="date"
+                                                           value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                        @endif
+                    @endforeach
+
+                    <div class="mt-4">
+                        <button class="d-block btn w-100 btn-primary">
+                            <i class="isax isax-tick-circle me-2"></i> Perbarui Draft SK & Generate Ulang Ijin Terbit
+                        </button>
+                    </div>
+                </form>
+            @endif
 
             @if ($is_verifikator_approvable_berkas)
                 @include('components.dashboard.modal-validasi-berkas')
