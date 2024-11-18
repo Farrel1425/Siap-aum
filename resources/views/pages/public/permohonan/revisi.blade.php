@@ -93,6 +93,9 @@
                                                        class_input="text-xsm"
                                                        label="{{ $form_permohonan->label }}"
                                                        name="{{ $form_permohonan->kode_isian }}"
+                                                       placeholder="Masukkan {{ $form_jenis_izin->label }}"
+                                                       required
+                                                       type="{{ $form_jenis_izin->tipe }}"
                                                        value="{{ $form_permohonan->value ?? '-' }}" />
                     @endif
                 @endforeach
@@ -135,7 +138,7 @@
                         </div>
                     @endif
                 @endif
-                @if($is_form_need_revisi)
+                @if ($is_form_need_revisi)
                     <button class="btn btn-primary btn-sm mt-3 w-100 d-block"
                             type="submit">Simpan revisi form permohonan</button>
                 @endif
