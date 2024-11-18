@@ -86,7 +86,7 @@
                                                    type="{{ $form_jenis_izin->tipe }}"
                                                    value="{{ old($form_jenis_izin->kode_isian) }}" />
                 @endforeach
-                <button class="btn btn-primary bg-primary mb-4 mt-3 w-100 d-block"
+                <button class="btn btn-primary bg-primary mb-5 mt-3 w-100 d-block"
                         type="submit">Simpan dan Lanjut Upload Berkas</button>
             </form>
         </section>
