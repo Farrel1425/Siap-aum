@@ -374,7 +374,7 @@ class UserReklameController extends Controller
             Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan pada server')->withInput();
         }
-        return redirect()->back()->with('success', 'Data Reklame berhasil diubah');
+        return redirect()->route('public.reklame.create', ['nomor_registrasi' => $registrasi_reklame->nomor_registrasi])->with('success', 'Data Reklame berhasil diubah');
     }
 
     public function destroyReklame(Request $request, $nomor_registrasi, Reklame $reklame)
