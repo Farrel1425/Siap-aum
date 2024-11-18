@@ -127,6 +127,8 @@ Route::middleware(['auth'])->group(function () {
 
                     // Ajax
                     Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');
+                    Route::post('/upload-bukti-bayar-reklame/{permohonan}', [UserPermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
+
                 });
 
                 // Reklame

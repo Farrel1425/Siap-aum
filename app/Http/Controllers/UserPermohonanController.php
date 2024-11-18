@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\JenisVerifikatorEnum;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
@@ -71,6 +72,51 @@ class UserPermohonanController extends Controller
                 'need_kuesioner'
             ));
         }
+    }
+
+    public function uploadBuktiBayarReklame(Request $request, Permohonan $permohonan)
+    {
+        $request->validate([
+            'berkas_key' => 'required|in:bukti_bayar',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        if ($permohonan->user_id != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses'
+            ]);
+        }
+
+        if ($permohonan->jenis_izin_id != 9) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Permohonan ini bukan permohonan reklame'
+            ]);
+        }
+
+        if (!$permohonan->reklame?->skpd_filepath) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah bukti bayar sebelum SKPD terunggah'
+            ]);
+        }
+
+        if($permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::OPD)->where('is_done', 1)->count()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah bukti bayar setelah diverifikasi oleh OPD'
+            ]);
+        }
+
+        $permohonan->reklame->bukti_bayar_filepath = $request->file('berkas')->store('public/permohonan/reklame/bukti_bayar');
+        $permohonan->reklame->bukti_bayar_user_id = auth()->user()->id;
+        $permohonan->reklame->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bukti bayar berhasil diunggah',
+        ]);
     }
 
     public function submitForm(Request $request, JenisIzin $jenis_izin, PermohonanService $permohonan_service)
@@ -277,7 +323,7 @@ class UserPermohonanController extends Controller
             return redirect()->back()->with('error', 'Anda tidak memiliki akses');
         }
 
-        if($permohonan->status != StatusPermohonanEnum::REVISI->value) {
+        if ($permohonan->status != StatusPermohonanEnum::REVISI->value) {
             return redirect()->back()->with('error', 'Permohonan tidak dalam status revisi');
         }
 
@@ -342,7 +388,7 @@ class UserPermohonanController extends Controller
             return redirect()->back()->with('error', 'Anda tidak memiliki akses');
         }
 
-        if($permohonan->status != StatusPermohonanEnum::REVISI->value) {
+        if ($permohonan->status != StatusPermohonanEnum::REVISI->value) {
             return redirect()->back()->with('error', 'Permohonan tidak dalam status revisi');
         }
 

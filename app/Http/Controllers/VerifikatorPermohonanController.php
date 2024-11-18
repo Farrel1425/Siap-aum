@@ -125,16 +125,16 @@ class VerifikatorPermohonanController extends Controller
                             return redirect()->back()->with('error', 'Mohon unggah SKPD terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                         }
 
-                        if (!$permohonan->reklame?->bukti_bayar_filepath) {
-                            return redirect()->back()->with('error', 'Bukti bayar reklame belum diunggah oleh anda atau pemohon. Mohon tunggu pemohon mengunggah bukti bayar atau anda dapat mengunggahnya terlebih dahulu');
-                        }
-
                         $validated = $request->validate($rules, $validation_messages);
 
                         foreach ($validated as $key => $value) {
                             $kelengkapan_permohonan = $permohonan->kelengkapanPermohonan->where('kode_isian', $key)->first();
                             $kelengkapan_permohonan->value = $value;
                             $kelengkapan_permohonan->save();
+                        }
+
+                        if (!$permohonan->reklame?->bukti_bayar_filepath) {
+                            return redirect()->back()->with('success', 'Data pajak SKPD berhasil disimpan. Pending unggah bukti bayar oleh anda atau pemohon. Untuk melanjutkan, mohon tunggu pemohon mengunggah bukti bayar atau anda dapat mengunggahnya terlebih dahulu');
                         }
                     }
                     // all permohonan
@@ -415,6 +415,20 @@ class VerifikatorPermohonanController extends Controller
             ]);
         }
 
+        if($permohonan->jenis_izin_id != 9) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Izin ini tidak memerlukan SKPD',
+            ]);
+        }
+
+        if($permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::JF->value)->first()->is_done) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah SKPD ulang setelah JF selesai verifikasi',
+            ]);
+        }
+
         $permohonan->reklame->skpd_filepath = $request->file('berkas')->store('public/permohonan/reklame/skpd');
         $permohonan->reklame->save();
 
@@ -446,6 +460,20 @@ class VerifikatorPermohonanController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Tidak dapat mengunggah bukti bayar sebelum semua berkas dinyatakan valid',
+            ]);
+        }
+
+        if($permohonan->jenis_izin_id != 9) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Izin ini tidak memerlukan bukti bayar',
+            ]);
+        }
+
+        if($permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::JF->value)->first()->is_done) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah bukti bayar ulang setelah JF selesai verifikasi',
             ]);
         }
 

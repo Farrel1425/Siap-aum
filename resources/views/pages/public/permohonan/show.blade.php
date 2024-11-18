@@ -99,7 +99,8 @@
                             <div class="col-8 col-md-9 col-lg-10 text-end">
                                 <img alt=""
                                      class="img-thumbnail w-10"
-                                     src="{{ Storage::url($permohonan->pas_foto_filepath) }}" width="200px">
+                                     src="{{ Storage::url($permohonan->pas_foto_filepath) }}"
+                                     width="200px">
                             </div>
                         </div>
                     </div>
@@ -152,6 +153,33 @@
                                                readonly
                                                value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
             @endforeach
+            @if ($permohonan->jenis_izin_id == 9)
+                <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                      :is_show_badge="false"
+                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                      class_input="text-xsm"
+                                                      downloadUrl="{{ Storage::url($permohonan->reklame?->skpd_filepath) }}"
+                                                      label="SKPD"
+                                                      name="skpd" />
+                <h5 class="mt-4">Bukti Bayar</h5>
+                @if ($permohonan->alurPermohonan()->where('jenis_verifikator', App\Enums\JenisVerifikatorEnum::OPD)->where('is_done', 1)->count())
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                          label="Bukti Bayar SKPD"
+                                                          name="bukti_bayar" />
+                @else
+                    <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                          label="Bukti Bayar SKPD"
+                                                          name="bukti_bayar"
+                                                          uploadUrl="{{ route('public.permohonan.upload-bukti-bayar-reklame', $permohonan->id) }}" />
+                @endif
+            @endif
             <h5 class="mt-4">Data Berkas Verifikator</h5>
             <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                   :is_show_badge="false"
