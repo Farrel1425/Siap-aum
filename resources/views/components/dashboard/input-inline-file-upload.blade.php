@@ -18,7 +18,7 @@
 <div class="form-group row mb-0 align-items-center {{ $class }}"
      id="{{ $container_id }}">
     @if ($label)
-        <label class="text-primary text-xsm col-form-label fw-bold col-6 col-md-5 col-lg-4"
+        <label class="text-primary text-xsm col-form-label fw-bold col-5 col-md-5 col-lg-4"
                for="{{ $name }}">{{ $label }}
             @if ($is_show_badge)
                 @if ($required)
@@ -48,10 +48,10 @@
             @endif
         </label>
     @endif
-    <div class="col-6 col-md-7 col-lg-8">
-        <div class="row">
+    <div class="col-7 col-md-7 col-lg-8">
+        <div class="row gap-2 gap-md-0">
             @if (!$is_readonly)
-                <div class="col-{{ $downloadUrl && $uploadUrl ? 6 : ($downloadUrl || $uploadUrl ? 9 : 12) }}">
+                <div class="col-12 col-md-{{ $downloadUrl && $uploadUrl ? 6 : ($downloadUrl || $uploadUrl ? 9 : 12) }}">
                     <input accept=".pdf,.docx"
                            aria-describedby="basic-addon1"
                            class="form-control text-xsm upload-berkas"
@@ -61,7 +61,7 @@
                 </div>
 
                 @if ($uploadUrl)
-                    <div class="col-3">
+                    <div class="col-12 col-md-3">
                         <button class="btn btn-primary bg-primary text-xsm w-100 d-block"
                                 onclick="uploadBerkasPermohonan('{{ $uploadUrl }}', '{{ csrf_token() }}', '{{ $name }}')"
                                 type="button">Unggah File</button>
@@ -69,7 +69,7 @@
                 @endif
 
                 @if ($downloadUrl)
-                    <div class="col-3">
+                    <div class="col-12 col-md-3">
                         <a class="btn-outline-primary btn text-xsm text-center w-100 d-block"
                            href="{{ $downloadUrl }}"
                            id="btn-download-{{ $name }}"
@@ -77,7 +77,7 @@
                     </div>
                 @endif
             @else
-                <div class="col-3 offset-9">
+                <div class="col-12 col-md-3 offset-md-9">
                     @if ($downloadUrl)
                         <a class="btn-outline-primary btn text-xsm text-center w-100 d-block"
                            href="{{ $downloadUrl }}"

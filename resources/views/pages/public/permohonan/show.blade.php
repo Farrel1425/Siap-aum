@@ -110,7 +110,7 @@
             @foreach ($permohonan->berkasPermohonan as $berkas_permohonan)
                 <div class="form-group mb-3 bg-white p-2">
                     <div class="row align-items-center">
-                        <div class="col-5">
+                        <div class="col-6 col-md-5">
                             <label class="text-primary col-form-label fw-bold text-xsm"
                                    for="{{ $berkas_permohonan->id }}">{{ $berkas_permohonan->nama }}
                                 @if ($berkas_permohonan->is_required)
@@ -129,7 +129,7 @@
                                 @endif
                             </label>
                         </div>
-                        <div class="col-2 offset-5">
+                        <div class="col-5 col-md-2 offset-md-5">
                             @if ($berkas_permohonan->filepath)
                                 <a class="btn btn-outline-primary text-xsm d-block w-100"
                                    href="{{ Storage::url($berkas_permohonan->filepath) }}"
