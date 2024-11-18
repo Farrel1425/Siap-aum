@@ -557,7 +557,6 @@ class VerifikatorPermohonanController extends Controller
                         $query = $query->whereIn('status', [
                             StatusPermohonanEnum::PERMOHONAN_BARU->value,
                             StatusPermohonanEnum::VERIFIKASI->value,
-                            StatusPermohonanEnum::VERIFIKASI_ULANG->value,
                         ]);
                     } else {
                         $query = $query->where('status', $request->input('status'));
