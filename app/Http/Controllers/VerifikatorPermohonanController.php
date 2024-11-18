@@ -459,6 +459,40 @@ class VerifikatorPermohonanController extends Controller
         ]);
     }
 
+    public function uploadLampiranSk(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService, PermohonanService $permohonanService)
+    {
+        $request->validate([
+            'berkas_key' => 'required|in:lampiran_sk',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+        // check is all berkas valid
+        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::BO->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator BO yang dapat mengunggah lampiran SK',
+            ]);
+        }
+
+        if (!$is_all_berkas_valid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat mengunggah lampiran SK sebelum semua berkas dinyatakan valid',
+            ]);
+        }
+
+        $permohonan->lampiran_sk_filepath = $request->file('berkas')->store('public/permohonan/lampiran_sk');
+        $permohonan->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lampiran SK berhasil diunggah',
+        ]);
+    }
+
     // TABLE
     public function permohonanTable(Request $request)
     {

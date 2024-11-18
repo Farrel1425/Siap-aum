@@ -39,6 +39,7 @@ class Permohonan extends Model
         'pengajuan_at',
         'is_pas_foto_required',
         'pas_foto_filepath',
+        'lampiran_sk_filepath',
     ];
 
     protected $casts = [

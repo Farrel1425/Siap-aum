@@ -313,6 +313,13 @@
                             $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
                                 $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                                 !$permohonan->is_ttd)
+                            <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->lampiran_sk_filepath ? Storage::url($permohonan->lampiran_sk_filepath) : '' }}"
+                                                                  label="Lampiran file pada SK (Jika ada)"
+                                                                  name="lampiran_sk"
+                                                                  uploadUrl="{{ route('verifikator.verifikasi.upload-lampiran-sk', $permohonan->id) }}" />
                             @if ($alur_permohonan->is_done)
                                 <div class="row align-items-center">
                                     <div class="col-9">

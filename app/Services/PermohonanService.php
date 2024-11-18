@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use setasign\Fpdi\Fpdi;
 use App\Models\Permohonan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
@@ -12,6 +13,7 @@ use Illuminate\Support\Collection;
 use App\Enums\StatusPermohonanEnum;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
+use App\Models\LogTte;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -153,6 +155,12 @@ class PermohonanService
                     'tag' => ''
                 ]);
             $response_object = $response->object();
+            LogTte::create([
+                'permohonan_id' => $permohonan->id,
+                'verifikator_id' => $user->id,
+                'code' => $response->status(),
+                'body' => $response->body()
+            ]);
             if ($response->status() != 200) {
                 throw new ServiceException($response_object->error);
             }
@@ -203,7 +211,7 @@ class PermohonanService
             );
 
             // Pas foto
-            if($permohonan->is_pas_foto_required) {
+            if ($permohonan->is_pas_foto_required) {
                 $templateProcessor->setImageValue('PAS_FOTO', [
                     'path' => storage_path('app/' . $permohonan->pas_foto_filepath),
                 ]);
@@ -259,6 +267,19 @@ class PermohonanService
             // Clean up temporary files
             unlink($tempWordPath);
 
+            if ($permohonan->lampiran_sk_filepath) {
+                $lampiranPdfPath = storage_path('app/' . $permohonan->lampiran_sk_filepath);
+
+                // Path to the merged PDF file
+                $mergedPdfPath = 'izin_terbit/' . $filename_encrypt . '_merged.pdf';
+                $mergedPdfAbsolutePath = storage_path('app/izin_terbit/' . $filename_encrypt . '_merged.pdf');
+
+                // Merge the generated PDF with the lampiran PDF
+                $this->mergePdfs($pdfPathStorage, $lampiranPdfPath, $mergedPdfAbsolutePath);
+
+                return $mergedPdfPath;
+            }
+
             return $pdfPath;
         } catch (\Exception $e) {
             // Log the error for debugging
@@ -294,5 +315,31 @@ class PermohonanService
             }
             return response()->download(storage_path('app/' . $permohonan->template_surat_filepath));
         }
+    }
+
+    public function mergePdfs(string $pdfPath1, string $pdfPath2, string $outputPath)
+    {
+        $pdf = new Fpdi();
+
+        // Add the first PDF
+        $pageCount = $pdf->setSourceFile($pdfPath1);
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $templateId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($templateId);
+            $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $pdf->useTemplate($templateId);
+        }
+
+        // Add the second PDF
+        $pageCount = $pdf->setSourceFile($pdfPath2);
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $templateId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($templateId);
+            $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $pdf->useTemplate($templateId);
+        }
+
+        // Output the merged PDF
+        $pdf->Output($outputPath, 'F');
     }
 }
