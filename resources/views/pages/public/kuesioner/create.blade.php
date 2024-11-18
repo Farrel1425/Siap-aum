@@ -39,7 +39,7 @@
                             @endforeach
                         </div>
                     </div>
-                    <button class="btn w-100 btn-primary d-block">test</button>
+                    <button class="btn w-100 btn-primary d-block">Simpan</button>
                 </div>
             </form>
         </section>
