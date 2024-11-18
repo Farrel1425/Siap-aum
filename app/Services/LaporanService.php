@@ -14,16 +14,16 @@ use Illuminate\Support\Facades\Cache;
 
 class LaporanService
 {
-    public function laporanPermohonanBulanan($tahun)
+    public function laporanIzinTerbitBulanan($tahun)
     {
         $data = Cache::remember('laporan_permohonan_bulanan_' . $tahun, 5, function () use ($tahun) {
-            return $this->queryLaporanPermohonanBulanan($tahun);
+            return $this->querylaporanIzinTerbitBulanan($tahun);
         });
 
         return $data;
     }
 
-    private function queryLaporanPermohonanBulanan($tahun)
+    private function querylaporanIzinTerbitBulanan($tahun)
     {
         // Query data laporan permohonan bulanan
         return KategoriIzin::with(['sektorIzin.jenisIzin.permohonan' => function ($query) use ($tahun) {

@@ -81,9 +81,9 @@
                                href="{{ route('admin.laporan.ijin-terbit-bulanan.index') }}">
                                 Ijin Terbit Bulanan</a>
                         </li>
-                        <li class="submenu-item actives">
+                        <li class="submenu-item {{ request()->routeIs('admin.laporan.rekap-permohonan.*') ? 'active' : '' }}">
                             <a class="submenu-link"
-                               href="#">
+                               href="{{ route('admin.laporan.rekap-permohonan.index') }}">
                                 Rekap Permohonan</a>
                         </li>
                         <li class="submenu-item {{ request()->routeIs('admin.laporan.survey-layanan.*') ? 'active' : '' }}">

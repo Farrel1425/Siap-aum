@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class PermohonanBulananExport implements FromView, ShouldAutoSize, WithEvents
+class IzinTerbitExport implements FromView, ShouldAutoSize, WithEvents
 {
     private $tahun, $data;
     public function __construct($tahun)
@@ -19,7 +19,7 @@ class PermohonanBulananExport implements FromView, ShouldAutoSize, WithEvents
     public function view(): View
     {
         $laporan_service = new LaporanService();
-        $this->data = $laporan_service->laporanPermohonanBulanan($this->tahun);
+        $this->data = $laporan_service->laporanIzinTerbitBulanan($this->tahun);
         return view('exports.laporan.permohonan-bulanan', [
             'tahun' => $this->tahun,
             'data' => $this->data,

@@ -2,8 +2,11 @@
 
 namespace App\Enums;
 
+use App\Traits\EnumToArray;
+
 enum StatusPermohonanEnum: string
 {
+    use EnumToArray;
     case PENDING = 'pending';
     case PERMOHONAN_BARU = 'permohonan_baru';
     case SELESAI = 'selesai';

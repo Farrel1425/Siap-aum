@@ -314,6 +314,13 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/export', [LaporanController::class, 'ijinTerbitBulananExport'])->name('export');
                 });
 
+                // Rekap Permohonan
+                Route::prefix('rekap-permohonan')->name('rekap-permohonan.')->group(function () {
+                    // Resource
+                    Route::get('/', [LaporanController::class, 'rekapPermohonanIndex'])->name('index');
+                    Route::post('/export', [LaporanController::class, 'rekapPermohonanExport'])->name('export');
+                });
+
                 // Survey Layanan
                 Route::prefix('survey-layanan')->name('survey-layanan.')->group(function () {
                     // Resource
