@@ -139,7 +139,8 @@
             <div class="form-group mb-3 bg-white p-2">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Surat pengantar permohonan rekomendasi</label>
+                        <label class="text-primary col-form-label fw-bold text-xsm">Surat pengantar permohonan
+                            rekomendasi</label>
                     </div>
                     <div class="offset-5 col-2">
                         @if ($permohonan->surat_permohonan_rekomendasi_filepath)
@@ -175,6 +176,13 @@
                 <div class="row align-items-center">
                     <div class="col-5">
                         <label class="text-primary col-form-label fw-bold text-xsm">Ijin Terbit</label>
+                        @if ($permohonan->is_ttd)
+                            <span class="badge bg-success fw-normal"><i class="isax isax-check"></i>
+                                Sudah ditandatangani</span>
+                        @else
+                            <span class="badge bg-danger fw-normal"><i class="isax isax-warning-2"></i>
+                                Belum ditandatangani</span>
+                        @endif
                     </div>
                     <div class="offset-5 col-2">
                         @if ($permohonan->template_surat_filepath)

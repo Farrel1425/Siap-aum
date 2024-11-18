@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\RoleEnum;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use setasign\Fpdi\Fpdi;
@@ -297,6 +298,10 @@ class PermohonanService
 
         if (!$permohonan->template_surat_filepath) {
             throw new ServiceException('Template surat izin terbit belum diupload oleh verifikator');
+        }
+
+        if(auth()->user()->role_id == RoleEnum::ADMIN->value) {
+            return response()->download(storage_path('app/' . $permohonan->template_surat_filepath));
         }
 
         if ($permohonan->user_id == $user->id) {
