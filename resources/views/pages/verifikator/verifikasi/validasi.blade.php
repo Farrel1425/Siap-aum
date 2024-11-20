@@ -105,9 +105,9 @@
                                                    readonly
                                                    value="{{ $form_permohonan->value ?? '-' }}" />
                 @endforeach
-                <div class="card mb-2">
-                    <div class="card-body">
-                        @if ($permohonan->is_pas_foto_required)
+                @if ($permohonan->is_pas_foto_required)
+                    <div class="card mb-2">
+                        <div class="card-body">
                             <div class="form-group row align-items-center justify-content-between">
                                 <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
                                        for="pas_foto">Pas Foto 4x6</label>
@@ -118,9 +118,9 @@
                                          width="200px">
                                 </div>
                             </div>
-                        @endif
+                        </div>
                     </div>
-                </div>
+                @endif
                 @if (
                     $is_verifikator_turn &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::REVISI->value &&
