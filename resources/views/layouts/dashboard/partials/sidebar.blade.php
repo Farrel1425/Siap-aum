@@ -22,8 +22,7 @@
             </li>
 
             @if (auth()->user()->is_admin)
-                <li
-                    class="sidebar-item {{ request()->routeIs('admin.permohonan.*') ? 'active' : '' }}">
+                <li class="sidebar-item {{ request()->routeIs('admin.permohonan.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="{{ route('admin.permohonan.index') }}">
                         <i class="isax isax-receipt"></i>
@@ -42,27 +41,32 @@
                                href="{{ route('admin.master-data.user.index') }}">
                                 User</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.master-data.jenis-izin.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.master-data.jenis-izin.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.jenis-izin.index') }}">
                                 Jenis Ijin</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.master-data.sektor-izin.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.master-data.sektor-izin.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.sektor-izin.index') }}">
                                 Sektor Ijin</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.master-data.kategori-izin.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.master-data.kategori-izin.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.kategori-izin.index') }}">
                                 Kategori Ijin</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.master-data.layanan-skm.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.master-data.layanan-skm.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.layanan-skm.index') }}">
                                 Layanan SKM</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.master-data.survey.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.master-data.survey.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.master-data.survey.index') }}">
                                 Survey</a>
@@ -76,17 +80,20 @@
                         <span>Laporan</span>
                     </a>
                     <ul class="submenu">
-                        <li class="submenu-item {{ request()->routeIs('admin.laporan.ijin-terbit-bulanan.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.laporan.ijin-terbit-bulanan.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.laporan.ijin-terbit-bulanan.index') }}">
                                 Ijin Terbit Bulanan</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.laporan.rekap-permohonan.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.laporan.rekap-permohonan.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.laporan.rekap-permohonan.index') }}">
-                                Rekap Permohonan</a>
+                                Detail Permohonan</a>
                         </li>
-                        <li class="submenu-item {{ request()->routeIs('admin.laporan.survey-layanan.*') ? 'active' : '' }}">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.laporan.survey-layanan.*') ? 'active' : '' }}">
                             <a class="submenu-link"
                                href="{{ route('admin.laporan.survey-layanan.index') }}">
                                 Survey Layanan</a>
@@ -104,16 +111,14 @@
             @endif
 
             @if (auth()->user()->is_verifikator)
-                <li
-                    class="sidebar-item {{ request()->routeIs('verifikator.permohonan.*') ? 'active' : '' }}">
+                <li class="sidebar-item {{ request()->routeIs('verifikator.permohonan.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="{{ route('verifikator.permohonan.index') }}">
                         <i class="isax isax-receipt"></i>
                         <span>Permohonan</span>
                     </a>
                 </li>
-                <li
-                    class="sidebar-item {{ request()->routeIs('verifikator.verifikasi.*') ? 'active' : '' }}">
+                <li class="sidebar-item {{ request()->routeIs('verifikator.verifikasi.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="{{ route('verifikator.verifikasi.index') }}">
                         <i class="isax isax-receipt"></i>

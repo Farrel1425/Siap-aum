@@ -76,11 +76,30 @@ class RekapPermohonanExport implements FromCollection, WithMapping, ShouldAutoSi
             $permohonan->formPermohonan->where('kode_isian', 'PRAKTIK_KE')->first()?->value,
             $permohonan->formPermohonan->where('kode_isian', 'LOKASI')->first()?->value,
             $permohonan->kelengkapanPermohonan->where('kode_isian', 'NO_SK')->first()?->value,
-            $permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_SK')?->value ? Carbon::parse($permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_SK')?->value)->isoFormat('D MMMM Y') : null,
-            $permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_BERLAKU_SK')?->value ? Carbon::parse($permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_BERLAKU_SK')?->value)->isoFormat('D MMMM Y') : null,
+            $this->parseDate($permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_SK')->first()?->value),
+            $this->parseDate($permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_BERLAKU_SK')->first()?->value),
             $permohonan->kelengkapanPermohonan->where('kode_isian', 'NO_REKOMENDASI')->first()?->value,
             StatusPermohonanEnum::tryFrom($permohonan->status)->deskripsi()
         ];
+    }
+
+    /**
+     * Attempt to parse a date value. If parsing fails, return the original value.
+     *
+     * @param string|null $value
+     * @return string|null
+     */
+    private function parseDate($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($value)->isoFormat('D MMMM Y');
+        } catch (\Exception $e) {
+            return $value;
+        }
     }
 
     private function getHeader()
