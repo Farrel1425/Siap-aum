@@ -75,12 +75,14 @@
                                            name="npwp"
                                            readonly
                                            value="{{ $permohonan->npwp }}" />
-            <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                           class_input="border-0 text-end text-xsm"
-                                           label="Tempat Lahir"
-                                           name="tempat_lahir"
-                                           readonly
-                                           value="{{ $permohonan->tempat_lahir }}" />
+            @if ($permohonan->jenis_izin_id != 9)
+                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                               class_input="border-0 text-end text-xsm"
+                                               label="Tempat Lahir"
+                                               name="tempat_lahir"
+                                               readonly
+                                               value="{{ $permohonan->tempat_lahir }}" />
+            @endif
             <h5 class="mt-4">Data Detail Permohonan</h5>
             @foreach ($permohonan->formPermohonan as $form_permohonan)
                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"

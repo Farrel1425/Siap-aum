@@ -93,9 +93,9 @@
                                                        class_input="text-xsm"
                                                        label="{{ $form_permohonan->label }}"
                                                        name="{{ $form_permohonan->kode_isian }}"
-                                                       placeholder="Masukkan {{ $form_jenis_izin->label }}"
+                                                       placeholder="Masukkan {{ $form_permohonan->label }}"
                                                        required
-                                                       type="{{ $form_jenis_izin->tipe }}"
+                                                       type="{{ $form_permohonan->tipe }}"
                                                        value="{{ $form_permohonan->value ?? '-' }}" />
                     @endif
                 @endforeach
