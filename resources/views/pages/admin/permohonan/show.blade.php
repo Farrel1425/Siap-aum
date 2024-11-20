@@ -123,6 +123,10 @@
                                 <span class="badge bg-warning">Belum diunggah</span>
                             @endif
                         </div>
+                        @if ($berkas_permohonan->catatan)
+                            <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                                {{ $berkas_permohonan->catatan }}</span>
+                        @endif
                     </div>
                 </div>
             @endforeach
