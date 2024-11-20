@@ -50,7 +50,11 @@ class LaporanController extends Controller
 
         $filename = 'laporan_rekap_permohonan_' . $start . '_' . $end . '.xlsx';
 
-        $permohonans = Permohonan::with(['user']);
+        $permohonans = Permohonan::with([
+            'user',
+            'kelengkapanPermohonan',
+            'formPermohonan'
+        ]);
 
         if ($jenis_izin_id) {
             $permohonans = $permohonans->where('jenis_izin_id', $jenis_izin_id);
