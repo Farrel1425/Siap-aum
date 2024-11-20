@@ -88,6 +88,7 @@
                 @endforeach
                 <button class="btn btn-primary bg-primary mb-5 mt-3 w-100 d-block"
                         type="submit">Simpan dan Lanjut Upload Berkas</button>
+                <div class="mb-3"></div>
             </form>
         </section>
     </div>
