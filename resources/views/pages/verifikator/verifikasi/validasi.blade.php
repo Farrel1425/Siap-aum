@@ -266,7 +266,7 @@
                                                                       class_input="text-xsm"
                                                                       downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
                                                                       label="Bukti Bayar SKPD (Opsional)"
-                                                                      name="skpd"
+                                                                      name="bukti_bayar"
                                                                       uploadUrl="{{ route('verifikator.verifikasi.upload-bukti-bayar-reklame', $permohonan->id) }}" />
                             @endif
                         @endif
