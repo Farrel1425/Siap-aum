@@ -135,6 +135,10 @@ class PermohonanService
             throw new ServiceException('Izin sudah ditandatangani');
         }
 
+        if (!Storage::exists($permohonan->template_surat_filepath)) {
+            throw new ServiceException('File template surat izin terbit tidak ditemukan');
+        }
+
         try {
             $file = file_get_contents(storage_path('app/' . $permohonan->template_surat_filepath));
             $response = Http::withBasicAuth(config('app.esign_username'), config('app.esign_password'))
