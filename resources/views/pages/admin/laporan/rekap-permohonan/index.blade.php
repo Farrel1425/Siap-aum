@@ -6,7 +6,7 @@
         <div class="page-title mb-3">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last d-flex align-items-center">
-                    <h2 class="d-inline mb-0">Rekap Permohonan</h2>
+                    <h2 class="d-inline mb-0">Detail Permohonan</h2>
                 </div>
             </div>
         </div>
