@@ -449,10 +449,10 @@ class VerifikatorPermohonanController extends Controller
         // check is all berkas valid
         $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
-        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::BO->value) {
+        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::OPD->value) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator BO yang dapat mengunggah bukti bayar',
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah bukti bayar',
             ]);
         }
 
