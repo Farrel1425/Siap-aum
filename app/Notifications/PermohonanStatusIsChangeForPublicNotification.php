@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PermohonanIsRevisi extends Notification
+class PermohonanStatusIsChangeForPublicNotification extends Notification
 {
     use Queueable;
 
@@ -35,8 +35,7 @@ class PermohonanIsRevisi extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->markdown('emails.permohonan-is-revisi');
-
+            ->markdown('emails.permohonan-status-is-change-for-public');
     }
 
     /**

@@ -166,6 +166,11 @@ class PermohonanService
                 'code' => $response->status(),
                 'body' => $response->body()
             ]);
+
+            if ($response->status() == 401) {
+                throw new ServiceException('Gagal menandatangani izin terbit. Passphrase e-sign tidak valid');
+            }
+
             if ($response->status() != 200) {
                 throw new ServiceException($response_object->error);
             }
