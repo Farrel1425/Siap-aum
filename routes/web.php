@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use App\Models\GroupLayananSkm;
 use App\Services\LaporanService;
@@ -32,12 +33,8 @@ use App\Http\Controllers\VerifikatorPermohonanController;
 |
 */
 
-Route::get('/test/{id}', function (Request $request, $id) {
-    $a = new LaporanService();
-    return $a->laporanSurveyBulanan([
-        now()->subYear()->format('Y'),
-        now()->format('Y'),
-    ], GroupLayananSkm::find($id));
+Route::get('/test', function (Request $request) {
+    User::where('email', 'aangpangantyas@gmail.com')->first()->notify(new App\Notifications\PermohonanIsRevisi());
 });
 
 Route::get('/', [LandingController::class, 'index'])->name('home');

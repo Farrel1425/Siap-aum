@@ -338,11 +338,26 @@ class UserPermohonanController extends Controller
                     $form->kode_isian => 'required',
                 ]);
             }
+
+            // validate
+            $request->validate([
+                'nama' => 'required',
+                'nik' => 'required',
+                'npwp' => 'required',
+                'tempat_lahir' => 'required',
+            ]);
         }
 
         DB::beginTransaction();
         try {
             if ($formPermohonanService->isFormOnRevisi($permohonan)) {
+                // update permohonan
+                $permohonan->update([
+                    'nama' => $request->nama,
+                    'nik' => $request->nik,
+                    'npwp' => $request->npwp,
+                    'tempat_lahir' => $request->tempat_lahir,
+                ]);
                 // update form permohonan
                 foreach ($form_permohonan as $form) {
                     $form->update([

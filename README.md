@@ -1,3 +1,6 @@
+apt-get install libreoffice --no-install-recommends
+sudo apt-get install libreoffice-java-common default-jre
+export HOME=/tmp
 ## Sebelum Sinkronisasi, Jalankan Query Berikut
 
 ```sql

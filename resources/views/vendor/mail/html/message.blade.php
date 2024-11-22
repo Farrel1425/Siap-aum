@@ -21,7 +21,10 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-© {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Pemerintah Kabupaten Buleleng<br>Mall Pelayanan Publik - Lantai III Pasar Banyuasri, Kelurahan Banyuarsi, Kecamatan Buleleng
+</x-mail::footer>
+<x-mail::footer>
+© 2024 <strong>DPMPTSP Kabupaten Buleleng</strong> | Powered by <strong>CV Mai Harta</strong>
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>

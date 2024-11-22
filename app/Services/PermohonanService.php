@@ -177,11 +177,7 @@ class PermohonanService
 
             return $permohonan;
         } catch (ConnectionException $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
             throw new ServiceException('Gagal menandatangani izin terbit. Server e-sign tidak merespon');
-        } catch (\Exception $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
-            throw new ServiceException('Gagal menandatangani izin terbit');
         }
     }
 
@@ -257,7 +253,7 @@ class PermohonanService
             if (config('app.os_server') == 'windows') {
                 $sofficePath = '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"';
             } else {
-                $sofficePath = '/usr/bin/soffice';
+                $sofficePath = 'export HOME=/tmp && ' . '/usr/bin/soffice';
             }
 
             // Convert the Word document to PDF using LibreOffice

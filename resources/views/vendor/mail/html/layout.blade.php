@@ -36,9 +36,11 @@ width: 100% !important;
 <tr>
 <td class="body" width="100%" cellpadding="0" cellspacing="0" style="border: hidden !important;">
 <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+
 <!-- Body content -->
 <tr>
-<td class="content-cell">
+<td class="content-cell" style="padding:0!important">
+<img src="{{ asset('assets/images/banner-siajaib-horizontal.png') }}" class="banner" alt="banner siajaib image">
 {{ Illuminate\Mail\Markdown::parse($slot) }}
 
 {{ $subcopy ?? '' }}
