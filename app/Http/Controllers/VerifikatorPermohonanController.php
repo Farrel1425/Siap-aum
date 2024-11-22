@@ -18,6 +18,7 @@ use App\Services\VerifikatorService;
 use App\Services\FormPermohonanService;
 use Illuminate\Support\Facades\Storage;
 use App\Services\BerkasPermohonanService;
+use App\Notifications\PermohonanStatusIsChangeForPublicNotification;
 
 class VerifikatorPermohonanController extends Controller
 {
@@ -194,6 +195,7 @@ class VerifikatorPermohonanController extends Controller
                 }
                 $permohonan->status = StatusPermohonanEnum::REVISI->value;
                 $permohonan->save();
+                $permohonan->user->notify(new PermohonanStatusIsChangeForPublicNotification($permohonan));
                 return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil dilakukan revisi');
             }
         } else {
@@ -207,6 +209,7 @@ class VerifikatorPermohonanController extends Controller
                     $permohonan->save();
                     $alur_permohonan->is_done = true;
                     $alur_permohonan->save();
+                    $permohonan->user->notify(new PermohonanStatusIsChangeForPublicNotification($permohonan));
                 } catch (ServiceException $e) {
                     return redirect()->back()->with('error', $e->getMessage());
                 } catch (Exception $e) {

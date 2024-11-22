@@ -33,10 +33,6 @@ use App\Http\Controllers\VerifikatorPermohonanController;
 |
 */
 
-Route::get('/test', function (Request $request) {
-    User::where('email', 'aangpangantyas@gmail.com')->first()->notify(new App\Notifications\PermohonanStatusIsChangeForPublicNotification());
-});
-
 Route::get('/', [LandingController::class, 'index'])->name('home');
 
 

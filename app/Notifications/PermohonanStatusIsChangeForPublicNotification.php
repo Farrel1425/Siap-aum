@@ -2,21 +2,39 @@
 
 namespace App\Notifications;
 
+use App\Enums\StatusPermohonanEnum;
+use App\Models\Permohonan;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PermohonanStatusIsChangeForPublicNotification extends Notification
+class PermohonanStatusIsChangeForPublicNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
+     * The Permohonan instance.
+     */
+    protected Permohonan $permohonan;
+    protected string $status;
+
+    protected string $route_url;
+
+    /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(Permohonan $permohonan)
     {
-        //
+        $this->permohonan = $permohonan;
+        $this->status = strtoupper(StatusPermohonanEnum::tryFrom($permohonan->status)->deskripsi());
+
+        // route url
+        if ($permohonan->status == StatusPermohonanEnum::REVISI) {
+            $this->route_url = route('public.permohonan.revisi', $permohonan->id);
+        } else {
+            $this->route_url = route('public.permohonan.show', $permohonan->id);
+        }
     }
 
     /**
@@ -34,8 +52,19 @@ class PermohonanStatusIsChangeForPublicNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        if ($this->status == "REVISI") {
+            $subject = 'Revisi pada Usulan ' . $this->permohonan->nomor_registrasi;
+        } else if ($this->status == "SELESAI") {
+            $subject = 'Usulan ' . $this->permohonan->nomor_registrasi . ' Telah Selesai';
+        }
+
         return (new MailMessage)
-            ->markdown('emails.permohonan-status-is-change-for-public');
+            ->subject($subject)
+            ->markdown('emails.permohonan-status-is-change-for-public', [
+                'permohonan' => $this->permohonan,
+                'status' => $this->status,
+                'route_url' => $this->route_url,
+            ]);
     }
 
     /**

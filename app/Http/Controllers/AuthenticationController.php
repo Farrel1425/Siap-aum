@@ -73,7 +73,7 @@ class AuthenticationController extends Controller
         ]);
 
         if (auth()->attempt($request->only('email', 'password'))) {
-            return redirect()->route('dashboard');
+            return redirect()->intended('dashboard');
         } else {
             return back()->with('error', 'Email atau password salah');
         }
