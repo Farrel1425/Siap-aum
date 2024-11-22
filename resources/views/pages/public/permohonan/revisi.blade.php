@@ -99,13 +99,15 @@
                                                    placeholder="Masukkan NPWP"
                                                    required
                                                    value="{{ $permohonan->npwp }}" />
-                    <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                   class_input="text-xsm"
-                                                   label="Tempat Lahir"
-                                                   name="tempat_lahir"
-                                                   placeholder="Masukkan Tempat Lahir"
-                                                   required
-                                                   value="{{ $permohonan->tempat_lahir }}" />
+                    @if ($permohonan->jenis_izin_id != 9)
+                        <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                       class_input="text-xsm"
+                                                       label="Tempat Lahir"
+                                                       name="tempat_lahir"
+                                                       placeholder="Masukkan Tempat Lahir"
+                                                       required
+                                                       value="{{ $permohonan->tempat_lahir }}" />
+                    @endif
             @endif
             <h5 class="mt-4">Data Detail Permohonan</h5>
             @if ($last_validation_form)
