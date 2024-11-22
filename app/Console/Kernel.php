@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('permohonan:revisi-expired')->dailyAt('00:00');
+        $schedule->command('permohonan:revisi-expired')->dailyAt('16:00');
+        $schedule->command('send:usulan-need-verifikasi-notification')->dailyAt('00:00');
     }
 
     /**
