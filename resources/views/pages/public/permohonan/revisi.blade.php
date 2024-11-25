@@ -67,12 +67,14 @@
                                                name="npwp"
                                                readonly
                                                value="{{ $permohonan->npwp }}" />
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="Tempat Lahir"
-                                               name="tempat_lahir"
-                                               readonly
-                                               value="{{ $permohonan->tempat_lahir }}" />
+                @if ($permohonan->jenis_izin_id != 9)
+                    <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                   class_input="border-0 text-end text-xsm"
+                                                   label="Tempat Lahir"
+                                                   name="tempat_lahir"
+                                                   readonly
+                                                   value="{{ $permohonan->tempat_lahir }}" />
+                @endif
             @else
                 <form action="{{ route('public.permohonan.submit-revisi-form', $permohonan->id) }}"
                       enctype="multipart/form-data"
@@ -129,6 +131,13 @@
                                                    placeholder="Masukkan {{ $form_permohonan->label }}"
                                                    required
                                                    type="{{ $form_permohonan->tipe }}"
+                                                   value="{{ $form_permohonan->value ?? '-' }}" />
+                @else
+                    <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                   class_input="border-0 text-end text-xsm"
+                                                   label="{{ $form_permohonan->label }}"
+                                                   name="{{ $form_permohonan->kode_isian }}"
+                                                   readonly
                                                    value="{{ $form_permohonan->value ?? '-' }}" />
                 @endif
             @endforeach
