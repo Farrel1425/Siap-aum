@@ -344,8 +344,13 @@ class UserPermohonanController extends Controller
                 'nama' => 'required',
                 'nik' => 'required',
                 'npwp' => 'required',
-                'tempat_lahir' => 'required',
             ]);
+
+            if($permohonan->jenis_izin_id != 9) {
+                $request->validate([
+                    'tempat_lahir' => 'required',
+                ]);
+            }
         }
 
         DB::beginTransaction();

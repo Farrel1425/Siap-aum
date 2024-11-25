@@ -30,11 +30,7 @@ class PermohonanStatusIsChangeForPublicNotification extends Notification impleme
         $this->status = strtoupper(StatusPermohonanEnum::tryFrom($permohonan->status)->deskripsi());
 
         // route url
-        if ($permohonan->status == StatusPermohonanEnum::REVISI->value) {
-            $this->route_url = route('public.permohonan.revisi', $permohonan->id);
-        } else {
-            $this->route_url = route('public.permohonan.show', $permohonan->id);
-        }
+        $this->route_url = route('public.permohonan.show', $permohonan->id);
     }
 
     /**
