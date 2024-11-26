@@ -144,15 +144,13 @@ class PermohonanService
             $response = Http::withBasicAuth(config('app.esign_username'), config('app.esign_password'))
                 ->attach('file', $file, 'test.pdf')
                 ->timeout(30)
-                // verify ssl false
-                ->withOptions(['verify' => false])
                 ->post(config('app.esign_url') . '/api/sign/pdf', [
                     'nik' => $user->nik,
                     'passphrase' => $passphrase,
                     'tampilan' => 'visible',
                     'page' => '1',
                     'image' => 'false',
-                    'linkQR' => '',
+                    'linkQR' => route('public.permohonan.show', $permohonan->id),
                     'xAxis' => '20',
                     'yAxis' => '-10',
                     'width' => '150',
