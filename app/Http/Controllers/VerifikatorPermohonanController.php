@@ -213,7 +213,7 @@ class VerifikatorPermohonanController extends Controller
                 } catch (ServiceException $e) {
                     return redirect()->back()->with('error', $e->getMessage());
                 } catch (Exception $e) {
-                    Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+                    Log::error($e->getFile() . $e->getLine() . $e->getMessage());
                     return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
                 }
                 return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
@@ -304,7 +304,7 @@ class VerifikatorPermohonanController extends Controller
                 'message' => $e->getMessage(),
             ]);
         } catch (Exception $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan pada server',
@@ -720,7 +720,7 @@ class VerifikatorPermohonanController extends Controller
                 'message' => $e->getMessage(),
             ], 400);
         } catch (\Exception $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan pada server',
@@ -766,7 +766,7 @@ class VerifikatorPermohonanController extends Controller
                 'message' => $e->getMessage(),
             ], 400);
         } catch (\Exception $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan pada server',
@@ -813,7 +813,7 @@ class VerifikatorPermohonanController extends Controller
                 'message' => $e->getMessage(),
             ], 400);
         } catch (\Exception $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan pada server',
@@ -860,7 +860,7 @@ class VerifikatorPermohonanController extends Controller
                 'message' => $e->getMessage(),
             ], 400);
         } catch (\Exception $e) {
-            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            Log::error($e->getFile() . $e->getLine() . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan pada server',
