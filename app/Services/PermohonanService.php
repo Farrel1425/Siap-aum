@@ -159,15 +159,22 @@ class PermohonanService
                     'tag' => ''
                 ]);
             $response_object = $response->object();
-            LogTte::create([
-                'permohonan_id' => $permohonan->id,
-                'verifikator_id' => $user->id,
-                'code' => $response->status(),
-                'body' => $response->body()
-            ]);
 
             if ($response->status() == 401) {
+                LogTte::create([
+                    'permohonan_id' => $permohonan->id,
+                    'verifikator_id' => $user->id,
+                    'code' => $response->status(),
+                    'body' => $response->body()
+                ]);
                 throw new ServiceException('Gagal menandatangani izin terbit. Passphrase e-sign tidak valid');
+            }else{
+                LogTte::create([
+                    'permohonan_id' => $permohonan->id,
+                    'verifikator_id' => $user->id,
+                    'code' => $response->status(),
+                    'body' => '-'
+                ]);
             }
 
             if ($response->status() != 200) {
