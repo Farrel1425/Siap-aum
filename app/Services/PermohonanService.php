@@ -144,6 +144,7 @@ class PermohonanService
             $response = Http::withBasicAuth(config('app.esign_username'), config('app.esign_password'))
                 ->attach('file', $file, 'test.pdf')
                 ->timeout(30)
+                ->withoutVerifying()
                 ->post(config('app.esign_url') . '/api/sign/pdf', [
                     'nik' => $user->nik,
                     'passphrase' => $passphrase,
