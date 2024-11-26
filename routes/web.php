@@ -121,7 +121,6 @@ Route::middleware(['auth'])->group(function () {
                     // Ajax
                     Route::post('/store-berkas/{permohonan}', [UserPermohonanController::class, 'storeBerkas'])->name('store-berkas');
                     Route::post('/upload-bukti-bayar-reklame/{permohonan}', [UserPermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
-
                 });
 
                 // Reklame
@@ -183,6 +182,15 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/upload-bukti-bayar-reklame/{permohonan}', [VerifikatorPermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
                     Route::post('/upload-lampiran-sk/{permohonan}', [VerifikatorPermohonanController::class, 'uploadLampiranSk'])->name('upload-lampiran-sk');
                     ROute::post('/generate-ulang-izin-terbit/{permohonan}', [VerifikatorPermohonanController::class, 'generateUlangIzinTerbit'])->name('generate-ulang-izin-terbit');
+                });
+
+                Route::prefix('laporan')->name('laporan.')->group(function () {
+                    // Rekap Permohonan
+                    Route::prefix('rekap-permohonan')->name('rekap-permohonan.')->group(function () {
+                        // Resource
+                        Route::get('/', [LaporanController::class, 'rekapPermohonanVerifikatorIndex'])->name('index');
+                        Route::post('/export', [LaporanController::class, 'rekapPermohonanExport'])->name('export');
+                    });
                 });
             });
         });

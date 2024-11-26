@@ -34,6 +34,16 @@ class LaporanController extends Controller
         return view('pages.admin.laporan.rekap-permohonan.index', compact('jenis_izins'));
     }
 
+    public function rekapPermohonanVerifikatorIndex(Request $request)
+    {
+        $jenis_izin_id = Permohonan::whereHas('alurPermohonan', function($query) {
+            $query->where('verifikator_id', auth()->user()->id);
+        })->pluck('jenis_izin_id')->unique();
+
+        $jenis_izins = JenisIzin::whereIn('id', $jenis_izin_id)->get();
+        return view('pages.admin.laporan.rekap-permohonan.index', compact('jenis_izins'));
+    }
+
     public function rekapPermohonanExport(Request $request)
     {
         $request->validate([

@@ -125,7 +125,7 @@
                         <span>Verifikasi</span>
                     </a>
                 </li>
-                <li class="sidebar-item has-sub actives">
+                <li class="sidebar-item has-sub {{ request()->routeIs('verifikator.laporan.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-task-square"></i>
@@ -134,7 +134,7 @@
                     <ul class="submenu">
                         <li class="submenu-item actives">
                             <a class="submenu-link"
-                               href="#">
+                               href="{{ route('verifikator.laporan.rekap-permohonan.index') }}">
                                 Detail Permohonan</a>
                         </li>
                     </ul>
