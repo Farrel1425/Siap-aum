@@ -120,7 +120,7 @@ class RekapPermohonanExport implements FromCollection, WithMapping, ShouldAutoSi
             "Nomor Surat Keputusan - NO_SK",
             "Tanggal Ditetapkan Surat Keputusan - TGL_SK",
             "Tanggal Berlaku Surat Keputusan Sampai - TGL_BERLAKU_SK",
-            "Nomor Surat Rekomendasi dari Dinas - NO_REKOMENDASI",
+            "Nomor Lampiran Teknis dari Dinas - NO_REKOMENDASI",
             "Status"
         ];
     }

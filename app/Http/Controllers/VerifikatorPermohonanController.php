@@ -104,10 +104,10 @@ class VerifikatorPermohonanController extends Controller
                 $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan) &&
                 $formPermohonanService->isFormValidFromVerifikator($alur_permohonan)
             ) {
-                // JF wajib sudah upload Surat pengantar permohonan rekomendasi
+                // JF wajib sudah upload Surat pengantar permohonan
                 if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::FO->value) {
                     if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
-                        return redirect()->back()->with('error', 'Mohon unggah Surat pengantar permohonan rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                        return redirect()->back()->with('error', 'Mohon unggah Surat pengantar permohonan terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
                     // handle reklame harus upload pajak reklame, skpd
@@ -140,7 +140,7 @@ class VerifikatorPermohonanController extends Controller
                     }
                     // all permohonan
                     if (!$permohonan->surat_rekomendasi_filepath && $permohonan->jenis_izin_id != 9) {
-                        return redirect()->back()->with('error', 'Mohon unggah surat rekomendasi terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                        return redirect()->back()->with('error', 'Mohon unggah Lampiran Teknis terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::BO->value) {
                     // cek if all surat kelengkapan uploaded
@@ -325,18 +325,18 @@ class VerifikatorPermohonanController extends Controller
         // check is all berkas valid
         $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
-        // cek apakah jenis verifikator FO, jika ya maka wajib upload Surat pengantar permohonan rekomendasi
+        // cek apakah jenis verifikator FO, jika ya maka wajib upload Surat pengantar permohonan
         if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah Surat pengantar permohonan rekomendasi',
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah Surat pengantar permohonan',
             ]);
         }
 
         if (!$is_all_berkas_valid) {
             return response()->json([
                 'success' => false,
-                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah Surat pengantar permohonan rekomendasi',
+                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah Surat pengantar permohonan',
             ]);
         } else {
             $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
@@ -345,7 +345,7 @@ class VerifikatorPermohonanController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Surat pengantar permohonan rekomendasi berhasil diunggah',
+            'message' => 'Surat pengantar permohonan berhasil diunggah',
         ]);
     }
 
@@ -360,7 +360,7 @@ class VerifikatorPermohonanController extends Controller
         if ($permohonan->jenis_izin_id == 9) {
             return response()->json([
                 'success' => false,
-                'message' => 'Izin reklame tidak memerlukan surat rekomendasi',
+                'message' => 'Izin reklame tidak memerlukan Lampiran Teknis',
             ]);
         }
 
@@ -369,18 +369,18 @@ class VerifikatorPermohonanController extends Controller
         // check is all berkas valid
         $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
-        // cek apakah jenis verifikator OPD, jika ya maka wajib upload surat rekomendasi
+        // cek apakah jenis verifikator OPD, jika ya maka wajib upload Lampiran Teknis
         if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::OPD->value) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah surat rekomendasi',
+                'message' => 'Anda tidak memiliki akses. Hanya verifikator OPD yang dapat mengunggah Lampiran Teknis',
             ]);
         }
 
         if (!$is_all_berkas_valid) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tidak dapat mengunggah surat rekomendasi sebelum semua berkas dinyatakan valid',
+                'message' => 'Tidak dapat mengunggah Lampiran Teknis sebelum semua berkas dinyatakan valid',
             ]);
         } else {
             $permohonan->surat_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_rekomendasi');
@@ -389,7 +389,7 @@ class VerifikatorPermohonanController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Surat rekomendasi berhasil diunggah',
+            'message' => 'Lampiran Teknis berhasil diunggah',
         ]);
     }
 

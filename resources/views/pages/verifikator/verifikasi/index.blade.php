@@ -30,8 +30,8 @@
                                     <th>Nomor Registrasi</th>
                                     <th>Tanggal Pengajuan</th>
                                     <th>Nama Pemohon</th>
-                                    <th>Permohonan Rekomendasi</th>
-                                    <th>Surat Rekomendasi</th>
+                                    <th>Pengantar Permohonan</th>
+                                    <th>Lampiran Teknis</th>
                                     <th>Status Berkas</th>
                                     <th>Status</th>
                                     <th class="text-center">Aksi</th>

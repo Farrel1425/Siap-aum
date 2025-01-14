@@ -162,7 +162,7 @@
             <div class="form-group mb-3 bg-white p-2">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Surat Rekomendasi</label>
+                        <label class="text-primary col-form-label fw-bold text-xsm">Lampiran Teknis</label>
                     </div>
                     <div class="offset-5 col-2">
                         @if ($permohonan->surat_rekomendasi_filepath)

@@ -228,7 +228,7 @@
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                               class_input="text-xsm"
                                                               downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                              label="Surat pengantar permohonan rekomendasi"
+                                                              label="Surat pengantar permohonan"
                                                               name="surat_permohonan_rekomendasi"
                                                               uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
                     @else
@@ -237,7 +237,7 @@
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                               class_input="text-xsm"
                                                               downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                              label="Surat pengantar permohonan rekomendasi"
+                                                              label="Surat pengantar permohonan"
                                                               name="surat_permohonan_rekomendasi" />
                     @endif
                 @else
@@ -246,7 +246,7 @@
                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                           class_input="text-xsm"
                                                           downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
-                                                          label="Surat pengantar permohonan rekomendasi"
+                                                          label="Surat pengantar permohonan"
                                                           name="surat_permohonan_rekomendasi" />
                     @if (
                         $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
@@ -277,7 +277,7 @@
                                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                       class_input="text-xsm"
                                                                       downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                                      label="Surat Rekomendasi"
+                                                                      label="Lampiran Teknis"
                                                                       name="surat_rekomendasi"
                                                                       uploadUrl="{{ route('verifikator.verifikasi.upload-surat-rekomendasi', $permohonan->id) }}" />
                             @else
@@ -286,7 +286,7 @@
                                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                       class_input="text-xsm"
                                                                       downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                                      label="Surat Rekomendasi"
+                                                                      label="Lampiran Teknis"
                                                                       name="surat_rekomendasi" />
                             @endif
                         @endif
@@ -297,7 +297,7 @@
                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                   class_input="text-xsm"
                                                                   downloadUrl="{{ $permohonan->surat_rekomendasi_filepath ? Storage::url($permohonan->surat_rekomendasi_filepath) : '' }}"
-                                                                  label="Surat Rekomendasi"
+                                                                  label="Lampiran Teknis"
                                                                   name="surat_rekomendasi" />
                         @endif
                         @if ($permohonan->jenis_izin_id == 9)

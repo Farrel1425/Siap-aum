@@ -13,8 +13,8 @@ enum JenisVerifikatorEnum: string
     public function deskripsi(): string
     {
         return match ($this) {
-            self::FO => "Verifikator FO", // upload Surat pengantar permohonan rekomendasi |Surat pengantar permohonan rekomendasi sesuai template tapi input. Harus ttd oleh penandatangan
-            self::OPD => "Verifikator OPD", // upload surat rekomendasi
+            self::FO => "Verifikator FO", // upload Surat pengantar permohonan |Surat pengantar permohonan sesuai template tapi input. Harus ttd oleh penandatangan
+            self::OPD => "Verifikator OPD", // upload Lampiran Teknis
             self::BO => "Verifikator BO", // upload form kelengkapan verifikator
             self::JF => "Vefikator JF",
             self::PENANDATANGAN => "Penandatangan",
