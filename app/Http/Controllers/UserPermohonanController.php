@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\JenisVerifikatorEnum;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
+use App\Notifications\PajakReklameIsPaidNotication;
 use Illuminate\Http\Request;
 use App\Models\FormPermohonan;
 use App\Enums\StatusValidasiEnum;
@@ -112,6 +113,9 @@ class UserPermohonanController extends Controller
         $permohonan->reklame->bukti_bayar_filepath = $request->file('berkas')->store('public/permohonan/reklame/bukti_bayar');
         $permohonan->reklame->bukti_bayar_user_id = auth()->user()->id;
         $permohonan->reklame->save();
+
+        // notify verifikator
+        $permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::OPD->value)->first()->verifikator->notify(new PajakReklameIsPaidNotication($permohonan));
 
         return response()->json([
             'success' => true,

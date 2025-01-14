@@ -18,6 +18,7 @@ use App\Services\VerifikatorService;
 use App\Services\FormPermohonanService;
 use Illuminate\Support\Facades\Storage;
 use App\Services\BerkasPermohonanService;
+use App\Notifications\PembayaranPajakReklameToPemohonNotication;
 use App\Notifications\PermohonanStatusIsChangeForPublicNotification;
 
 class VerifikatorPermohonanController extends Controller
@@ -435,7 +436,7 @@ class VerifikatorPermohonanController extends Controller
         $permohonan->reklame->skpd_filepath = $request->file('berkas')->store('public/permohonan/reklame/skpd');
         $permohonan->reklame->save();
 
-        // TODO: Send skpd email to pemohon to pay tax
+        $permohonan->user->notify(new PembayaranPajakReklameToPemohonNotication($permohonan));
 
         return response()->json([
             'success' => true,
