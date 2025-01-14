@@ -30,30 +30,7 @@
         @if (isset($is_found) && $is_found)
             <div class="mb-3"></div>
             <x-landing.progress-stepper-bar :steps="$steps" />
-            {{-- <div class="mb-3">
-                <div class="card">
-                    <div class="card-body text-xsm">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Aktivitas</th>
-                                        <th class="text-center">Waktu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($permohonan->logs as $log)
-                                        <tr>
-                                            <td>{{ $log->aktivitas }}</td>
-                                            <td>{{ $log->created_at }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
+            <x-log-aktivitas-table :permohonan=$permohonan />
             <div class="mb-5">
                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                class_input="border-0 text-end text-xsm"

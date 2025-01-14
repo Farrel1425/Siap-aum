@@ -117,6 +117,11 @@ class UserPermohonanController extends Controller
         // notify verifikator
         $permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::OPD->value)->first()->verifikator->notify(new PajakReklameIsPaidNotication($permohonan));
 
+        activity()
+            ->performedOn($permohonan)
+            ->causedBy(auth()->user())
+            ->log('Pemohon mengunggah bukti bayar reklame');
+
         return response()->json([
             'success' => true,
             'message' => 'Bukti bayar berhasil diunggah',
@@ -278,6 +283,12 @@ class UserPermohonanController extends Controller
                 'pengajuan_at' => now(),
                 'status' => StatusPermohonanEnum::PERMOHONAN_BARU->value,
             ]);
+
+            activity()
+                ->performedOn($permohonan)
+                ->causedBy(auth()->user())
+                ->log('Pemohon membuat usulan');
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -456,35 +467,16 @@ class UserPermohonanController extends Controller
 
         DB::beginTransaction();
         try {
-            // if ($formPermohonanService->isFormOnRevisi($permohonan)) {
-            //     // update form permohonan
-            //     foreach ($form_permohonan as $form) {
-            //         $form->update([
-            //             'value' => $request->{$form->kode_isian}
-            //         ]);
-            //     }
-            //     // update pas_foto
-            //     if ($permohonan->is_pas_foto_required) {
-            //         if ($request->pas_foto) {
-            //             $request->validate([
-            //                 'pas_foto' => 'required|file|mimes:jpeg,jpg,png|max:2048',
-            //             ]);
-            //             $pas_foto = $request->file('pas_foto');
-            //             $pas_foto_path = $pas_foto->store('public/pas_foto');
-            //             $permohonan->update([
-            //                 'pas_foto_filepath' => $pas_foto_path,
-            //             ]);
-            //         }
-            //     }
-            //     // delete validasi form revisi
-            //     $permohonan->alurPermohonan->each(function ($alur) {
-            //         $alur->validasiForm()->where('status', StatusValidasiEnum::REVISI->value)->delete();
-            //     });
-            // }
             $permohonan->update([
                 'pengajuan_at' => now(),
                 'status' => StatusPermohonanEnum::VERIFIKASI_ULANG->value,
             ]);
+
+            activity()
+                ->performedOn($permohonan)
+                ->causedBy(auth()->user())
+                ->log('Pemohon melakukan perbaikan revisi');
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

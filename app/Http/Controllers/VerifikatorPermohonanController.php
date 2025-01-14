@@ -110,6 +110,12 @@ class VerifikatorPermohonanController extends Controller
                     // if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
                     //     return redirect()->back()->with('error', 'Mohon unggah Surat pengantar permohonan terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     // }
+
+                    activity()
+                        ->performedOn($permohonan)
+                        ->causedBy(auth()->user())
+                        ->log('Disetujui verifikator Front Office');
+
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
                     // handle reklame harus upload pajak reklame, skpd
                     if ($permohonan->jenis_izin_id == 9) {
@@ -143,6 +149,12 @@ class VerifikatorPermohonanController extends Controller
                     if (!$permohonan->surat_rekomendasi_filepath && $permohonan->jenis_izin_id != 9) {
                         return redirect()->back()->with('error', 'Mohon unggah Lampiran Teknis terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
                     }
+
+                    activity()
+                        ->performedOn($permohonan)
+                        ->causedBy(auth()->user())
+                        ->log('Disetujui verifikator OPD');
+
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::BO->value) {
                     // cek if all surat kelengkapan uploaded
                     $rules = [];
@@ -179,6 +191,11 @@ class VerifikatorPermohonanController extends Controller
 
                     $permohonan->template_surat_filepath = $filepath;
                     $permohonan->save();
+
+                    activity()
+                        ->performedOn($permohonan)
+                        ->causedBy(auth()->user())
+                        ->log('Disetujui verifikator Back Office');
                 }
 
                 $permohonan->status = StatusPermohonanEnum::VERIFIKASI->value;
@@ -197,6 +214,12 @@ class VerifikatorPermohonanController extends Controller
                 $permohonan->status = StatusPermohonanEnum::REVISI->value;
                 $permohonan->save();
                 $permohonan->user->notify(new PermohonanStatusIsChangeForPublicNotification($permohonan));
+
+                activity()
+                    ->performedOn($permohonan)
+                    ->causedBy(auth()->user())
+                    ->log('Verifikator meminta revisi');
+
                 return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil dilakukan revisi');
             }
         } else {
@@ -211,6 +234,12 @@ class VerifikatorPermohonanController extends Controller
                     $alur_permohonan->is_done = true;
                     $alur_permohonan->save();
                     $permohonan->user->notify(new PermohonanStatusIsChangeForPublicNotification($permohonan));
+
+                    activity()
+                        ->performedOn($permohonan)
+                        ->causedBy(auth()->user())
+                        ->log('Izin terbit telah ditandatangani');
+
                 } catch (ServiceException $e) {
                     return redirect()->back()->with('error', $e->getMessage());
                 } catch (Exception $e) {
@@ -223,6 +252,11 @@ class VerifikatorPermohonanController extends Controller
                 $alur_permohonan->is_done = true;
                 $alur_permohonan->save();
                 $permohonan->save();
+
+                activity()
+                    ->performedOn($permohonan)
+                    ->causedBy(auth()->user())
+                    ->log('Disetujui verifikator JF');
                 return redirect()->route('verifikator.permohonan.index')->with('success', 'Permohonan berhasil diverifikasi');
             } else {
                 return redirect()->back()->with('error', 'Permohonan tidak dapat diverifikasi');
@@ -437,6 +471,11 @@ class VerifikatorPermohonanController extends Controller
         $permohonan->reklame->save();
 
         $permohonan->user->notify(new PembayaranPajakReklameToPemohonNotication($permohonan));
+
+        activity()
+            ->performedOn($permohonan)
+            ->causedBy(auth()->user())
+            ->log('Verifikator mengunggah SKPD Reklame');
 
         return response()->json([
             'success' => true,
