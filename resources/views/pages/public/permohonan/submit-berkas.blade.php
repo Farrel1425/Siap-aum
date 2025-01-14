@@ -44,6 +44,7 @@
                     </div>
                 </div>
                 <h5 class="mt-4">Upload Berkas Permohonan</h5>
+                <p class="text-xsm mb-2">Pastikan size berkas yang diunggah tidak melebihi 5MB</p>
                 @foreach ($permohonan->berkasPermohonan as $berkasPermohonan)
                     <x-dashboard.input-inline-file-upload :required="$berkasPermohonan->is_required"
                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
