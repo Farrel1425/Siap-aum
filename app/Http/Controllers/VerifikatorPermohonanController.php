@@ -435,6 +435,8 @@ class VerifikatorPermohonanController extends Controller
         $permohonan->reklame->skpd_filepath = $request->file('berkas')->store('public/permohonan/reklame/skpd');
         $permohonan->reklame->save();
 
+        // TODO: Send skpd email to pemohon to pay tax
+
         return response()->json([
             'success' => true,
             'message' => 'SKPD berhasil diunggah',
