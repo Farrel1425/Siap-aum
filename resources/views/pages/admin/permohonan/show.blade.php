@@ -140,7 +140,7 @@
                                                value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
             @endforeach
             <h5 class="mt-4">Data Berkas Verifikator</h5>
-            <div class="form-group mb-3 bg-white p-2">
+            {{-- <div class="form-group mb-3 bg-white p-2">
                 <div class="row align-items-center">
                     <div class="col-5">
                         <label class="text-primary col-form-label fw-bold text-xsm">Surat pengantar permohonan
@@ -157,8 +157,7 @@
                         @endif
                     </div>
                 </div>
-                {{-- <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir: </span> --}}
-            </div>
+            </div> --}}
             <div class="form-group mb-3 bg-white p-2">
                 <div class="row align-items-center">
                     <div class="col-5">

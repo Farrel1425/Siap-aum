@@ -29,7 +29,7 @@ class Permohonan extends Model
         'nik',
         'npwp',
         'tempat_lahir',
-        'surat_permohonan_rekomendasi_filepath',
+        // 'surat_permohonan_rekomendasi_filepath',
         'surat_rekomendasi_filepath',
         'template_surat_filepath',
         'is_ttd',

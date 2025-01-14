@@ -30,7 +30,7 @@
                                     <th>Nomor Registrasi</th>
                                     <th>Tanggal Pengajuan</th>
                                     <th>Nama Pemohon</th>
-                                    <th>Pengantar Permohonan</th>
+                                    {{-- <th>Pengantar Permohonan</th> --}}
                                     <th>Lampiran Teknis</th>
                                     <th>Status Berkas</th>
                                     <th>Status</th>
@@ -87,14 +87,14 @@
                         name: 'nama_pemohon',
                         orderable: false
                     },
-                    {
-                        data: 'surat_permohonan_rekomendasi',
-                        name: 'surat_permohonan_rekomendasi',
-                        className: 'text-center',
-                        render: function(data, type, row) {
-                            return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
-                        },
-                        orderable: false
+                    // {
+                    //     data: 'surat_permohonan_rekomendasi',
+                    //     name: 'surat_permohonan_rekomendasi',
+                    //     className: 'text-center',
+                    //     render: function(data, type, row) {
+                    //         return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
+                    //     },
+                    //     orderable: false
                     },
                     {
                         data: 'surat_rekomendasi',

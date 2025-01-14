@@ -107,9 +107,9 @@ class VerifikatorPermohonanController extends Controller
             ) {
                 // JF wajib sudah upload Surat pengantar permohonan
                 if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::FO->value) {
-                    if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
-                        return redirect()->back()->with('error', 'Mohon unggah Surat pengantar permohonan terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
-                    }
+                    // if (!$permohonan->surat_permohonan_rekomendasi_filepath) {
+                    //     return redirect()->back()->with('error', 'Mohon unggah Surat pengantar permohonan terlebih dahulu sebelum dilanjutkan ke verifikator berikutnya');
+                    // }
                 } else if ($alur_permohonan->jenis_verifikator == JenisVerifikatorEnum::OPD->value) {
                     // handle reklame harus upload pajak reklame, skpd
                     if ($permohonan->jenis_izin_id == 9) {
@@ -313,42 +313,42 @@ class VerifikatorPermohonanController extends Controller
         }
     }
 
-    public function uploadSuratPermohonanRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
-    {
-        $request->validate([
-            // vaidate berkas_key us  surat_permohonan_rekomendasi
-            'berkas_key' => 'required|in:surat_permohonan_rekomendasi',
-            'berkas' => 'required|file|mimes:pdf|max:2048',
-        ]);
+    // public function uploadSuratPermohonanRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
+    // {
+    //     $request->validate([
+    //         // vaidate berkas_key us  surat_permohonan_rekomendasi
+    //         'berkas_key' => 'required|in:surat_permohonan_rekomendasi',
+    //         'berkas' => 'required|file|mimes:pdf|max:2048',
+    //     ]);
 
-        // get alur
-        $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
-        // check is all berkas valid
-        $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
+    //     // get alur
+    //     $alur_permohonan = $verifikatorService->getAlurPermohonanByVerifikator($permohonan, auth()->user());
+    //     // check is all berkas valid
+    //     $is_all_berkas_valid = $berkasPermohonanService->isAllBerkasValidFromVerifikator($alur_permohonan);
 
-        // cek apakah jenis verifikator FO, jika ya maka wajib upload Surat pengantar permohonan
-        if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah Surat pengantar permohonan',
-            ]);
-        }
+    //     // cek apakah jenis verifikator FO, jika ya maka wajib upload Surat pengantar permohonan
+    //     if ($alur_permohonan->jenis_verifikator != JenisVerifikatorEnum::FO->value) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Anda tidak memiliki akses. Hanya verifikator FO yang dapat mengunggah Surat pengantar permohonan',
+    //         ]);
+    //     }
 
-        if (!$is_all_berkas_valid) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah Surat pengantar permohonan',
-            ]);
-        } else {
-            $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
-            $permohonan->save();
-        }
+    //     if (!$is_all_berkas_valid) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Mohon validasi semua berkas terlebih dahulu sebelum mengunggah Surat pengantar permohonan',
+    //         ]);
+    //     } else {
+    //         $permohonan->surat_permohonan_rekomendasi_filepath = $request->file('berkas')->store('public/permohonan/surat_permohonan_rekomendasi');
+    //         $permohonan->save();
+    //     }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Surat pengantar permohonan berhasil diunggah',
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Surat pengantar permohonan berhasil diunggah',
+    //     ]);
+    // }
 
     public function uploadSuratRekomendasi(Request $request, Permohonan $permohonan, BerkasPermohonanService $berkasPermohonanService, VerifikatorService $verifikatorService)
     {
@@ -594,7 +594,7 @@ class VerifikatorPermohonanController extends Controller
                         'nomor_registrasi' => $permohonan->nomor_registrasi,
                         'waktu_pengajuan' => $permohonan->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
                         'nama_pemohon' => $permohonan->nama,
-                        'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
+                        // 'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
                         'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
                         'status_badge' => $permohonan->status_badge_merge_usulan_baru_to_verifikasi,
                         'action' => $action,
@@ -662,7 +662,7 @@ class VerifikatorPermohonanController extends Controller
                         'nomor_registrasi' => $permohonan->nomor_registrasi,
                         'waktu_pengajuan' => $permohonan->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
                         'nama_pemohon' => $permohonan->nama,
-                        'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
+                        // 'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
                         'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
                         'status_berkas' => $berkasPermohonanService->isAllBerkasValidFromVerifikator($permohonan->alurPermohonan->first()),
                         'status_badge' => $permohonan->status_badge,

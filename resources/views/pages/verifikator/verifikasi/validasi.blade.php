@@ -223,31 +223,31 @@
                     $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)
                     @if (($is_all_berkas_valid && $is_form_valid) || !$is_verifikator_turn)
-                        <x-dashboard.input-inline-file-upload :is_readonly="false"
+                        {{-- <x-dashboard.input-inline-file-upload :is_readonly="false"
                                                               :is_show_badge="false"
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                               class_input="text-xsm"
                                                               downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
                                                               label="Surat pengantar permohonan"
                                                               name="surat_permohonan_rekomendasi"
-                                                              uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" />
+                                                              uploadUrl="{{ route('verifikator.verifikasi.upload-surat-permohonan-rekomendasi', $permohonan->id) }}" /> --}}
                     @else
-                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                        {{-- <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                               :is_show_badge="false"
                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                               class_input="text-xsm"
                                                               downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
                                                               label="Surat pengantar permohonan"
-                                                              name="surat_permohonan_rekomendasi" />
+                                                              name="surat_permohonan_rekomendasi" /> --}}
                     @endif
                 @else
-                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                    {{-- <x-dashboard.input-inline-file-upload :is_readonly="true"
                                                           :is_show_badge="false"
                                                           class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                           class_input="text-xsm"
                                                           downloadUrl="{{ $permohonan->surat_permohonan_rekomendasi_filepath ? Storage::url($permohonan->surat_permohonan_rekomendasi_filepath) : '' }}"
                                                           label="Surat pengantar permohonan"
-                                                          name="surat_permohonan_rekomendasi" />
+                                                          name="surat_permohonan_rekomendasi" /> --}}
                     @if (
                         $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::OPD->value &&
                             $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)

@@ -100,7 +100,7 @@ class PermohonanController extends Controller
                         'nomor_registrasi' => $permohonan->nomor_registrasi,
                         'waktu_pengajuan' => $permohonan->created_at->setTimezone('GMT+8')->locale('id')->isoFormat('LL LTS'),
                         'nama_pemohon' => $permohonan->nama,
-                        'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
+                        // 'surat_permohonan_rekomendasi' => $permohonan->surat_permohonan_rekomendasi_filepath,
                         'surat_rekomendasi' => $permohonan->surat_rekomendasi_filepath,
                         'status_badge' => $permohonan->status_badge,
                         'action' => $action,
