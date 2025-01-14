@@ -233,6 +233,11 @@ class LaporanService
                 'Sarana dan Prasarana',
             ];
 
+            if(isset($data['nrrTertbgUnsurPercentage']['Persyaratan'])) {
+                $data['nrrTertbgUnsurPercentage']['Persyaratan'] = $data['nrrTertbgUnsurPercentage']['Persyaratan'] * 100;
+            }else{
+                $data['nrrTertbgUnsurPercentage']['Persyaratan'] = 0;
+            }
             $data['nrrTertbgUnsurPercentage'] = array_combine($array, $data['nrrTertbgUnsurPercentage']);
 
             unset($data['kuesioners']);
