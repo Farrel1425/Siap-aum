@@ -234,7 +234,8 @@ class LaporanService
             ];
 
             if(!isset($data['nrrTertbgUnsurPercentage'])) {
-                $data['nrrTertbgUnsurPercentage'] = [];
+                // must have same number of element with $array
+                $data['nrrTertbgUnsurPercentage'] = array_fill(0, count($array), 0);
             }
             $data['nrrTertbgUnsurPercentage'] = array_combine($array, $data['nrrTertbgUnsurPercentage']);
 
