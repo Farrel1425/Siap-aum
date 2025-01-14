@@ -232,7 +232,7 @@ class LaporanService
                 'Penanganan Pengaduan',
                 'Sarana dan Prasarana',
             ];
-            dd($data['nrrTertbgUnsurPercentage']);
+
             if(!$data['nrrTertbgUnsurPercentage']) {
                 // must have same number of element with $array
                 $data['nrrTertbgUnsurPercentage'] = array_fill(0, count($array), 0);
