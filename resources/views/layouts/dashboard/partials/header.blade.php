@@ -17,7 +17,7 @@
             <div class="collapse navbar-collapse"
                  id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-lg-0 me-4">
-                    <li class="nav-item dropdown me-1">
+                    {{-- <li class="nav-item dropdown me-1">
                         <a aria-expanded="false"
                            class="nav-link active dropdown-toggle text-main"
                            data-bs-toggle="dropdown"
@@ -32,7 +32,7 @@
                             <li><a class="dropdown-item"
                                    href="#">No new mail</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                 </ul>
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
