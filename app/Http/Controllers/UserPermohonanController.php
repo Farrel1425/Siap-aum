@@ -601,9 +601,17 @@ class UserPermohonanController extends Controller
     public function storeBerkas(Request $request)
     {
         $request->validate([
-            'berkas' => 'required|file|mimes:pdf|max:5120',
+            'berkas' => 'required|file|mimes:pdf',
             'berkas_key' => 'required',
         ]);
+
+        // validate max berkas 5mb
+        if ($request->file('berkas')->getSize() > 5000000) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ukuran berkas maksimal 5MB'
+            ]);
+        }
 
         DB::beginTransaction();
         try {
