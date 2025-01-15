@@ -219,7 +219,9 @@
                         @endif
                     </div>
                 @endforeach
-                <h5 class="mt-4">Data Berkas Penunjang</h5>
+                @if ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::FO->value)
+                    <h5 class="mt-4">Data Berkas Penunjang</h5>
+                @endif
                 @if (
                     $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::FO->value &&
                         $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value)

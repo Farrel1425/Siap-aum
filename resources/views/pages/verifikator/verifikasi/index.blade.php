@@ -95,7 +95,7 @@
                     //         return data ? `<span class='text-success'><i class='isax-bold isax-tick-circle'></i></span>` : '-';
                     //     },
                     //     orderable: false
-                    },
+                    // },
                     {
                         data: 'surat_rekomendasi',
                         name: 'surat_rekomendasi',
