@@ -17,6 +17,7 @@
         </div>
         <section class="section mb-3">
             <x-landing.progress-stepper-bar :steps=$steps />
+            <x-log-aktivitas-table :permohonan=$permohonan />
             <h5>Data Diri Pemohon</h5>
             <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                            class_input="border-0 text-end text-xsm"
