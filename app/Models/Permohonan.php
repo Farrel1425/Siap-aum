@@ -9,6 +9,7 @@ use App\Models\Kuesioner;
 use App\Models\AlurPermohonan;
 use App\Models\FormPermohonan;
 use App\Models\BerkasPermohonan;
+use App\Models\PembayaranReklame;
 use App\Enums\StatusPermohonanEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -80,11 +81,16 @@ class Permohonan extends Model
     {
         return $this->hasOne(Reklame::class);
     }
+    public function pembayaranReklame()
+    {
+        return $this->hasOne(PembayaranReklame::class);
+    }
 
     public function scopeReklame($query)
     {
         return $query->where('jenis_izin_id', 9);
     }
+
 
     public function getStatusNameAttribute()
     {
