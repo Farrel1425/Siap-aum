@@ -24,6 +24,7 @@ use App\Models\KuesionerPertanyaan;
 use Illuminate\Support\Facades\Log;
 use App\Models\KelengkapanJenisIzin;
 use App\Models\KelengkapanPermohonan;
+use App\Models\Reklame;
 use App\Models\ValidasiForm;
 
 class SinkronisasiDataSiajaibLegacyService
@@ -98,47 +99,52 @@ class SinkronisasiDataSiajaibLegacyService
         // $this->sinkronValidasiBerkasPermohonan();
         // Log::info('Finish Sinkronisas Validasi Berkas Permohonan : ' . (microtime(true) - $start) . 's');
         // Log::info('================');
-        Log::info('Start Sinkronisasi Data Kelengkapan Permohonan');
-        $start = microtime(true);
-        $this->sinkronKelengkapanPermohonan();
-        Log::info('Finish Sinkronisas Data Kelengkapan Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        $this->sinkronValidasiFormPermohonan();
-        Log::info('Finish Sinkronisas Data Validasi Form Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kelengkapan Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronKelengkapanPermohonan();
+        // Log::info('Finish Sinkronisas Data Kelengkapan Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // $this->sinkronValidasiFormPermohonan();
+        // Log::info('Finish Sinkronisas Data Validasi Form Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
 
-        // Kuesioner
-        Log::info('Start Sinkronisasi Data Kuesioner');
-        $start = microtime(true);
-        $this->sinkronKuesioner();
-        Log::info('Finish Sinkronisas Data Kuesioner : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Kuesioner Pertanyaan');
-        $start = microtime(true);
-        $this->sinkronKuesionerPertanyaan();
-        Log::info('Finish Sinkronisas Data Kuesioner Pertanyaan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Kuesioner Opsi');
-        $start = microtime(true);
-        $this->sinkronKuesionerOpsi();
-        Log::info('Finish Sinkronisas Data Kuesioner Opsi : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Kuesioner Jawaban');
-        $start = microtime(true);
-        $this->sinkronKuesionerJawaban();
-        Log::info('Finish Sinkronisas Data Kuesioner Jawaban : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // // Kuesioner
+        // Log::info('Start Sinkronisasi Data Kuesioner');
+        // $start = microtime(true);
+        // $this->sinkronKuesioner();
+        // Log::info('Finish Sinkronisas Data Kuesioner : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kuesioner Pertanyaan');
+        // $start = microtime(true);
+        // $this->sinkronKuesionerPertanyaan();
+        // Log::info('Finish Sinkronisas Data Kuesioner Pertanyaan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kuesioner Opsi');
+        // $start = microtime(true);
+        // $this->sinkronKuesionerOpsi();
+        // Log::info('Finish Sinkronisas Data Kuesioner Opsi : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Kuesioner Jawaban');
+        // $start = microtime(true);
+        // $this->sinkronKuesionerJawaban();
+        // Log::info('Finish Sinkronisas Data Kuesioner Jawaban : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
 
-        // Reklame
+        // // Reklame
+        // Log::info('Start Sinkronisasi Data Reklame');
+        // $start = microtime(true);
+        // $this->sinkronRegistrasiReklame();
+        // Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        // Log::info('Start Sinkronisasi Data Pembayaran Reklame');
+        // $start = microtime(true);
+        // $this->sinkronPembayaranReklame();
+        // Log::info('Finish Sinkronisas Data Pembayaran Reklame : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
         Log::info('Start Sinkronisasi Data Reklame');
         $start = microtime(true);
-        $this->sinkronRegistrasiReklame();
+        $this->sinkronReklame();
         Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
-        Log::info('Start Sinkronisasi Data Pembayaran Reklame');
-        $start = microtime(true);
-        $this->sinkronPembayaranReklame();
-        Log::info('Finish Sinkronisas Data Pembayaran Reklame : ' . (microtime(true) - $start) . 's');
         Log::info('================');
 
 
@@ -726,6 +732,45 @@ class SinkronisasiDataSiajaibLegacyService
 
             // insert or update data with id
             PembayaranReklame::upsert($pembayaranReklame, ['id']);
+        }
+    }
+
+    private function sinkronReklame()
+    {
+        $reklame_legacy = DB::connection('siajaib_legacy')->table('reklame_pembayaran')
+        ->select('reklame_pembayaran.*')
+        ->join('permohonan', 'reklame_pembayaran.id_permohonan', '=', 'permohonan.id')
+        ->whereNotNull('permohonan.status')
+        ->whereNot('permohonan.status', 'Tidak Aktif')
+        ->whereNull('permohonan.deleted_at')
+        ->get();
+
+        foreach ($reklame_legacy as $reklames) {
+            $reklame = [
+                'id' => $reklames->id,
+                'permohonan_id' => $reklames->id_permohonan,
+                // 'nomor_skpd' => $reklame->no_skpd,
+                // 'is_lunas' => $reklame->statuslunas,
+                'skpd_filepath' => $reklames->fileskpd,
+                // 'nominal' => $reklame->nominal,
+                'created_at' => $reklames->created_at,
+                'updated_at' => $reklames->updated_at,
+            ];
+
+
+            // insert or update data with id
+            $reklame = Reklame::firstOrCreate(['id' => $reklame['id']], $reklame);
+
+            // image
+            $permohonan = Permohonan::where('id', $reklames->id_permohonan)->first();
+            $reklame_image = $permohonan->berkasPermohonan()->where('nama', 'Foto Tempat Pemasangan Reklame')->first()->filepath;
+            // registrasi_reklame_id
+            $registrasi_reklame_id = RegistrasiReklame::where('nomor_registrasi', $permohonan->nomor_registrasi)->first()->id;
+
+            $reklame->update([
+                'registrasi_reklame_id' => $registrasi_reklame_id,
+                'image_filepath' => $reklame_image,
+            ]);
         }
     }
 }
