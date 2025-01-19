@@ -132,6 +132,28 @@ WHERE
 ```
 
 ```sql
+DELETE
+FROM
+	kelengkapan_permohonan
+WHERE
+	kelengkapan_permohonan.id_permohonan IN (
+	SELECT
+		*
+	FROM
+		(
+		SELECT DISTINCT
+			( b.id_permohonan )
+		FROM
+			permohonan a
+			RIGHT JOIN kelengkapan_permohonan b ON a.id = b.id_permohonan
+		WHERE
+			a.id IS NULL
+			or a.`status` = 'Tidak Aktif'
+		) AS c
+	);
+```
+
+```sql
 
 DELETE
 FROM

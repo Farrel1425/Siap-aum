@@ -51,7 +51,7 @@ class BerkasPermohonanService
             ) {
                 $berkasPermohonan->is_need_validation = false;
             } else {
-                if ($this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan)) {
+                if ($this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan) || $this->isLastStatusValidasiBerkasIsVerified($alurPermohonan, $berkasPermohonan)) {
                     $berkasPermohonan->is_need_validation = false;
                 } else {
                     if ($this->isBerkasOnRevisi($berkasPermohonan)) {
@@ -78,6 +78,12 @@ class BerkasPermohonanService
     {
         $status = $this->getLastStatusBerkasByAlur($alurPermohonan, $berkasPermohonan);
         return $status?->get('status') == 'valid';
+    }
+
+    public function isLastStatusValidasiBerkasIsVerified(AlurPermohonan $alurPermohonan, BerkasPermohonan $berkasPermohonan)
+    {
+        $status = $this->getLastStatusBerkasByAlur($alurPermohonan, $berkasPermohonan);
+        return $status?->get('status') != 'pending' && $status;
     }
 
     public function isLastStatusValidasiBerkasIsExist(AlurPermohonan $alurPermohonan, BerkasPermohonan $berkasPermohonan)
