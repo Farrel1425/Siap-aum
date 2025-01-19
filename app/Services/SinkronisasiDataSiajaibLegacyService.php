@@ -93,11 +93,11 @@ class SinkronisasiDataSiajaibLegacyService
         // $this->sinkronAlurPermohonan();
         // Log::info('Finish Sinkronisas Data Alur Permohonan : ' . (microtime(true) - $start) . 's');
         // Log::info('================');
-        Log::info('Start Sinkronisasi Validasi Berkas Permohonan');
-        $start = microtime(true);
-        $this->sinkronValidasiBerkasPermohonan();
-        Log::info('Finish Sinkronisas Validasi Berkas Permohonan : ' . (microtime(true) - $start) . 's');
-        Log::info('================');
+        // Log::info('Start Sinkronisasi Validasi Berkas Permohonan');
+        // $start = microtime(true);
+        // $this->sinkronValidasiBerkasPermohonan();
+        // Log::info('Finish Sinkronisas Validasi Berkas Permohonan : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
         Log::info('Start Sinkronisasi Data Kelengkapan Permohonan');
         $start = microtime(true);
         $this->sinkronKelengkapanPermohonan();

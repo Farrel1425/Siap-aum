@@ -110,6 +110,28 @@ WHERE
 ```
 
 ```sql
+DELETE 
+FROM
+	alur_permohonan
+WHERE
+	alur_permohonan.id_permohonan IN (
+	SELECT
+		*
+	FROM
+		(
+		SELECT DISTINCT
+			( b.id_permohonan )
+		FROM
+			permohonan a
+			RIGHT JOIN alur_permohonan b ON a.id = b.id_permohonan
+		WHERE
+			a.id IS NULL
+			or a.`status` = 'Tidak Aktif'
+		) AS c
+	);
+```
+
+```sql
 
 DELETE
 FROM
