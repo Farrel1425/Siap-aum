@@ -51,7 +51,7 @@ class BerkasPermohonanService
             ) {
                 $berkasPermohonan->is_need_validation = false;
             } else {
-                if ($this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan) || $this->isLastStatusValidasiBerkasIsVerified($alurPermohonan, $berkasPermohonan)) {
+                if ($this->isLastStatusValidasiBerkasIsExist($alurPermohonan, $berkasPermohonan) && $this->isLastStatusValidasiBerkasIsVerified($alurPermohonan, $berkasPermohonan)) {
                     $berkasPermohonan->is_need_validation = false;
                 } else {
                     if ($this->isBerkasOnRevisi($berkasPermohonan)) {

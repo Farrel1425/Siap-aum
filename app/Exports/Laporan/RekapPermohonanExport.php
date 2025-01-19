@@ -74,7 +74,7 @@ class RekapPermohonanExport implements FromCollection, WithMapping, ShouldAutoSi
             $permohonan->formPermohonan->where('kode_isian', 'NO_STR')->first()?->value,
             $permohonan->formPermohonan->where('kode_isian', 'ALAMAT')->first()?->value,
             $permohonan->formPermohonan->where('kode_isian', 'PRAKTIK_KE')->first()?->value,
-            $permohonan->formPermohonan->whereIn('kode_isian', ['LOKASI', 'TEMPAT_PRTK'])->first()?->value,
+            $permohonan->formPermohonan->where('kode_isian', 'LOKASI')->first()?->value,
             $permohonan->kelengkapanPermohonan->where('kode_isian', 'NO_SK')->first()?->value,
             $this->parseDate($permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_SK')->first()?->value),
             $this->parseDate($permohonan->kelengkapanPermohonan->where('kode_isian', 'TGL_BERLAKU_SK')->first()?->value),
