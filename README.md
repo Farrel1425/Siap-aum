@@ -1,6 +1,7 @@
 apt-get install libreoffice --no-install-recommends
 sudo apt-get install libreoffice-java-common default-jre
 export HOME=/tmp
+
 ## Sebelum Sinkronisasi, Jalankan Query Berikut
 
 ```sql
@@ -110,7 +111,7 @@ WHERE
 ```
 
 ```sql
-DELETE 
+DELETE
 FROM
 	alur_permohonan
 WHERE
@@ -186,6 +187,17 @@ SET pendidikan = 'DIPLOMA'
 WHERE
 	pendidikan = 'DIPL';
 ```
+
+$permohonan = Permohonan::with('pembayaranReklame')->where('jenis_izin_id', 9)->get();
+foreach ($permohonan as $permohonans) {
+    $no_skpd = $permohonans->pembayaranReklame->nomor_skpd;
+    $permohonans->kelengkapanPermohonan()->create([
+        'label' => 'Nomor SKPD',
+        'tipe' => 'text',
+        'kode_isian' => 'NO_SKPD',
+        'value' => $no_skpd,
+    ]);
+}
 
 php artisan generate:ulid-jenis-izin
 

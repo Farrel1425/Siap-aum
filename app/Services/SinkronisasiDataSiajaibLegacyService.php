@@ -772,5 +772,17 @@ class SinkronisasiDataSiajaibLegacyService
                 'image_filepath' => $reklame_image,
             ]);
         }
+
+        $permohonan = Permohonan::with('reklame')where('jenis_izin_id', 9)->get();
+        foreach ($permohonan as $permohonans) {
+            $no_skpd = $permohonans->pembayaranReklame->nomor_skpd;
+            $permohonans->kelengkapanPermohonan()->create([
+                'label' => 'Nomor SKPD',
+                'tipe' => 'text',
+                'kode_isian' => 'NO_SKPD',
+                'value' => $no_skpd,
+            ]);
+        }
+
     }
 }
