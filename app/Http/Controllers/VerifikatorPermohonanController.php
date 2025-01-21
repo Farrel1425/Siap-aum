@@ -594,8 +594,10 @@ class VerifikatorPermohonanController extends Controller
             // Filter records
             if ($search || $request->input('status') || $request->input('jenis_izin_id')) {
                 if ($search) {
-                    $query = $query->where('nomor_registrasi', 'like', '%' . $search . '%')
-                        ->orWhere('nama', 'like', '%' . $search . '%');
+                    $query = $query->where(function ($query) use ($search) {
+                        $query->where('nomor_registrasi', 'like', '%' . $search . '%')
+                            ->orWhere('nama', 'like', '%' . $search . '%');
+                    });
                 }
                 if ($request->input('status')) {
                     if ($request->input('status') == StatusPermohonanEnum::VERIFIKASI->value) {
