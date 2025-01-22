@@ -141,7 +141,7 @@ class PermohonanService
 
         try {
             $file = file_get_contents(storage_path('app/' . $permohonan->template_surat_filepath));
-            $response = Http::withBasicAuth('devsiajaib@tte', 'P4k@is4ja*#')
+            $response = Http::withBasicAuth(config('app.esign_username'), config('app.esign_username'))
                 ->attach('file', $file, 'test.pdf')
                 ->timeout(30)
                 ->withoutVerifying()
