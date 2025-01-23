@@ -308,6 +308,13 @@
                                                                   :is_show_badge="false"
                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                   class_input="text-xsm"
+                                                                  downloadUrl="{{ $permohonan->reklame?->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
+                                                                  label="SKPD"
+                                                                  name="skpd" />
+                            <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                                  :is_show_badge="false"
+                                                                  class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                  class_input="text-xsm"
                                                                   downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
                                                                   label="Bukti Bayar SKPD"
                                                                   name="bukti_bayar" />
@@ -316,25 +323,6 @@
                             $alur_permohonan->jenis_verifikator == App\Enums\JenisVerifikatorEnum::BO->value &&
                                 $permohonan->status != App\Enums\StatusPermohonanEnum::SELESAI->value &&
                                 !$permohonan->is_ttd)
-                            @if ($permohonan->jenis_izin_id == 9)
-                                {{-- skpd and bukti bayar readonly --}}
-                                <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                      :is_show_badge="false"
-                                                                      class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                      class_input="text-xsm"
-                                                                      downloadUrl="{{ $permohonan->reklame?->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
-                                                                      label="SKPD"
-                                                                      name="skpd" />
-                                @if ($permohonan->reklame?->skpd_filepath)
-                                    <x-dashboard.input-inline-file-upload :is_readonly="true"
-                                                                          :is_show_badge="false"
-                                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                                          class_input="text-xsm"
-                                                                          downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
-                                                                          label="Bukti Bayar SKPD (Opsional)"
-                                                                          name="bukti_bayar" />
-                                @endif
-                            @endif
                             <x-dashboard.input-inline-file-upload :is_show_badge="false"
                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                   class_input="text-xsm"
