@@ -316,13 +316,13 @@ class PermohonanService
         }
 
         if(auth()->user()->role_id == RoleEnum::ADMIN->value) {
-            return response()->download(storage_path('app/' . $permohonan->template_surat_filepath), 'izin_terbit_'.$permohonan->nomor_registrasi . '.pdf', $headers);
+            return response()->download(storage_path('app/' . $permohonan->template_surat_filepath), 'izin_terbit_'.str_replace('/', '-',$permohonan->nomor_registrasi) . '.pdf', $headers);
         }
 
         if ($permohonan->user_id == $user->id) {
             if ($permohonan->is_ttd) {
                 if ($permohonan->kuesioner()->exists()) {
-                    return response()->download(storage_path('app/' . $permohonan->template_surat_filepath), 'izin_terbit_'.$permohonan->nomor_registrasi . '.pdf', $headers);
+                    return response()->download(storage_path('app/' . $permohonan->template_surat_filepath), 'izin_terbit_'.str_replace('/', '-',$permohonan->nomor_registrasi) . '.pdf', $headers);
                 } else {
                     throw new ServiceException('Anda harus mengisi kuesioner terlebih dahulu sebelum dapat mengunduh ijin terbit');
                 }
@@ -333,7 +333,7 @@ class PermohonanService
             if (!$permohonan->alurPermohonan->contains('verifikator_id', $user->id)) {
                 throw new ServiceException('Anda tidak memiliki akses untuk mengunduh ijin terbit');
             }
-            return response()->download(storage_path('app/' . $permohonan->template_surat_filepath), 'izin_terbit_'.$permohonan->nomor_registrasi . '.pdf', $headers);
+            return response()->download(storage_path('app/' . $permohonan->template_surat_filepath), 'izin_terbit_'.str_replace('/', '-',$permohonan->nomor_registrasi) . '.pdf', $headers);
         }
     }
 
