@@ -219,7 +219,7 @@ class PermohonanService
                 'TEMPAT_LAHIR' => $permohonan->tempat_lahir,
                 'NAMA_JNS_IZIN' => $permohonan->nama_jenis_izin,
                 'DESKRIPSI_JNS_IZIN' => $permohonan->deskripsi_jenis_izin,
-                'NO_REGISTRASI' => $permohonan->no_registrasi
+                'NO_REGISTRASI' => $permohonan->nomor_registrasi
             );
 
             // Pas foto
