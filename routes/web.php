@@ -97,7 +97,7 @@ Route::middleware(['auth'])->group(function () {
         // Dashboard
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         // All Role
-        Route::get('download-izin-terbit/{permohonan}', [PermohonanController::class, 'downloadIzinTerbit'])->name('download-izin-terbit');
+        Route::get('download-izin-terbit/{permohonan}/{filepath}', [PermohonanController::class, 'downloadIzinTerbit'])->name('download-izin-terbit');
 
         // PUBLIC
         Route::middleware(['role:public'])->group(function () {

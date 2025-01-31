@@ -190,7 +190,7 @@
                                                   :show_ttd_status="true"
                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                   class_input="text-xsm"
-                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id) }}"
+                                                  downloadUrl="{{ route('download-izin-terbit', $permohonan->id, $permohonan->template_izin_terbit) }}"
                                                   label="Ijin Terbit"
                                                   name="ijin_terbit" />
             @if ($need_kuesioner)
