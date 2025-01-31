@@ -191,7 +191,7 @@
                     <div class="offset-5 col-2">
                         @if ($permohonan->template_surat_filepath)
                             <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ route('download-izin-terbit', ['permohonan'=>$permohonan->id, 'filepath'=>$permohonan->template_izin_terbit]) }}">
+                               href="{{ route('download-izin-terbit', ['permohonan'=>$permohonan->id, 'filepath'=>$permohonan->template_surat_filepath ?? 0]) }}">
                                 <i class="isax isax-download"></i> Lihat File
                             </a>
                         @else
