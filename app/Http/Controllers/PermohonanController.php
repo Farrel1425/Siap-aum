@@ -117,7 +117,7 @@ class PermohonanController extends Controller
         }
     }
 
-    public function downloadIzinTerbit(Request $request, $permohonan, PermohonanService $permohonan_service)
+    public function downloadIzinTerbit(Request $request, $permohonan, $filepath, PermohonanService $permohonan_service)
     {
         try {
             $permohonan = Permohonan::findOrFail($permohonan);
