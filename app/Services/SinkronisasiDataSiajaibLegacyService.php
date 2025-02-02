@@ -793,11 +793,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronRegistrasiReklameToFormPermohonan()
     {
-        $permohonans = Permohonan::with('formPermohonan')->where('jenis_izin_id', 9)
-        ->whereDoesntHave('formPermohonan', function ($query) {
-            $query->where('kode_isian', 'NAMA_PERUSAHAAN');
-        })
-        ->get();
+        $permohonans = Permohonan::with('formPermohonan')->where('jenis_izin_id', 9)->whereDoesntHave('formPermohonan', function ($query) {    $query->where('kode_isian', 'NAMA_PERUSAHAAN');})->get();
 
         $registrasi_reklame = RegistrasiReklame::whereIn('nomor_registrasi', $permohonans->pluck('nomor_registrasi'))->get();
 
@@ -805,22 +801,26 @@ class SinkronisasiDataSiajaibLegacyService
             $registrasi = $registrasi_reklame->where('nomor_registrasi', $permohonan->nomor_registrasi)->first();
             // get last urutan from form permohonan
             $urutan = $permohonan->formPermohonan->max('urutan') ?? 0;
+            // delete kelengkapan permohonan
+            $permohonan->kelengkapanPermohonan()->where('kode_isian', 'ALAMAT')->delete();
+            $permohonan->kelengkapanPermohonan()->where('kode_isian', 'NAMA_PERUSAHAAN')->delete();
+            $permohonan->kelengkapanPermohonan()->where('kode_isian', 'HP/TELP')->delete();
             // insert alamat perusahaan, nomor telepon, nama perusahaan
-            $permohonan->kelengkapanPermohonan()->create([
+            $permohonan->formPermohonan()->create([
                 'label' => 'Alamat',
                 'tipe' => 'text',
                 'kode_isian' => 'ALAMAT',
                 'value' => $registrasi->alamat_perusahaan,
                 'urutan' => $urutan + 1,
             ]);
-            $permohonan->kelengkapanPermohonan()->create([
+            $permohonan->formPermohonan()->create([
                 'label' => 'Nama Perusahaan',
                 'tipe' => 'text',
                 'kode_isian' => 'NAMA_PERUSAHAAN',
                 'value' => $registrasi->nama_perusahaan,
                 'urutan' => $urutan + 2,
             ]);
-            $permohonan->kelengkapanPermohonan()->create([
+            $permohonan->formPermohonan()->create([
                 'label' => 'No. Telp/HP',
                 'tipe' => 'text',
                 'kode_isian' => 'HP/TELP',
