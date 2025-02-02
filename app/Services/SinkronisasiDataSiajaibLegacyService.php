@@ -778,7 +778,7 @@ class SinkronisasiDataSiajaibLegacyService
             ]);
         }
 
-        $permohonan = Permohonan::with('reklame')where('jenis_izin_id', 9)->get();
+        $permohonan = Permohonan::with('reklame')->where('jenis_izin_id', 9)->get();
         foreach ($permohonan as $permohonans) {
             $no_skpd = $permohonans->pembayaranReklame->nomor_skpd;
             $permohonans->kelengkapanPermohonan()->create([
