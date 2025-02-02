@@ -141,10 +141,15 @@ class SinkronisasiDataSiajaibLegacyService
         // $this->sinkronPembayaranReklame();
         // Log::info('Finish Sinkronisas Data Pembayaran Reklame : ' . (microtime(true) - $start) . 's');
         // Log::info('================');
-        Log::info('Start Sinkronisasi Data Reklame');
+        // Log::info('Start Sinkronisasi Data Reklame');
+        // $start = microtime(true);
+        // $this->sinkronReklame();
+        // Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
+        // Log::info('================');
+        Log::info('Start Sinkronisasi Data Registrasi Reklame to Form Permohonan');
         $start = microtime(true);
-        $this->sinkronReklame();
-        Log::info('Finish Sinkronisas Data Reklame : ' . (microtime(true) - $start) . 's');
+        $this->sinkronRegistrasiReklameToFormPermohonan();
+        Log::info('Finish Sinkronisas Data Registrasi Reklame to Form Permohonan : ' . (microtime(true) - $start) . 's');
         Log::info('================');
 
 
@@ -784,5 +789,44 @@ class SinkronisasiDataSiajaibLegacyService
             ]);
         }
 
+    }
+
+    private function sinkronRegistrasiReklameToFormPermohonan()
+    {
+        $permohonans = Permohonan::with('formPermohonan')->where('jenis_izin_id', 9)
+        ->whereDoesntHave('formPermohonan', function ($query) {
+            $query->where('kode_isian', 'NAMA_PERUSAHAAN');
+        })
+        ->get();
+
+        $registrasi_reklame = RegistrasiReklame::whereIn('nomor_registrasi', $permohonans->pluck('nomor_registrasi'))->get();
+
+        foreach ($permohonans as $permohonan) {
+            $registrasi = $registrasi_reklame->where('nomor_registrasi', $permohonan->nomor_registrasi)->first();
+            // get last urutan from form permohonan
+            $urutan = $permohonan->formPermohonan->max('urutan') ?? 0;
+            // insert alamat perusahaan, nomor telepon, nama perusahaan
+            $permohonan->kelengkapanPermohonan()->create([
+                'label' => 'Alamat',
+                'tipe' => 'text',
+                'kode_isian' => 'ALAMAT',
+                'value' => $registrasi->alamat_perusahaan,
+                'urutan' => $urutan + 1,
+            ]);
+            $permohonan->kelengkapanPermohonan()->create([
+                'label' => 'Nama Perusahaan',
+                'tipe' => 'text',
+                'kode_isian' => 'NAMA_PERUSAHAAN',
+                'value' => $registrasi->nama_perusahaan,
+                'urutan' => $urutan + 2,
+            ]);
+            $permohonan->kelengkapanPermohonan()->create([
+                'label' => 'No. Telp/HP',
+                'tipe' => 'text',
+                'kode_isian' => 'HP/TELP',
+                'value' => $registrasi->nomor_telepon,
+                'urutan' => $urutan + 3,
+            ]);
+        }
     }
 }
