@@ -339,7 +339,7 @@
                                                                               :show_ttd_status="true"
                                                                               class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                               class_input="text-xsm"
-                                                                              downloadUrl="{{ route('download-izin-terbit', ['permohonan'=>$permohonan->id, 'filepath'=>md5($permohonan->template_surat_filepath ?? 0)]) }}"
+                                                                              downloadUrl="{{ route('download-izin-terbit', ['permohonan' => $permohonan->id, 'filepath' => md5($permohonan->template_surat_filepath ?? 0)]) }}"
                                                                               label="Ijin Terbit"
                                                                               name="ijin_terbit" />
                                     </div>
@@ -359,7 +359,7 @@
                                                                   :show_ttd_status="true"
                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                                   class_input="text-xsm"
-                                                                  downloadUrl="{{ route('download-izin-terbit', ['permohonan'=>$permohonan->id, 'filepath'=>md5($permohonan->template_surat_filepath ?? 0)]) }}"
+                                                                  downloadUrl="{{ route('download-izin-terbit', ['permohonan' => $permohonan->id, 'filepath' => md5($permohonan->template_surat_filepath ?? 0)]) }}"
                                                                   label="Ijin Terbit"
                                                                   name="ijin_terbit" />
                         @endif
@@ -450,7 +450,8 @@
                                 <i class="isax isax-tick-circle me-2"></i> Tanda Tangan dan Selesaikan Permohonan
                             </button>
                         @else
-                            <button class="d-block btn w-100 btn-primary">
+                            <button class="d-block btn w-100 btn-primary"
+                                    onclick="confirmSubmission(event)">
                                 <i class="isax isax-tick-circle me-2"></i> Simpan
                             </button>
                         @endif
@@ -543,6 +544,23 @@
                         icon: 'info',
                         title: 'Tanda tangan dibatalkan'
                     });
+                }
+            });
+        }
+
+        function confirmSubmission(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, simpan!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.closest('form').submit();
                 }
             });
         }
