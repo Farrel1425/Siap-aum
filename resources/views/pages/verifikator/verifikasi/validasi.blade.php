@@ -214,7 +214,9 @@
                             </div>
                         </div>
                         @if ($berkas_permohonan->is_revisi)
-                            <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                            <span class="badge bg-danger w-100 d-block mt-2 fw-normal text-xsm" style=" white-space: normal;
+        word-wrap: break-word;
+        overflow: hidden;">Revisi terakhir:
                                 {{ $berkas_permohonan->catatan }}</span>
                         @endif
                     </div>
