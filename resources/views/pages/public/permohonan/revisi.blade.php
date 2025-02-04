@@ -116,7 +116,7 @@
             @if ($last_validation_form)
                 <div class="mb-3">
                     @if ($last_validation_form->status == App\Enums\StatusValidasiEnum::REVISI->value)
-                        <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                        <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm text-wrap">Revisi terakhir:
                             {{ $last_validation_form->catatan }}</span>
                     @else
                         <span class="badge bg-success w-100 d-block mt-2 fw-normal text-xsm">Valid</span>

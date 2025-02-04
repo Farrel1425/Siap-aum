@@ -169,3 +169,10 @@ $value in $theme-colors-light {
 .z-1 {
     z-index: 1
 }
+
+
+.text-wrap {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow: hidden;
+}

@@ -125,7 +125,7 @@
                             @endif
                         </div>
                         @if ($berkas_permohonan->catatan)
-                            <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm">Revisi terakhir:
+                            <span class="badge bg-warning w-100 d-block mt-2 fw-normal text-xsm text-wrap">Revisi terakhir:
                                 {{ $berkas_permohonan->catatan }}</span>
                         @endif
                     </div>
