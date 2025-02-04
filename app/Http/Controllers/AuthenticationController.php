@@ -133,7 +133,7 @@ class AuthenticationController extends Controller
         if (!$user) {
             // TODO : set rate limiter
             $otp = OtpService::generate($request->email, 'register', $request->ip());
-            Mail::to($request->email)->queue(new OtpRegisterEmail($otp::$plain_token));
+            Mail::to($request->email)->queue(new OtpRegisterEmail($request->email, $otp::$plain_token));
         }
 
         return response()->json([

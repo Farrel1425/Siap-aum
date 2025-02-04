@@ -2,6 +2,7 @@
 
 namespace App\Mail\Auth;
 
+use App\Models\OtpFailed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
@@ -15,11 +16,13 @@ class OtpRegisterEmail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $otp;
+    public $email;
     /**
      * Create a new message instance.
      */
-    public function __construct($otp)
+    public function __construct($email, $otp)
     {
+        $this->email = $email;
         $this->otp = $otp;
     }
 
@@ -54,5 +57,15 @@ class OtpRegisterEmail extends Mailable implements ShouldQueue
     public function attachments(): array
     {
         return [];
+    }
+
+    public function failed(\Exception $exception)
+    {
+        // Save the failure details to the database
+        OtpFailed::create([
+            'email' => $this->email,
+            'otp' => $this->otp,
+            'exception' => $exception->getMessage(),
+        ]);
     }
 }
