@@ -406,12 +406,22 @@
                                 $is_form_valid &&
                                 $is_verifikator_turn)
                             @if ($kelengkapan_permohonan->tipe == 'text')
-                                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                               class_input="text-xsm"
-                                                               label="{{ $kelengkapan_permohonan->label }}"
-                                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                                               placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
-                                                               value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                                @if ($kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME')
+                                    <x-dashboard.input-inline-text :is_currency=True
+                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                   class_input="text-xsm"
+                                                                   label="{{ $kelengkapan_permohonan->label }}"
+                                                                   name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                                   placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                                   value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                                @else
+                                    <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                   class_input="text-xsm"
+                                                                   label="{{ $kelengkapan_permohonan->label }}"
+                                                                   name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                                   placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
+                                                                   value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
+                                @endif
                             @elseif($kelengkapan_permohonan->tipe == 'date')
                                 <x-dashboard.input-inline-text :required=True
                                                                class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -427,12 +437,33 @@
                             @if (
                                 $alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::OPD->value &&
                                     ($alur_permohonan->jenis_verifikator != App\Enums\JenisVerifikatorEnum::BO->value || $is_all_jf_done))
-                                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                                               class_input="border-0 text-end text-xsm"
-                                                               label="{{ $kelengkapan_permohonan->label }}"
-                                                               name="{{ $kelengkapan_permohonan->kode_isian }}"
-                                                               readonly
-                                                               value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
+                                @if ($kelengkapan_permohonan->tipe == 'text')
+                                    @if ($kelengkapan_permohonan->kode_isian == 'PAJAK_REKLAME')
+                                        <x-dashboard.input-inline-text :is_currency=True
+                                                                       class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                       class_input="border-0 text-end text-xsm"
+                                                                       label="{{ $kelengkapan_permohonan->label }}"
+                                                                       name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                                       readonly
+                                                                       value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
+                                    @else
+                                        <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                       class_input="border-0 text-end text-xsm"
+                                                                       label="{{ $kelengkapan_permohonan->label }}"
+                                                                       name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                                       readonly
+                                                                       value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
+                                    @endif
+                                @elseif($kelengkapan_permohonan->tipe == 'date')
+                                    <x-dashboard.input-inline-text :required=True
+                                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                                   class_input="border-0 text-end text-xsm"
+                                                                   id="{{ $kelengkapan_permohonan->id }}"
+                                                                   label="{{ $kelengkapan_permohonan->label }}"
+                                                                   name="{{ $kelengkapan_permohonan->kode_isian }}"
+                                                                   readonly
+                                                                   value="{{ $kelengkapan_permohonan->value ?? '-' }}" />
+                                @endif
                             @endif
                         @endif
                     @endforeach
