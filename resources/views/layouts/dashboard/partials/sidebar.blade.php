@@ -100,14 +100,22 @@
                         </li>
                     </ul>
                 </li>
-                {{-- <li
-                    class="sidebar-item actives">
+                <li
+                    class="sidebar-item has-sub {{ request()->routeIs('admin.log-sistem.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-radar"></i>
-                        <span>Log Aktivitas</span>
+                        <span>Log Sistem</span>
                     </a>
-                </li> --}}
+                    <ul class="submenu">
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.log-sistem.otp-gagal.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.log-sistem.otp-gagal.index') }}">
+                                Otp Gagal</a>
+                        </li>
+                    </ul>
+                </li>
             @endif
 
             @if (auth()->user()->is_verifikator)

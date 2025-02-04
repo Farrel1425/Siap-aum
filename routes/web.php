@@ -19,6 +19,7 @@ use App\Http\Controllers\SektorIzinController;
 use App\Http\Controllers\UserReklameController;
 use App\Http\Controllers\KategoriIzinController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\LogSistemController;
 use App\Http\Controllers\UserPermohonanController;
 use App\Http\Controllers\VerifikatorPermohonanController;
 
@@ -327,6 +328,15 @@ Route::middleware(['auth'])->group(function () {
                     // Resource
                     Route::get('/', [LaporanController::class, 'surveyLayananIndex'])->name('index');
                     Route::post('/export', [LaporanController::class, 'surveyLayananExport'])->name('export');
+                });
+            });
+
+            // Log Sistem
+            Route::prefix('log-sistem')->name('log-sistem.')->group(function () {
+                // Otp Gagal
+                Route::prefix('otp-gagal')->name('otp-gagal.')->group(function () {
+                    // Resource
+                    Route::get('/', [LogSistemController::class, 'otpGagalIndex'])->name('index');
                 });
             });
         });
