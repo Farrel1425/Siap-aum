@@ -7,6 +7,5 @@
 </x-mail::panel>
 
 <p style="text-align: start;color:#181818;margin: 10px;">Jika Anda tidak merasa melakukan tindakan ini, abaikan email ini</p>
-Terima kasih,<br>
-<strong>{{ config('app.name') }} - E Perizinan Kabupaten Buleleng</strong>
+
 </x-mail::message>
