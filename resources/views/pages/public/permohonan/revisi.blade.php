@@ -43,13 +43,21 @@
                                            name="telepon"
                                            readonly
                                            value="{{ $permohonan->user->telepon }}" />
-            <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                           class_input="border-0 text-end text-xsm"
-                                           label="Memohon Untuk"
-                                           name="memohon_untuk"
-                                           readonly
-                                           value="{{ $permohonan->memohon_untuk }}" />
             @if (!$is_form_need_revisi)
+                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                               class_input="border-0 text-end text-xsm"
+                                               label="Memohon Untuk"
+                                               readonly
+                                               value="{{ $permohonan->memohon_untuk }}" />
+                @if ($permohonan->is_memohon_untuk_orang_lain)
+                    <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                          :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ Storage::url($permohonan->surat_kuasa_filepath) }}"
+                                                          label="File Surat Kuasa"
+                                                          name="surat_kuasa_old" />
+                @endif
                 <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                class_input="border-0 text-end text-xsm"
                                                label="Nama"
@@ -81,6 +89,28 @@
                       enctype="multipart/form-data"
                       method="POST">
                     @csrf
+                    <x-dashboard.input-inline-select :options="['0' => 'Diri Sendiri', '1' => 'Mewakili Orang Lain']"
+                                                     class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                     class_input="text-xsm"
+                                                     label="Memohon Untuk"
+                                                     name="memohon_untuk"
+                                                     placeholder="Pilih memohon untuk"
+                                                     required
+                                                     value="{{ old('memohon_untuk', $permohonan->is_memohon_untuk_orang_lain) }}" />
+                    @if ($permohonan->is_memohon_untuk_orang_lain)
+                        <x-dashboard.input-inline-file-upload :is_readonly="true"
+                                                              :is_show_badge="false"
+                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                              class_input="text-xsm"
+                                                              downloadUrl="{{ Storage::url($permohonan->surat_kuasa_filepath) }}"
+                                                              label="Surat Kuasa Sebelumnya"
+                                                              name="surat_kuasa_old" />
+                    @endif
+                    <x-dashboard.input-inline-file class="d-none bg-white p-2 mx-1 mb-3 text-xsm"
+                                                   class_input="text-xsm"
+                                                   container_id="surat_kuasa_container"
+                                                   label="Surat Kuasa (Jika mewakili orang lain)"
+                                                   name="surat_kuasa" />
                     <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
                                                    class_input="text-xsm"
                                                    label="Nama"
@@ -220,3 +250,22 @@
         </section>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#memohon_untuk').on('change', function() {
+                if ($(this).val() === '1') {
+                    $('#surat_kuasa_container').removeClass('d-none');
+                } else {
+                    $('#surat_kuasa_container').addClass('d-none');
+                    $('#surat_kuasa').attr('required', false);
+                }
+            });
+        });
+
+        @if (old('memohon_untuk', $permohonan->is_memohon_untuk_orang_lain) == '1')
+            $('#surat_kuasa_container').removeClass('d-none');
+        @endif
+    </script>
+@endpush

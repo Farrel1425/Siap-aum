@@ -368,6 +368,18 @@ class UserPermohonanController extends Controller
             }
         }
 
+        // validate if field surat_kuasa request is upload
+        if($request->surat_kuasa) {
+            $request->validate([
+                'surat_kuasa' => 'required|file|mimes:pdf|max:2048',
+            ]);
+
+            $surat_kuasa = $request->file('surat_kuasa');
+            $surat_kuasa_path = $surat_kuasa->store('public/surat_kuasa');
+        }else{
+            $surat_kuasa_path = $permohonan->surat_kuasa_filepath;
+        }
+
         DB::beginTransaction();
         try {
             if ($formPermohonanService->isFormOnRevisi($permohonan)) {
@@ -377,6 +389,7 @@ class UserPermohonanController extends Controller
                     'nik' => $request->nik,
                     'npwp' => $request->npwp,
                     'tempat_lahir' => $request->tempat_lahir,
+                    'surat_kuasa_filepath' => $surat_kuasa_path,
                 ]);
                 // update form permohonan
                 foreach ($form_permohonan as $form) {

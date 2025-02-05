@@ -116,8 +116,8 @@ class Permohonan extends Model
 
     public function getStatusBadgeAttribute()
     {
-        if($this->jenis_izin_id == 9) {
-            if($this->reklame?->skpd_filepath && !$this->reklame?->bukti_bayar_filepath && $this->status != StatusPermohonanEnum::SELESAI->value) {
+        if ($this->jenis_izin_id == 9) {
+            if ($this->reklame?->skpd_filepath && !$this->reklame?->bukti_bayar_filepath && $this->status != StatusPermohonanEnum::SELESAI->value) {
                 return '<span class="badge bg-warning">Menunggu Pembayaran</span>';
             }
         }
@@ -171,6 +171,11 @@ class Permohonan extends Model
     public function getMemohonUntukAttribute()
     {
         return $this->surat_kuasa_filepath ? 'Orang Lain' : 'Diri Sendiri';
+    }
+
+    public function getIsMemohonUntukOrangLainAttribute()
+    {
+        return $this->surat_kuasa_filepath ? 1 : 0;
     }
 
     public function kuesioner()
