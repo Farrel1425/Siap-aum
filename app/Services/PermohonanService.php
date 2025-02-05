@@ -173,7 +173,7 @@ class PermohonanService
                     'permohonan_id' => $permohonan->id,
                     'verifikator_id' => $user->id,
                     'code' => $response->status(),
-                    'body' => '-'
+                    'body' => $response->body()
                 ]);
             }
 
