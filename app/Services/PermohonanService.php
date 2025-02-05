@@ -160,7 +160,7 @@ class PermohonanService
                 ]);
             $response_object = $response->object();
 
-            if ($response->status() == 401) {
+            if ($response->status() != 200) {
                 LogTte::create([
                     'permohonan_id' => $permohonan->id,
                     'verifikator_id' => $user->id,
@@ -173,7 +173,7 @@ class PermohonanService
                     'permohonan_id' => $permohonan->id,
                     'verifikator_id' => $user->id,
                     'code' => $response->status(),
-                    'body' => $response->body()
+                    'body' => '-'
                 ]);
             }
 
