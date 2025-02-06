@@ -103,7 +103,7 @@ class UserPermohonanController extends Controller
             ]);
         }
 
-        if($permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::OPD)->where('is_done', 1)->count()) {
+        if ($permohonan->alurPermohonan()->where('jenis_verifikator', JenisVerifikatorEnum::OPD)->where('is_done', 1)->count()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Tidak dapat mengunggah bukti bayar setelah diverifikasi oleh OPD'
@@ -361,7 +361,7 @@ class UserPermohonanController extends Controller
                 'npwp' => 'required',
             ]);
 
-            if($permohonan->jenis_izin_id != 9) {
+            if ($permohonan->jenis_izin_id != 9) {
                 $request->validate([
                     'tempat_lahir' => 'required',
                 ]);
@@ -369,15 +369,20 @@ class UserPermohonanController extends Controller
         }
 
         // validate if field surat_kuasa request is upload
-        if($request->surat_kuasa) {
-            $request->validate([
-                'surat_kuasa' => 'required|file|mimes:pdf|max:2048',
-            ]);
+        if ($request->memohon_untuk == 1) {
 
-            $surat_kuasa = $request->file('surat_kuasa');
-            $surat_kuasa_path = $surat_kuasa->store('public/surat_kuasa');
-        }else{
-            $surat_kuasa_path = $permohonan->surat_kuasa_filepath;
+            if ($request->surat_kuasa) {
+                $request->validate([
+                    'surat_kuasa' => 'required|file|mimes:pdf|max:2048',
+                ]);
+
+                $surat_kuasa = $request->file('surat_kuasa');
+                $surat_kuasa_path = $surat_kuasa->store('public/surat_kuasa');
+            } else {
+                $surat_kuasa_path = $permohonan->surat_kuasa_filepath;
+            }
+        } else {
+            $surat_kuasa_path = null;
         }
 
         DB::beginTransaction();
