@@ -100,8 +100,7 @@
                         </li>
                     </ul>
                 </li>
-                <li
-                    class="sidebar-item has-sub {{ request()->routeIs('admin.log-sistem.*') ? 'active' : '' }}">
+                <li class="sidebar-item has-sub {{ request()->routeIs('admin.log-sistem.*') ? 'active' : '' }}">
                     <a class="sidebar-link"
                        href="#">
                         <i class="isax isax-radar"></i>
@@ -113,6 +112,12 @@
                             <a class="submenu-link"
                                href="{{ route('admin.log-sistem.otp-gagal.index') }}">
                                 Otp Gagal</a>
+                        </li>
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.log-sistem.otp-sukses.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.log-sistem.otp-sukses.index') }}">
+                                Otp Sukses</a>
                         </li>
                     </ul>
                 </li>

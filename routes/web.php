@@ -338,6 +338,11 @@ Route::middleware(['auth'])->group(function () {
                     // Resource
                     Route::get('/', [LogSistemController::class, 'otpGagalIndex'])->name('index');
                 });
+                // Otp Sukses
+                Route::prefix('otp-sukses')->name('otp-sukses.')->group(function () {
+                    // Resource
+                    Route::get('/', [LogSistemController::class, 'otpSuksesIndex'])->name('index');
+                });
             });
         });
     });
