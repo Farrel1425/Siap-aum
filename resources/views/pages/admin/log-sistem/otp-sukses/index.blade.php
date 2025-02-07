@@ -25,12 +25,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($otp_faileds as $otp_failed)
+                                @foreach ($otp_successes as $otp_success)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $otp_failed->email }}</td>
-                                        <td>{{ $otp_failed->otp }}</td>
-                                        <td>{{ Carbon\Carbon::parse($otp_failed->created_at)->setTimezone('GMT+8')->format('d-m-Y H:i:s') }}</td>
+                                        <td>{{ $otp_success->email }}</td>
+                                        <td>{{ $otp_success->otp }}</td>
+                                        <td>{{ Carbon\Carbon::parse($otp_success->created_at)->setTimezone('GMT+8')->format('d-m-Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
