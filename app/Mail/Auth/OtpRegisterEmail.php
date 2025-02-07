@@ -3,6 +3,7 @@
 namespace App\Mail\Auth;
 
 use App\Models\OtpFailed;
+use App\Models\OtpSuccess;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
@@ -66,6 +67,14 @@ class OtpRegisterEmail extends Mailable implements ShouldQueue
             'email' => $this->email,
             'otp' => $this->otp,
             'exception' => $exception->getMessage(),
+        ]);
+    }
+
+    public function sent($message)
+    {
+        OtpSuccess::create([
+            'email' => $this->email,
+            'otp' => $this->otp,
         ]);
     }
 }

@@ -245,6 +245,11 @@ class PermohonanService
                 }
             }
 
+            // is array_kode['PAJAK_REKLAME'] set number_format
+            if (isset($array_kode['PAJAK_REKLAME'])) {
+                $array_kode['PAJAK_REKLAME'] = number_format($array_kode['PAJAK_REKLAME'], 0, ',', '.');
+            }
+
             foreach ($array_kode as $key => $value) {
                 $templateProcessor->setValue($key, $value);
             }
