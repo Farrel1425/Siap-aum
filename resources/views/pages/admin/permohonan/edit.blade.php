@@ -79,7 +79,6 @@
                                                    label="{{ $kelengkapan_permohonan->label }}"
                                                    name="{{ $kelengkapan_permohonan->kode_isian }}"
                                                    placeholder="Masukkan {{ $kelengkapan_permohonan->label }}"
-                                                   required
                                                    type="{{ $kelengkapan_permohonan->tipe }}"
                                                    value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
                 @endforeach

@@ -90,12 +90,6 @@ class PermohonanController extends Controller
             ]);
         }
 
-        foreach ($permohonan->kelengkapanPermohonan as $kelengkapan) {
-            $request->validate([
-                $kelengkapan->kode_isian => 'required',
-            ]);
-        }
-
         try {
             $permohonan->update([
                 'nama' => $request->nama,
