@@ -207,10 +207,9 @@ Route::middleware(['auth'])->group(function () {
                 // Resource
                 Route::get('/', [PermohonanController::class, 'index'])->name('index');
                 Route::get('/create', [PermohonanController::class, 'create'])->name('create');
-                Route::post('/', [PermohonanController::class, 'store'])->name('store');
                 Route::get('/{id}', [PermohonanController::class, 'show'])->name('show');
+                Route::get('/edit/{id}', [PermohonanController::class, 'edit'])->name('edit');
                 Route::put('/{id}', [PermohonanController::class, 'update'])->name('update');
-                Route::delete('/{id}', [PermohonanController::class, 'destroy'])->name('destroy');
             });
 
             // Master Data

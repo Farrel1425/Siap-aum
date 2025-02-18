@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusPermohonanEnum;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use App\Services\PermohonanService;
@@ -39,6 +40,86 @@ class PermohonanController extends Controller
             'berkas_permohonans',
             'kelengkapan_permohonans'
         ));
+    }
+
+    public function edit(Request $request, $id, PermohonanService $permohonan_service)
+    {
+        $permohonan = Permohonan::with([
+            'formPermohonan',
+            'kelengkapanPermohonan'
+        ])->findOrFail($id);
+
+        if (!in_array($permohonan->status, [
+            StatusPermohonanEnum::PERMOHONAN_BARU->value,
+            StatusPermohonanEnum::VERIFIKASI->value,
+            StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+        ])) {
+            return back()->with('error', 'Permohonan tidak dapat diubah');
+        }
+
+        $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
+
+        return view('pages.admin.permohonan.edit', compact(
+            'permohonan',
+            'steps'
+        ));
+    }
+
+    public function update(Request $request, $id, PermohonanService $permohonan_service)
+    {
+        $permohonan = Permohonan::findOrFail($id);
+
+        if (!in_array($permohonan->status, [
+            StatusPermohonanEnum::PERMOHONAN_BARU->value,
+            StatusPermohonanEnum::VERIFIKASI->value,
+            StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+        ])) {
+            return back()->with('error', 'Permohonan tidak dapat diubah');
+        }
+
+        $request->validate([
+            'nama' => 'required|string',
+            'nik' => 'required|string',
+            'npwp' => 'nullable|string',
+            'tempat_lahir' => 'required|string',
+        ]);
+
+        foreach ($permohonan->formPermohonan as $form) {
+            $request->validate([
+                $form->kode_isian => 'required',
+            ]);
+        }
+
+        foreach ($permohonan->kelengkapanPermohonan as $kelengkapan) {
+            $request->validate([
+                $kelengkapan->kode_isian => 'required',
+            ]);
+        }
+
+        try {
+            $permohonan->update([
+                'nama' => $request->nama,
+                'nik' => $request->nik,
+                'npwp' => $request->npwp,
+                'tempat_lahir' => $request->tempat_lahir,
+            ]);
+
+            foreach ($permohonan->formPermohonan as $form) {
+                $form->update([
+                    'value' => $request->{$form->kode_isian},
+                ]);
+            }
+
+            foreach ($permohonan->kelengkapanPermohonan as $kelengkapan) {
+                $kelengkapan->update([
+                    'value' => $request->{$kelengkapan->kode_isian},
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Permohonan berhasil diubah');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function permohonanTable(Request $request)
@@ -92,8 +173,17 @@ class PermohonanController extends Controller
             $records = $query
                 ->get()
                 ->map(function ($permohonan) {
+                    $action = '';
+
+                    if (in_array($permohonan->status, [
+                        StatusPermohonanEnum::PERMOHONAN_BARU->value,
+                        StatusPermohonanEnum::VERIFIKASI->value,
+                        StatusPermohonanEnum::VERIFIKASI_ULANG->value,
+                    ])) {
+                        $action .= '<a href="' . route('admin.permohonan.edit', $permohonan->id) . '"><i class="isax-bold isax-edit me-2"></i></a>';
+                    }
                     // $action = '<a href="' . route('admin.jenis-izin.show', $permohonan->id) . '" class="btn btn-sm btn-primary"><i class="isax isax-trash"></i></a>';
-                    $action = '<a href="' . route('admin.permohonan.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
+                    $action .= '<a href="' . route('admin.permohonan.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
                     // $action .= '<a href="#"><i class="isax-bold isax-trash"></i></a>';
                     return [
                         'nama_jenis_izin' => $permohonan->nama_jenis_izin,
