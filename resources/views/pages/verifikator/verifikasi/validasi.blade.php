@@ -591,13 +591,6 @@
 
         function confirmSubmission(event) {
             event.preventDefault();
-            // auto numeric handle unformatOnSave
-            const pajak_reklame = AutoNumeric.getAutoNumericElement('#PAJAK_REKLAME');
-            if (pajak_reklame) {
-                pajak_reklame.update({
-                    unformatOnSubmit: true
-                });
-            }
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda tidak akan dapat mengembalikan ini!",
@@ -608,6 +601,11 @@
                 confirmButtonText: 'Ya, simpan!'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Replace #PAJAK_REKLAME Rp. 200.000,00 to 200000
+                    const pajakReklame = $('input[name="PAJAK_REKLAME"]').val();
+                    if (pajakReklame) {
+                        $('input[name="PAJAK_REKLAME"]').val(pajakReklame.replace(/[^0-9]/g, ''));
+                    }
                     event.target.closest('form').submit();
                 }
             });
