@@ -591,6 +591,13 @@
 
         function confirmSubmission(event) {
             event.preventDefault();
+            // auto numeric handle unformatOnSave
+            const pajak_reklame = AutoNumeric.getAutoNumericElement('#PAJAK_REKLAME');
+            if (pajak_reklame) {
+                pajak_reklame.update({
+                    unformatOnSubmit: true
+                });
+            }
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda tidak akan dapat mengembalikan ini!",
