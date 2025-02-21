@@ -601,10 +601,10 @@
                 confirmButtonText: 'Ya, simpan!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Replace #PAJAK_REKLAME Rp. 200.000,00 to 200000
+                    // Replace #PAJAK_REKLAME Rp. 200.000,00 to 200000,00
                     const pajakReklame = $('input[name="PAJAK_REKLAME"]').val();
                     if (pajakReklame) {
-                        $('input[name="PAJAK_REKLAME"]').val(pajakReklame.replace(/[^0-9]/g, ''));
+                        $('input[name="PAJAK_REKLAME"]').val(pajakReklame.replace(/[^0-9,]/g, '').replace(/,/g, '.'));
                     }
                     event.target.closest('form').submit();
                 }
