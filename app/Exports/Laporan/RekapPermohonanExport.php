@@ -63,14 +63,14 @@ class RekapPermohonanExport implements FromCollection, WithMapping, ShouldAutoSi
     public function map($permohonan): array
     {
         return [
-            $permohonan->user->name,
+            $permohonan->nama,
             $permohonan->jenisIzin->nama,
             $permohonan->nomor_registrasi,
             Carbon::parse($permohonan->pengajuan_at)->isoFormat('D MMMM Y'),
             $permohonan->user->email,
             $permohonan->memohon_untuk,
             $permohonan->user->telepon,
-            $permohonan->user->nik,
+            $permohonan->nik,
             $permohonan->formPermohonan->where('kode_isian', 'NO_STR')->first()?->value,
             $permohonan->formPermohonan->where('kode_isian', 'ALAMAT')->first()?->value,
             $permohonan->formPermohonan->where('kode_isian', 'PRAKTIK_KE')->first()?->value,
