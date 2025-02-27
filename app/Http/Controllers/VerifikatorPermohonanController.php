@@ -389,7 +389,7 @@ class VerifikatorPermohonanController extends Controller
         $request->validate([
             // vaidate berkas_key us  surat_rekomendasi
             'berkas_key' => 'required|in:surat_rekomendasi',
-            'berkas' => 'required|file|mimes:pdf|max:2048',
+            'berkas' => 'required|file|mimes:pdf|max:5000',
         ]);
 
         if ($permohonan->jenis_izin_id == 9) {
