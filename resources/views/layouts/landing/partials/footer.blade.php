@@ -65,7 +65,7 @@
         <h5 class="text-center">Dinas Penanaman Modal dan Pelayanan<br/>Terpadu Satu Pintu Pemerintah Kabupaten Buleleng</h5>
         <div class="d-flex align-items-center gap-1">
             <i class="isax isax-location"></i>
-            <span>Lantai III Pasar Banyuasri, Kelurahan Banyuarsi, Kecamatan Buleleng</span>
+            <span>Lantai III Pasar Banyuasri, Kelurahan Banyuasri, Kecamatan Buleleng</span>
         </div>
         <div class="d-flex align-items-center gap-1">
             <i class="isax isax-call"></i>

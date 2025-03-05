@@ -52,7 +52,7 @@ class DashboardController extends Controller
             ));
         } else {
             auth()->logout();
-            return redirect()->route('login')->with('error', 'Anda tidak memiliki akses, silahkan login kembali');
+            return redirect()->route('login.index')->with('error', 'Anda tidak memiliki akses, silahkan login kembali');
         }
     }
 }
