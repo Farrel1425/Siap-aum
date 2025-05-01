@@ -27,7 +27,7 @@ class LaporanService
     {
         // Query data laporan permohonan bulanan
         return KategoriIzin::with(['sektorIzin.jenisIzin.permohonan' => function ($query) use ($tahun) {
-            $query->whereYear('created_at', $tahun)->where('status', App\Enums\PermohonanStatusEnum::SELESAI->value);
+            $query->whereYear('created_at', $tahun)->where('status', App\Enums\StatusPermohonanEnum::SELESAI->value);
         }])
             ->whereHas('sektorIzin.jenisIzin')
             ->get()
