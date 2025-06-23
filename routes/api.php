@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\OpenApi\AuthenticationController as OpenApiAuthenticationController;
 use App\Http\Controllers\OpenApi\StatistikController;
 use App\Http\Controllers\Skm\SkmController;
+use App\Http\Controllers\Skm\TamuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,4 +55,7 @@ Route::prefix('skm')->middleware(['auth.skm'])->group(function () {
     Route::get('/jenis-kelamin', [SkmController::class, 'jenisKelamin']);
     Route::get('/group-layanan-skm', [SkmController::class, 'groupLayananSkm']);
     Route::post('/survey-layanan', [SkmController::class, 'surveyLayanan']);
+
+    // Tamu
+    Route::post('/tamu', [TamuController::class, 'store']);
 });
