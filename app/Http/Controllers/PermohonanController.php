@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\StatusPermohonanEnum;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
-use App\Services\PermohonanService;
 use Illuminate\Http\Request;
+use App\Enums\StatusPermohonanEnum;
+use App\Services\PermohonanService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class PermohonanController extends Controller
 {
