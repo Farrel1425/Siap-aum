@@ -46,7 +46,8 @@ class PermohonanController extends Controller
     {
         $permohonan = Permohonan::with([
             'formPermohonan',
-            'kelengkapanPermohonan'
+            'kelengkapanPermohonan',
+            'berkasPermohonan',
         ])->findOrFail($id);
 
         if (!in_array($permohonan->status, [
@@ -209,5 +210,51 @@ class PermohonanController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    public function storeBerkas(Request $request)
+    {
+        $request->validate([
+            'berkas' => 'required|file|mimes:pdf',
+            'berkas_key' => 'required',
+        ]);
+
+        // validate max berkas 5mb
+        if ($request->file('berkas')->getSize() > 5000000) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ukuran berkas maksimal 5MB'
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $permohonan = Permohonan::find($request->permohonan);
+            $berkas_permohonan = $permohonan->berkasPermohonan()->with('validasiBerkas')->find($request->berkas_key);
+            if (!$berkas_permohonan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kode berkas yang anda upload tidak ditemukan'
+                ]);
+            }
+            $berkas = $request->file('berkas');
+            $berkas_path = $berkas->store('public/berkas_permohonan');
+            $berkas_permohonan->update([
+                'filepath' => $berkas_path
+            ]);
+            $berkas_permohonan->validasiBerkas()->where('status', 'revisi')->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kegagalan sistem, silahkan hubungi administrator'
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Berkas berhasil diunggah'
+        ]);
     }
 }

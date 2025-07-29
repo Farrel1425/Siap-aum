@@ -82,6 +82,17 @@
                                                    type="{{ $kelengkapan_permohonan->tipe }}"
                                                    value="{{ old($kelengkapan_permohonan->kode_isian, $kelengkapan_permohonan->value) }}" />
                 @endforeach
+                <h5 class="mt-4">Upload Berkas Permohonan</h5>
+                <p class="text-xsm mb-2">Pastikan size berkas yang diunggah tidak melebihi 5MB</p>
+                @foreach ($permohonan->berkasPermohonan as $berkasPermohonan)
+                    <x-dashboard.input-inline-file-upload :required="$berkasPermohonan->is_required"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $berkasPermohonan->filepath ? Storage::url($berkasPermohonan->filepath) : '' }}"
+                                                          label="{{ $berkasPermohonan->nama }}"
+                                                          name="{{ $berkasPermohonan->id }}"
+                                                          uploadUrl="{{ route('admin.permohonan.store-berkas', $permohonan->id) }}" />
+                @endforeach
                 <div class="mt-4 mb-4">
                     <button class="d-block btn w-100 btn-primary">
                         <i class="isax isax-tick-circle me-2"></i> Simpan

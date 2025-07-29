@@ -210,6 +210,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{id}', [PermohonanController::class, 'show'])->name('show');
                 Route::get('/edit/{id}', [PermohonanController::class, 'edit'])->name('edit');
                 Route::put('/{id}', [PermohonanController::class, 'update'])->name('update');
+
+                Route::post('/store-berkas/{permohonan}', [PermohonanController::class, 'storeBerkas'])->name('store-berkas');
             });
 
             // Master Data
