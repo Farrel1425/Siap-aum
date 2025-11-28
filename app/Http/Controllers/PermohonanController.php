@@ -181,7 +181,7 @@ class PermohonanController extends Controller
                     }
                     // $action = '<a href="' . route('admin.jenis-izin.show', $permohonan->id) . '" class="btn btn-sm btn-primary"><i class="isax isax-trash"></i></a>';
                     $action .= '<a href="' . route('admin.permohonan.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
-                    // $action .= '<a href="#"><i class="isax-bold isax-trash"></i></a>';
+                    $action .= '<button data-id="' . $permohonan->id . '" class="btn-delete-permohonan"><i class="isax-bold isax-trash"></i></button>';
                     return [
                         'nama_jenis_izin' => $permohonan->nama_jenis_izin,
                         'nomor_registrasi' => $permohonan->nomor_registrasi,
@@ -211,6 +211,24 @@ class PermohonanController extends Controller
             return $permohonan_service->downloadIzinTerbit($permohonan, auth()->user());
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $permohonan = Permohonan::findOrFail($id);
+            $permohonan->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Permohonan berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus permohonan'
+            ], 500);
         }
     }
 

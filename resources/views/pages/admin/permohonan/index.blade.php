@@ -156,6 +156,55 @@
             $('#jenis_izin_id').on('change', function() {
                 $('#permohonan-table').DataTable().ajax.reload();
             });
+
+            // Delete permohonan with SweetAlert confirmation
+            $(document).on('click', '.btn-delete-permohonan', function() {
+                const permohonanId = $(this).data('id');
+                
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Data permohonan akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/admin/permohonan/${permohonanId}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Terhapus!',
+                                        response.message,
+                                        'success'
+                                    );
+                                    $('#permohonan-table').DataTable().ajax.reload();
+                                } else {
+                                    Swal.fire(
+                                        'Gagal!',
+                                        response.message,
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function() {
+                                Swal.fire(
+                                    'Error!',
+                                    'Terjadi kesalahan saat menghapus data',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endpush

@@ -210,6 +210,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{id}', [PermohonanController::class, 'show'])->name('show');
                 Route::get('/edit/{id}', [PermohonanController::class, 'edit'])->name('edit');
                 Route::put('/{id}', [PermohonanController::class, 'update'])->name('update');
+                Route::delete('/{id}', [PermohonanController::class, 'destroy'])->name('destroy');
 
                 Route::post('/store-berkas/{permohonan}', [PermohonanController::class, 'storeBerkas'])->name('store-berkas');
             });

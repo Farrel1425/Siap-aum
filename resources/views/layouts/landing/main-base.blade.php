@@ -47,7 +47,7 @@
         </div>
     </div>
     <a class="whatsapp-float"
-       href="https://wa.me/6281330999827"
+       href="https://wa.me/6281330604350"
        target="_blank">
         <svg height="80"
              viewBox="0 0 48 48"
