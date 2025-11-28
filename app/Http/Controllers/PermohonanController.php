@@ -181,7 +181,7 @@ class PermohonanController extends Controller
                     }
                     // $action = '<a href="' . route('admin.jenis-izin.show', $permohonan->id) . '" class="btn btn-sm btn-primary"><i class="isax isax-trash"></i></a>';
                     $action .= '<a href="' . route('admin.permohonan.show', $permohonan->id) . '"><i class="isax-bold isax-eye"></i></a>';
-                    $action .= '<button data-id="' . $permohonan->id . '" class="btn-delete-permohonan"><i class="isax-bold isax-trash"></i></button>';
+                    $action .= '<button data-id="' . $permohonan->id . '" class="btn btn-delete-permohonan"><i class="isax-bold isax-trash"></i></button>';
                     return [
                         'nama_jenis_izin' => $permohonan->nama_jenis_izin,
                         'nomor_registrasi' => $permohonan->nomor_registrasi,
