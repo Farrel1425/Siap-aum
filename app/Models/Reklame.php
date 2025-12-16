@@ -21,6 +21,12 @@ class Reklame extends Model
         'skpd_filepath',
         'bukti_bayar_filepath',
         'bukti_bayar_user_id',
+        'is_bongkar',
+    ];
+
+    protected $casts = [
+        'is_from_sireko' => 'boolean',
+        'is_bongkar' => 'boolean',
     ];
 
     public function registrasiReklame()

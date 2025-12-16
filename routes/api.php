@@ -32,6 +32,16 @@ Route::middleware(['auth:sanctum', 'role:inputer'])->group(function () {
     Route::get('/reklame/{id}', [ReklameController::class, 'show']);
     Route::post('/reklame', [ReklameController::class, 'initReklame']);
     Route::post('/reklame/{id}', [ReklameController::class, 'storeReklame']);
+
+    // Syarat Reklame
+    Route::get('/syarat-reklame/area-pemasangan', [ReklameController::class, 'getSyaratAreaPemasangan']);
+    Route::get('/syarat-reklame/jenis-reklame', [ReklameController::class, 'getSyaratJenisReklame']);
+
+    // addon
+    Route::get('/permohonan-reklame', [ReklameController::class, 'getPermohonanReklame']);
+    Route::get('/permohonan-reklame/koordinat', [ReklameController::class, 'getKoordinat']);
+    Route::get('/permohonan-reklame/{id}', [ReklameController::class, 'getPermohonanReklameById']);
+    Route::post('/permohonan-reklame/{id}/bongkar', [ReklameController::class, 'storeBongkar']);
 });
 
 // OPEN API

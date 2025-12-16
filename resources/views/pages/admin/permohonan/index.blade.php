@@ -160,7 +160,7 @@
             // Delete permohonan with SweetAlert confirmation
             $(document).on('click', '.btn-delete-permohonan', function() {
                 const permohonanId = $(this).data('id');
-                
+
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
                     text: "Data permohonan akan dihapus secara permanen!",
