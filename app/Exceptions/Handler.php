@@ -40,6 +40,15 @@ class Handler extends ExceptionHandler
                 return;
             }
 
+            if($request->is('api/*')) {
+                // rate limiting error
+                if($e instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) {
+                    return ResponseFormatter::error([
+                        'message' => 'Too many requests. Please try again later. Maximum 60 request per minute.'
+                    ], 'Too Many Requests', 429);
+                }
+            }
+
             if ($request->is('api/*')) {
                 return ResponseFormatter::error([
                     'message' => 'Internal server error'
