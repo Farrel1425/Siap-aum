@@ -190,6 +190,8 @@ class ReklameController extends Controller
             'status_izin' => 'sometimes|in:belum,pending,selesai',
             'status_bongkar' => 'sometimes|in:belum,sudah',
             'days_to_bongkar' => 'sometimes|integer|min:1',
+            'no_reg' => 'sometimes|string',
+            'nama_wajib_pajak' => 'sometimes|string',
         ]);
 
         // $reklame = Reklame::whereHas('permohonan')->get();
@@ -238,6 +240,23 @@ class ReklameController extends Controller
                     $q2->where('kode_isian', 'TGL_AKHIR')
                         ->whereDate('value', '<=', $target_date)
                         ->whereDate('value', '>=', Carbon::now()->format('Y-m-d'));
+                });
+            });
+        }
+
+        if ($request->has('no_reg')) {
+            $no_reg = $request->input('no_reg');
+            $query->whereHas('permohonan', function ($q) use ($no_reg) {
+                $q->where('nomor_registrasi', 'like', '%' . $no_reg . '%');
+            });
+        }
+
+        if ($request->has('nama_wajib_pajak')) {
+            $nama_wajib_pajak = $request->input('nama_wajib_pajak');
+            $query->whereHas('permohonan', function ($q) use ($nama_wajib_pajak) {
+                $q->whereHas('formPermohonan', function ($q2) use ($nama_wajib_pajak) {
+                    $q2->where('kode_isian', 'NAMA_PERUSAHAAN')
+                        ->where('value', 'like', '%' . $nama_wajib_pajak . '%');
                 });
             });
         }
