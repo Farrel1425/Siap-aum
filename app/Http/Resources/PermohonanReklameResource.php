@@ -38,7 +38,7 @@ class PermohonanReklameResource extends JsonResource
         return [
             'id' => $this->id,
             'permohonan_id' => $this->permohonan_id,
-            'nomor_registrasi' => $this->registrasiReklame?->nomor_registrasi,
+            'nomor_registrasi' => $this->registrasiReklame?->nomor_registrasi ?? $this->permohonan?->nomor_registrasi,
             'jenis_reklame' => $this->permohonan?->formPermohonan?->where('kode_isian', 'JENIS_REKLAME')->first()?->value,
             'tanggal_akhir_izin' => $this->permohonan?->formPermohonan?->where('kode_isian', 'TGL_AKHIR')->first()?->value ? Carbon::parse($this->permohonan?->formPermohonan?->where('kode_isian', 'TGL_AKHIR')->first()?->value)->format('Y-m-d') : null,
             'tempat_pemasangan' => $this->permohonan?->formPermohonan?->where('kode_isian', 'LOKASI')->first()?->value,
