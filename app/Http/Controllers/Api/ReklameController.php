@@ -187,7 +187,7 @@ class ReklameController extends Controller
     {
         $request->validate([
             'per_page' => 'sometimes|integer|min:1',
-            'status_izin' => 'sometimes|in:belum,pending,selesai',
+            'status_izin' => 'sometimes|in:belum,pending,selesai,expired',
             'status_bongkar' => 'sometimes|in:belum,sudah',
             'days_to_bongkar' => 'sometimes|integer|min:1',
             'no_reg' => 'sometimes|string',
@@ -218,6 +218,13 @@ class ReklameController extends Controller
                 $query->whereHas('permohonan', function ($q) {
                     $q->where('status', 'selesai')
                         ->orWhere('is_expired', false);
+                });
+            }elseif ($status_izin === 'expired') {
+                $query->whereHas('permohonan', function ($q) {
+                    $q->whereHas('formPermohonan', function ($q2) {
+                        $q2->where('kode_isian', 'TGL_AKHIR')
+                            ->whereDate('value', '<', Carbon::now()->format('Y-m-d'));
+                    });
                 });
             }
         }
