@@ -217,7 +217,7 @@ class ReklameController extends Controller
             } elseif ($status_izin === 'selesai') {
                 $query->whereHas('permohonan', function ($q) {
                     $q->where('status', 'selesai')
-                        ->orWhere('is_expired', false);
+                        ->where('is_expired', false);
                 });
             }elseif ($status_izin === 'expired') {
                 $query->whereHas('permohonan', function ($q) {
