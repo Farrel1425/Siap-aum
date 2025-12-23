@@ -67,11 +67,21 @@ window.uploadBerkasPermohonan = function(uploadUrl, csrf_token, berkas_key) {
         },
         error: function (data) {
             console.log('Error:', data);
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: data.responseJSON.message,
-            });
+            
+            // Handle 413 Payload Too Large error
+            if (data.status === 413) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Terlalu Besar',
+                    text: 'Ukuran file melebihi batas maksimum yang diizinkan. Pastikan ukuran file tidak melebihi 5MB.',
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.responseJSON?.message || 'Terjadi kesalahan saat mengunggah berkas',
+                });
+            }
         }
     });
 }
