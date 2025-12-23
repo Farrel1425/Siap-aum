@@ -94,13 +94,13 @@
                                                           uploadUrl="{{ route('admin.permohonan.store-berkas', $permohonan->id) }}" />
                 @endforeach
 
-                @if ($permohonan->jenis_izin_id == 2 && $permohonan->reklame)
+                @if ($permohonan->jenis_izin_id == 2)
                     <h5 class="mt-4">Bukti Bayar SKPD Pajak Reklame</h5>
                     <x-dashboard.input-inline-file-upload :is_show_badge="false" class="bg-white p-2 mx-1 mb-3 text-xsm"
                         class_input="text-xsm"
                         downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
                         label="Bukti Bayar SKPD" name="bukti_bayar"
-                        uploadUrl="{{ route('public.permohonan.upload-bukti-bayar-reklame', $permohonan->id) }}" />
+                        uploadUrl="{{ route('admin.permohonan.upload-bukti-bayar-reklame', $permohonan->id) }}" />
                 @endif
 
                 <div class="mt-4 mb-4">
