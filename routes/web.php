@@ -213,7 +213,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/{id}', [PermohonanController::class, 'destroy'])->name('destroy');
 
                 Route::post('/store-berkas/{permohonan}', [PermohonanController::class, 'storeBerkas'])->name('store-berkas');
-            });
+                // store berkas bukti bayar reklame
+                Route::post('/upload-bukti-bayar-reklame/{permohonan}', [PermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
 
             // Master Data
             Route::prefix('master-data')->name('master-data.')->group(function () {

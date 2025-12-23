@@ -277,4 +277,47 @@ class PermohonanController extends Controller
             'message' => 'Berkas berhasil diunggah'
         ]);
     }
+
+    public function uploadBuktiBayarReklame(Request $request, $permohonan)
+    {
+        $request->validate([
+            'bukti_bayar' => 'required|file|mimes:pdf,jpg,jpeg,png',
+        ]);
+
+        // validate max berkas 5mb
+        if ($request->file('bukti_bayar')->getSize() > 5000000) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ukuran berkas maksimal 5MB'
+            ]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $permohonan = Permohonan::with('reklame')->find($permohonan);
+            if (!$permohonan->reklame) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data reklame tidak ditemukan'
+                ]);
+            }
+            $berkas = $request->file('bukti_bayar');
+            $berkas_path = $berkas->store('public/bukti_bayar_reklame');
+            $permohonan->reklame->update([
+                'bukti_bayar_filepath' => $berkas_path
+            ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::channel('error')->error($e->getFile() . $e->getLine() . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kegagalan sistem, silahkan hubungi administrator'
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Bukti bayar berhasil diunggah'
+        ]);
+    }
 }
