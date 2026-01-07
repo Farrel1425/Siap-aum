@@ -281,11 +281,13 @@ class PermohonanController extends Controller
     public function uploadBuktiBayarReklame(Request $request, $permohonan)
     {
         $request->validate([
-            'bukti_bayar' => 'required|file|mimes:pdf,jpg,jpeg,png',
+            // 'bukti_bayar' => 'required|file|mimes:pdf,jpg,jpeg,png',
+            'berkas_key' => 'required|in:bukti_bayar',
+            'berkas' => 'required|file|mimes:pdf,jpg,jpeg,png',
         ]);
 
         // validate max berkas 5mb
-        if ($request->file('bukti_bayar')->getSize() > 5000000) {
+        if ($request->file('berkas')->getSize() > 5000000) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ukuran berkas maksimal 5MB'
@@ -301,7 +303,7 @@ class PermohonanController extends Controller
                     'message' => 'Data reklame tidak ditemukan'
                 ]);
             }
-            $berkas = $request->file('bukti_bayar');
+            $berkas = $request->file('berkas');
             $berkas_path = $berkas->store('public/bukti_bayar_reklame');
             $permohonan->reklame->update([
                 'bukti_bayar_filepath' => $berkas_path
