@@ -5,7 +5,7 @@ echo "🚀 Memulai Deployment..."
 
 # 1. Git Pull
 # Pastikan folder .git juga bisa dibaca oleh www-data atau gunakan git config global safe directory
-git pull origin main
+git pull origin
 
 # 2. Migrasi
 php artisan migrate --force
