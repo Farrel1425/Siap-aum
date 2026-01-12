@@ -97,6 +97,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['is_filled_data_register'])->group(function () {
         // Dashboard
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        
+        // Admin Deploy
+        Route::middleware(['role:admin'])->group(function () {
+            Route::post('admin/deploy', [DashboardController::class, 'deploy'])->name('admin.deploy');
+        });
+        
         // All Role
         Route::get('download-izin-terbit/{permohonan}/{filepath}', [PermohonanController::class, 'downloadIzinTerbit'])->name('download-izin-terbit');
 
@@ -215,6 +221,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/store-berkas/{permohonan}', [PermohonanController::class, 'storeBerkas'])->name('store-berkas');
                 // store berkas bukti bayar reklame
                 Route::post('/upload-bukti-bayar-reklame/{permohonan}', [PermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
+                Route::post('/upload-skpd/{permohonan}', [PermohonanController::class, 'uploadSkpd'])->name('upload-skpd');
             });
 
             // Master Data

@@ -5,8 +5,13 @@
     <div class="page-heading">
         <div class="page-title mb-4">
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-md-6">
                     <h3>Dashboard</h3>
+                </div>
+                <div class="col-12 col-md-6 d-flex justify-content-end align-items-center">
+                    <button type="button" class="btn btn-primary" id="deployBtn">
+                        <i class="isax-bold isax-refresh-2 me-2"></i>Update Aplikasi
+                    </button>
                 </div>
             </div>
         </div>
@@ -73,5 +78,40 @@
 @endsection
 
 @push('scripts')
-    <script></script>
+    <script>
+        document.getElementById('deployBtn').addEventListener('click', function() {
+            if (!confirm('Apakah Anda yakin ingin memperbarui aplikasi? Proses ini akan mengambil kode terbaru dari repository.')) {
+                return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memperbarui...';
+
+            fetch('{{ route("admin.deploy") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    location.reload();
+                } else {
+                    alert('❌ ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="isax-bold isax-refresh-2 me-2"></i>Update Aplikasi';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Terjadi kesalahan saat memperbarui aplikasi');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="isax-bold isax-refresh-2 me-2"></i>Update Aplikasi';
+            });
+        });
+    </script>
 @endpush
