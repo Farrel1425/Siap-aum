@@ -96,11 +96,20 @@
 
                 @if ($permohonan->reklame)
                     <h5 class="mt-4">Bukti Bayar SKPD Pajak Reklame</h5>
-                    <x-dashboard.input-inline-file-upload :is_show_badge="false" class="bg-white p-2 mx-1 mb-3 text-xsm"
-                        class_input="text-xsm"
-                        downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
-                        label="Bukti Bayar SKPD" name="bukti_bayar"
-                        uploadUrl="{{ route('admin.permohonan.upload-bukti-bayar-reklame', $permohonan->id) }}" />
+                    <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->reklame?->skpd_filepath ? Storage::url($permohonan->reklame->skpd_filepath) : '' }}"
+                                                          label="SKPD"
+                                                          name="skpd"
+                                                          uploadUrl="{{ route('admin.permohonan.upload-skpd', $permohonan->id) }}" />
+                    <x-dashboard.input-inline-file-upload :is_show_badge="false"
+                                                          class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                          class_input="text-xsm"
+                                                          downloadUrl="{{ $permohonan->reklame?->bukti_bayar_filepath ? Storage::url($permohonan->reklame->bukti_bayar_filepath) : '' }}"
+                                                          label="Bukti Bayar SKPD"
+                                                          name="bukti_bayar"
+                                                          uploadUrl="{{ route('admin.permohonan.upload-bukti-bayar-reklame', $permohonan->id) }}" />
                 @endif
 
                 <div class="mt-4 mb-4">

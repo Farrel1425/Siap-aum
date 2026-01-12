@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
+use App\Notifications\PembayaranPajakReklameToPemohonNotication;
 
 class PermohonanController extends Controller
 {
@@ -275,6 +276,31 @@ class PermohonanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berkas berhasil diunggah'
+        ]);
+    }
+
+    public function uploadSkpd(Request $request, Permohonan $permohonan)
+    {
+        $request->validate([
+            'berkas_key' => 'required|in:skpd',
+            'berkas' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        if ($permohonan->jenis_izin_id != 9) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Izin ini tidak memerlukan SKPD',
+            ]);
+        }
+
+        $permohonan->reklame->skpd_filepath = $request->file('berkas')->store('public/permohonan/reklame/skpd');
+        $permohonan->reklame->save();
+
+        $permohonan->user->notify(new PembayaranPajakReklameToPemohonNotication($permohonan));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SKPD berhasil diunggah',
         ]);
     }
 
