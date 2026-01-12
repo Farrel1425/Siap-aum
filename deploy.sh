@@ -3,6 +3,7 @@ set -e
 
 echo "🚀 Memulai Deployment..."
 
+cd "$(dirname "$0")"
 # 1. Git Pull
 # Pastikan folder .git juga bisa dibaca oleh www-data atau gunakan git config global safe directory
 git pull origin
