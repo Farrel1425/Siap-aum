@@ -98,6 +98,12 @@
                                href="{{ route('admin.laporan.survey-layanan.index') }}">
                                 Survey Layanan</a>
                         </li>
+                        <li
+                            class="submenu-item {{ request()->routeIs('admin.laporan.buku-tamu.*') ? 'active' : '' }}">
+                            <a class="submenu-link"
+                               href="{{ route('admin.laporan.buku-tamu.index') }}">
+                                Buku Tamu</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="sidebar-item has-sub {{ request()->routeIs('admin.log-sistem.*') ? 'active' : '' }}">

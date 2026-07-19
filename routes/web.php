@@ -340,6 +340,16 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/', [LaporanController::class, 'surveyLayananIndex'])->name('index');
                     Route::post('/export', [LaporanController::class, 'surveyLayananExport'])->name('export');
                 });
+
+                // Buku Tamu
+                Route::prefix('buku-tamu')->name('buku-tamu.')->group(function () {
+                    // Table
+                    Route::get('/table', [LaporanController::class, 'bukuTamuTable'])->name('table');
+
+                    // Resource
+                    Route::get('/', [LaporanController::class, 'bukuTamuIndex'])->name('index');
+                    Route::post('/export', [LaporanController::class, 'bukuTamuExport'])->name('export');
+                });
             });
 
             // Log Sistem
