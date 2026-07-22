@@ -57,6 +57,25 @@
             </div>
         </section>
         <section class="my-4">
+            <div class="d-flex justify-content-end mb-3">
+                <form action="{{ route('home') }}"
+                      class="summary-year-filter"
+                      method="GET">
+                    <label class="form-label mb-1"
+                           for="tahun">Tahun</label>
+                    <select class="form-select"
+                            id="tahun"
+                            name="tahun"
+                            onchange="this.form.submit()">
+                        @foreach ($tahun_options as $tahun_option)
+                            <option value="{{ $tahun_option }}"
+                                    @selected($tahun_option == $tahun)>
+                                {{ $tahun_option }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
             <div class="row g-4">
                 <div class="col-6 col-lg-3">
                     <x-landing.total-summary icon="profile-circle"

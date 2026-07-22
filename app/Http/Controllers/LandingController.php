@@ -16,25 +16,47 @@ class LandingController extends Controller
 {
     public function index(Request $request, LaporanService $laporan_srvice)
     {
-        $user_count = User::whereIn('role_id', [
-            RoleEnum::PUBLIC->value,
-        ])->count();
-        $permohonan_count = Cache::remember('permohonan_count', 60, function () {
+        $current_year = now()->year;
+        $requested_year = (int) $request->query('tahun', $current_year);
+        $tahun = $requested_year >= 2000 && $requested_year <= $current_year ? $requested_year : $current_year;
+        $earliest_year = collect([
+            User::whereIn('role_id', [
+                RoleEnum::PUBLIC->value,
+            ])->min('created_at'),
+            Permohonan::min('created_at'),
+        ])
+            ->filter()
+            ->map(fn ($date) => \Illuminate\Support\Carbon::parse($date)->year)
+            ->min() ?? $current_year;
+        $tahun_options = range($current_year, min($earliest_year, $tahun));
+
+        $user_count = Cache::remember('user_count_' . $tahun, 60, function () use ($tahun) {
+            return User::whereIn('role_id', [
+                RoleEnum::PUBLIC->value,
+            ])
+                ->whereYear('created_at', $tahun)
+                ->count();
+        });
+        $permohonan_count = Cache::remember('permohonan_count_' . $tahun, 60, function () use ($tahun) {
             return Permohonan::whereIn('status', [
                 StatusPermohonanEnum::PERMOHONAN_BARU->value,
                 StatusPermohonanEnum::VERIFIKASI_ULANG->value,
                 StatusPermohonanEnum::VERIFIKASI->value,
                 StatusPermohonanEnum::REVISI->value,
                 StatusPermohonanEnum::SELESAI->value,
-            ])->count();
+            ])
+                ->whereYear('created_at', $tahun)
+                ->count();
         });
-        $permohonan_proses_count = Cache::remember('permohonan_proses_count', 60, function () {
+        $permohonan_proses_count = Cache::remember('permohonan_proses_count_' . $tahun, 60, function () use ($tahun) {
             return Permohonan::whereIn('status', [
                 StatusPermohonanEnum::PERMOHONAN_BARU->value,
                 StatusPermohonanEnum::VERIFIKASI_ULANG->value,
                 StatusPermohonanEnum::VERIFIKASI->value,
                 StatusPermohonanEnum::REVISI->value,
-            ])->count();
+            ])
+                ->whereYear('created_at', $tahun)
+                ->count();
         });
         $permohonan_selesai_count = $permohonan_count - $permohonan_proses_count;
 
@@ -44,7 +66,9 @@ class LandingController extends Controller
             'permohonan_count',
             'permohonan_proses_count',
             'permohonan_selesai_count',
-            'laporan_survey'
+            'laporan_survey',
+            'tahun',
+            'tahun_options'
         ));
     }
 
