@@ -146,9 +146,9 @@ class SurveyController extends Controller
             ->whereHas('kuesionerJawaban')
             ->first();
 
-        if ($kuesionerPertanyaan) {
-            return redirect()->back()->with('error', 'Data tidak dapat diubah karena sudah ada data survey yang terisi');
-        }
+        // if ($kuesionerPertanyaan) {
+        //     return redirect()->back()->with('error', 'Data tidak dapat diubah karena sudah ada data survey yang terisi');
+        // }
 
         DB::beginTransaction();
         try {
