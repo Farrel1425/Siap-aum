@@ -176,30 +176,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group bg-white p-2">
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <label class="text-primary col-form-label fw-bold text-xsm">Ijin Terbit</label>
-                        @if ($permohonan->is_ttd)
-                            <span class="badge bg-success fw-normal"><i class="isax isax-check"></i>
-                                Sudah ditandatangani</span>
-                        @else
-                            <span class="badge bg-danger fw-normal"><i class="isax isax-warning-2"></i>
-                                Belum ditandatangani</span>
-                        @endif
-                    </div>
-                    <div class="offset-5 col-2">
-                        @if ($permohonan->template_surat_filepath)
-                            <a class="btn btn-outline-primary text-xsm d-block w-100"
-                               href="{{ route('download-izin-terbit', ['permohonan'=>$permohonan->id, 'filepath'=>md5($permohonan->template_surat_filepath ?? 0)]) }}">
-                                <i class="isax isax-download"></i> Lihat File
-                            </a>
-                        @else
-                            <span class="badge bg-warning">Belum diunggah</span>
-                        @endif
-                    </div>
-                </div>
-            </div>
+            @include('pages.admin.permohonan.partials.izin-terbit')
         </section>
     </div>
 @endsection

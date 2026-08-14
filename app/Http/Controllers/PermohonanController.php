@@ -6,9 +6,11 @@ use App\Models\JenisIzin;
 use App\Models\Permohonan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Enums\JenisVerifikatorEnum;
 use App\Enums\StatusPermohonanEnum;
 use App\Services\PermohonanService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Notifications\PembayaranPajakReklameToPemohonNotication;
 
 class PermohonanController extends Controller
@@ -35,13 +37,15 @@ class PermohonanController extends Controller
         $form_permohonans = $permohonan_service->getListFormPermohonan($permohonan);
         $berkas_permohonans = $permohonan_service->getListBerkasPermohonan($permohonan);
         $kelengkapan_permohonans = $permohonan_service->getListKelengkapanPermohonan($permohonan);
+        $can_generate_ulang_izin_terbit = $this->canGenerateUlangIzinTerbit($permohonan);
 
         return view('pages.admin.permohonan.show', compact(
             'permohonan',
             'steps',
             'form_permohonans',
             'berkas_permohonans',
-            'kelengkapan_permohonans'
+            'kelengkapan_permohonans',
+            'can_generate_ulang_izin_terbit'
         ));
     }
 
@@ -62,10 +66,12 @@ class PermohonanController extends Controller
         }
 
         $steps = $permohonan_service->getStepAlurPermohonan($permohonan, true);
+        $can_generate_ulang_izin_terbit = $this->canGenerateUlangIzinTerbit($permohonan);
 
         return view('pages.admin.permohonan.edit', compact(
             'permohonan',
-            'steps'
+            'steps',
+            'can_generate_ulang_izin_terbit'
         ));
     }
 
@@ -86,6 +92,7 @@ class PermohonanController extends Controller
             'nik' => 'required|string',
             'npwp' => 'nullable|string',
             'tempat_lahir' => 'required|string',
+            'pas_foto' => 'nullable|file|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         foreach ($permohonan->formPermohonan as $form) {
@@ -114,10 +121,66 @@ class PermohonanController extends Controller
                 ]);
             }
 
+            if ($request->hasFile('pas_foto')) {
+                $old_pas_foto_filepath = $permohonan->pas_foto_filepath;
+                $pas_foto_filepath = $request->file('pas_foto')->store('public/pas_foto');
+
+                $permohonan->update([
+                    'is_pas_foto_required' => 1,
+                    'pas_foto_filepath' => $pas_foto_filepath,
+                ]);
+
+                if ($old_pas_foto_filepath) {
+                    Storage::delete($old_pas_foto_filepath);
+                }
+            }
+
             return redirect()->back()->with('success', 'Permohonan berhasil diubah');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    public function generateUlangIzinTerbit(Request $request, Permohonan $permohonan, PermohonanService $permohonan_service)
+    {
+        if (!$this->canGenerateUlangIzinTerbit($permohonan)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Izin terbit hanya dapat digenerate ulang setelah verifikator BO selesai dan sebelum permohonan selesai atau ditandatangani',
+            ], 422);
+        }
+
+        try {
+            $filepath = $permohonan_service->generateIzinTerbit($permohonan);
+            $permohonan->template_surat_filepath = $filepath;
+            $permohonan->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Izin terbit berhasil digenerate ulang',
+                'data' => [
+                    'filepath' => Storage::url($filepath),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function canGenerateUlangIzinTerbit(Permohonan $permohonan): bool
+    {
+        return $permohonan->status != StatusPermohonanEnum::SELESAI->value
+            && !$permohonan->is_ttd
+            && $permohonan->alurPermohonan()
+                ->where('jenis_verifikator', JenisVerifikatorEnum::BO->value)
+                ->exists()
+            && !$permohonan->alurPermohonan()
+                ->where('jenis_verifikator', JenisVerifikatorEnum::BO->value)
+                ->where('is_done', 0)
+                ->exists();
     }
 
     public function permohonanTable(Request $request)

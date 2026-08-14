@@ -19,7 +19,8 @@
             <x-landing.progress-stepper-bar :steps=$steps />
             <x-log-aktivitas-table :permohonan=$permohonan />
             <h5>Data Diri Pemohon</h5>
-            <form action="{{ route('admin.permohonan.update', $permohonan->id) }}",
+            <form action="{{ route('admin.permohonan.update', $permohonan->id) }}"
+                  enctype="multipart/form-data"
                   method="POST">
                 @csrf
                 @method('PUT')
@@ -61,6 +62,31 @@
                                                label="Tempat Lahir"
                                                name="tempat_lahir"
                                                value="{{ $permohonan->tempat_lahir }}" />
+                @if ($permohonan->is_pas_foto_required || $permohonan->pas_foto_filepath)
+                    <div class="form-group row align-items-center bg-white p-2 mx-1 mb-3 text-xsm">
+                        <label class="text-primary text-xsm col-form-label fw-bold col-4 col-md-3 col-lg-2"
+                               for="pas_foto">Pas Foto Saat Ini</label>
+                        <div class="col-8 col-md-9 col-lg-10">
+                            @if ($permohonan->pas_foto_filepath)
+                                <a href="{{ Storage::url($permohonan->pas_foto_filepath) }}"
+                                   target="_blank">
+                                    <img alt="Pas Foto"
+                                         class="img-thumbnail"
+                                         src="{{ Storage::url($permohonan->pas_foto_filepath) }}"
+                                         style="max-height: 180px;">
+                                </a>
+                            @else
+                                <span class="text-muted">Belum ada pas foto</span>
+                            @endif
+                        </div>
+                    </div>
+                    <x-dashboard.input-inline-file accept="image/jpeg,image/png"
+                                                   class="bg-white p-2 mx-1 mb-3 text-xsm"
+                                                   class_input="border text-xsm"
+                                                   label="Pas Foto Baru"
+                                                   name="pas_foto" />
+                    <p class="text-xsm mx-1 mb-3">Format pas foto JPG, JPEG, atau PNG. Ukuran maksimal 2MB.</p>
+                @endif
                 <h5 class="mt-4">Data Detail Permohonan</h5>
                 @foreach ($permohonan->formPermohonan as $form_permohonan)
                     <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
@@ -111,6 +137,9 @@
                                                           name="bukti_bayar"
                                                           uploadUrl="{{ route('admin.permohonan.upload-bukti-bayar-reklame', $permohonan->id) }}" />
                 @endif
+
+                <h5 class="mt-4">Ijin Terbit</h5>
+                @include('pages.admin.permohonan.partials.izin-terbit')
 
                 <div class="mt-4 mb-4">
                     <button class="d-block btn w-100 btn-primary">

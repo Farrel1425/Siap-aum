@@ -219,6 +219,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/{id}', [PermohonanController::class, 'destroy'])->name('destroy');
 
                 Route::post('/store-berkas/{permohonan}', [PermohonanController::class, 'storeBerkas'])->name('store-berkas');
+                Route::post('/generate-ulang-izin-terbit/{permohonan}', [PermohonanController::class, 'generateUlangIzinTerbit'])->name('generate-ulang-izin-terbit');
                 // store berkas bukti bayar reklame
                 Route::post('/upload-bukti-bayar-reklame/{permohonan}', [PermohonanController::class, 'uploadBuktiBayarReklame'])->name('upload-bukti-bayar-reklame');
                 Route::post('/upload-skpd/{permohonan}', [PermohonanController::class, 'uploadSkpd'])->name('upload-skpd');
