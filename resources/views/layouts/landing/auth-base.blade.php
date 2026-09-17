@@ -14,7 +14,9 @@
     <link href="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}"
           rel="shortcut icon"
           type="image/x-icon">
-    {!! ReCaptcha::htmlScriptTagJsApi() !!}
+    @if (config('recaptcha.enabled'))
+        {!! ReCaptcha::htmlScriptTagJsApi() !!}
+    @endif
     @stack('styles')
 </head>
 

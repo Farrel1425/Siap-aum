@@ -1,24 +1,4 @@
 @extends('layouts.landing.auth-base')
-
 @section('content')
-    <x-landing.hero>
-        <div class="content-header">
-            <div class="d-flex align-items-center gap-3 flex-row-reverse">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}">
-            </div>
-            <div class="text-center my-3 w-100 auth-header">
-                <h3 class="title text-main">Password Anda Telah Diganti</h3>
-                <p class="caption text-main">Password anda telah diganti tolong ingat kembali password baru anda agar hal yg sama tidak terulang. selamta menikmati aplikasi kami</p>
-                <button class="btn btn-danger d-block w-100 fw-bold"
-                        type="button">Kembali</button>
-            </div>
-        </div>
-    </x-landing.hero>
+<main class="sa-login-page"><section class="sa-login-visual"><div class="sa-login-visual__wash"></div><div class="sa-login-visual__content"><span class="sa-login-logo"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt=""></span><h1>Password berhasil<br>diperbarui</h1><p>Akun Anda kembali aman dan siap digunakan.</p></div></section><section class="sa-login-panel"><div class="sa-login-card sa-auth-status"><span class="sa-auth-status__icon"><i class="isax isax-shield-tick"></i></span><span class="sa-eyebrow"><i></i>Berhasil</span><h2>Password telah diganti</h2><p>Silakan masuk kembali menggunakan password baru Anda. Jangan membagikan password kepada siapa pun.</p><a class="sa-login-submit" href="{{ route('login.index') }}">Masuk ke SIAP AUM</a></div></section></main>
 @endsection
-
-@vite(['resources/js/pages/register.js'])

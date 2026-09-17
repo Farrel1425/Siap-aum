@@ -1,26 +1,4 @@
 @extends('layouts.landing.auth-base')
-
 @section('content')
-    <x-landing.hero showBackButton="true">
-        <div class="content-header">
-            <div class="d-flex align-items-center gap-3 flex-row-reverse">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}">
-            </div>
-            <div class="text-center my-3 w-100 auth-header">
-                <h3 class="title text-main">Verifikasi OTP</h3>
-                <p class="caption text-main">Kode Sudah dikirikan ke alamat email anda <span class="text-primary fw-bold">gevinjanitto@gmail.com</span></p>
-                <p class="text-primary fw-semibold my-4">02:32</p>
-                <x-otp-input />
-                <p class="mt-2 text-main">Belum Mendapatkan Kode? <a class="text-danger"
-                    href="{{ route('login.index') }}">Kirim Ulang</a></p>
-            </div>
-        </div>
-    </x-landing.hero>
+<main class="sa-login-page"><section class="sa-login-visual"><a class="sa-login-back" href="{{ route('login.index') }}" aria-label="Kembali"><i class="isax isax-arrow-left-2"></i></a><div class="sa-login-visual__wash"></div><div class="sa-login-visual__content"><span class="sa-login-logo"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt=""></span><h1>Verifikasi<br>email Anda</h1><p>Langkah keamanan tambahan untuk memastikan akun benar-benar milik Anda.</p></div></section><section class="sa-login-panel"><div class="sa-login-card sa-auth-otp"><div class="sa-login-card__heading"><span class="sa-eyebrow"><i></i>Kode keamanan</span><h2>Masukkan kode OTP</h2><p>Kode enam digit telah dikirimkan ke alamat email Anda.</p></div><div class="sa-otp-input-wrap"><x-otp-input /></div><p class="sa-otp-note">Kode berlaku selama <strong>02:32</strong></p><p class="sa-login-register">Belum menerima kode? <a href="#">Kirim Ulang</a></p></div></section></main>
 @endsection
-
-@vite(['resources/js/pages/register.js'])

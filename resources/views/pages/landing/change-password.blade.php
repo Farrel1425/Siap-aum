@@ -1,31 +1,4 @@
 @extends('layouts.landing.auth-base')
-
 @section('content')
-    <x-landing.hero showBackButton="true">
-        <div class="content-header">
-            <div class="d-flex align-items-center gap-3 flex-row-reverse">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}">
-            </div>
-            <div class="text-center my-3 w-100 auth-header">
-                <h3 class="title text-main">Lupa Password</h3>
-                <p class="caption text-main">Masukkan password baru Anda</p>
-                <x-landing.input-password :required=True
-                                          name="password"
-                                          placeholder="Masukkan password baru Anda" />
-                <x-landing.input-password :required=True
-                                          name="password_verify"
-                                          placeholder="Masukkan ulang password baru Anda" />
-                <button class="btn btn-danger d-block w-100 fw-bold"
-                        id="generate_otp"
-                        type="button">Ganti Password</button>
-            </div>
-        </div>
-    </x-landing.hero>
+<main class="sa-login-page"><section class="sa-login-visual"><a class="sa-login-back" href="{{ route('login.index') }}" aria-label="Kembali"><i class="isax isax-arrow-left-2"></i></a><div class="sa-login-visual__wash"></div><div class="sa-login-visual__content"><span class="sa-login-logo"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt=""></span><h1>Amankan kembali<br>akun Anda</h1><p>Buat password baru yang kuat untuk melanjutkan menggunakan SIAP AUM.</p></div></section><section class="sa-login-panel"><div class="sa-login-card"><div class="sa-login-card__heading"><span class="sa-eyebrow"><i></i>Keamanan akun</span><h2>Ganti password</h2><p>Masukkan dan konfirmasi password baru Anda.</p></div><div class="sa-login-field"><label for="password">Password baru</label><div><input id="password" name="password" type="password" placeholder="Minimal 8 karakter"><button class="btn-toggle-password isax isax-eye-slash" type="button"></button></div></div><div class="sa-login-field"><label for="password_verify">Konfirmasi password</label><div><input id="password_verify" name="password_verify" type="password" placeholder="Masukkan kembali password"><button class="btn-toggle-password isax isax-eye-slash" type="button"></button></div></div><button class="sa-login-submit" id="generate_otp" type="button">Ganti Password</button></div></section></main>
 @endsection
-
-@vite(['resources/js/pages/register.js'])

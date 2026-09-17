@@ -197,7 +197,7 @@ $('#register').click(function () {
                     text: response.message
                 });
 
-                grecaptcha.reset()
+                if (window.grecaptcha) grecaptcha.reset()
             }
         },
         error: function (response) {
@@ -208,7 +208,7 @@ $('#register').click(function () {
                 text: response?.responseJSON?.message ?? 'Terjadi kesalahan'
             });
 
-            grecaptcha.reset()
+            if (window.grecaptcha) grecaptcha.reset()
         },
     });
 });

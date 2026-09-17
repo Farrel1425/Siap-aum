@@ -14,6 +14,9 @@
  */
 return [
 
+    /* Disable explicitly for local development without configured API keys. */
+    'enabled' => env('RECAPTCHA_ENABLED', true),
+
     /**
      *
      * The site key

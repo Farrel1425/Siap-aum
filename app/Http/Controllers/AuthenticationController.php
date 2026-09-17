@@ -66,11 +66,16 @@ class AuthenticationController extends Controller
 
     public function authenticate(Request $request)
     {
-        $request->validate([
+        $rules = [
             'email' => 'required|email',
             'password' => 'required|string',
-            'g-recaptcha-response' => 'recaptcha',
-        ]);
+        ];
+
+        if (config('recaptcha.enabled')) {
+            $rules['g-recaptcha-response'] = 'recaptcha';
+        }
+
+        $request->validate($rules);
 
         if (auth()->attempt($request->only('email', 'password'))) {
             return redirect()->intended('dashboard');
@@ -85,13 +90,18 @@ class AuthenticationController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'email' => 'required|email',
             'password' => 'required|string|min:8',
             'password_verify' => 'required|same:password',
             'otp_code' => 'required|digits:6',
-            'g-recaptcha-response' => 'recaptcha',
-        ]);
+        ];
+
+        if (config('recaptcha.enabled')) {
+            $rules['g-recaptcha-response'] = 'recaptcha';
+        }
+
+        $request->validate($rules);
 
         try {
             $otp_service = new OtpService();
@@ -160,10 +170,15 @@ class AuthenticationController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        $request->validate([
+        $rules = [
             'email' => 'required|email',
-            'g-recaptcha-response' => 'recaptcha',
-        ]);
+        ];
+
+        if (config('recaptcha.enabled')) {
+            $rules['g-recaptcha-response'] = 'recaptcha';
+        }
+
+        $request->validate($rules);
 
         $user = User::where('email', $request->email)->first();
 

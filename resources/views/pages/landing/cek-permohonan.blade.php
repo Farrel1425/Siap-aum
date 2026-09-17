@@ -1,67 +1,33 @@
 @extends('layouts.landing.main-base')
 
-
 @section('content')
-    <div class="mt-5"></div>
-    <x-landing.back-button class="py-2 px-4 mt-5"
-                           label="Cek Permohonan" />
-    <div class="container mt-4">
-        <h3 class="text-center mb-3">NOMOR PENDAFTARAN</h3>
-        <form action="{{ route('cek-permohonan.store') }}"
-              class="mt-3"
-              method="POST">
+<main class="sa-public-page">
+    <header class="sa-public-hero sa-public-hero--compact">
+        <a class="sa-public-back" href="{{ route('home') }}"><i class="isax isax-arrow-left-2"></i> Kembali</a>
+        <span class="sa-eyebrow"><i></i>Lacak permohonan</span>
+        <h1>Cek status izin Anda</h1>
+        <p>Masukkan nomor registrasi untuk melihat posisi berkas dan riwayat proses permohonan.</p>
+    </header>
+    <section class="sa-track-card">
+        <form action="{{ route('cek-permohonan.store') }}" class="sa-track-form" method="POST">
             @csrf
-            <div class="row">
-                <div class="col-12 col-lg-9">
-                    <div class="form-group mb-3">
-                        <input class="form-control"
-                               id="nomor_registrasi"
-                               name="nomor_registrasi"
-                               placeholder="Masukkan Nomor Registrasi"
-                               type="text"
-                               value="{{ isset($nomor_registrasi) ? $nomor_registrasi : '' }}">
-                    </div>
-                </div>
-                <div class="col-12 col-lg-3">
-                    <button class="btn btn-primary w-100"><i class="isax isax-search-favorite"></i> Cari</button>
-                </div>
-            </div>
+            <label for="nomor_registrasi">Nomor registrasi</label>
+            <div><input id="nomor_registrasi" name="nomor_registrasi" placeholder="Contoh: REG/2026/00001" type="text" value="{{ $nomor_registrasi ?? '' }}"><button type="submit"><i class="isax isax-search-favorite"></i><span>Cari Permohonan</span></button></div>
         </form>
         @if (isset($is_found) && $is_found)
-            <div class="mb-3"></div>
-            <x-landing.progress-stepper-bar :steps="$steps" />
-            <x-log-aktivitas-table :permohonan=$permohonan />
-            <div class="mb-5">
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="No Registrasi"
-                                               name="nomor_registrasi"
-                                               readonly
-                                               value="{{ $permohonan->nomor_registrasi }}" />
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="Jenis Perijinan"
-                                               name="jenis_izin"
-                                               readonly
-                                               value="{{ $permohonan->jenisIzin->nama }}" />
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="Nama"
-                                               name="nama"
-                                               readonly
-                                               value="{{ $permohonan->nama }}" />
-                <x-dashboard.input-inline-text class="bg-white p-2 mx-1 mb-3 text-xsm"
-                                               class_input="border-0 text-end text-xsm"
-                                               label="Status"
-                                               name="status"
-                                               readonly
-                                               value="{{ $permohonan->status }}" />
+            <div class="sa-track-result">
+                <x-landing.progress-stepper-bar :steps="$steps" />
+                <x-log-aktivitas-table :permohonan=$permohonan />
+                <div class="sa-track-details">
+                    <x-dashboard.input-inline-text class="bg-white p-2 mb-3 text-xsm" class_input="border-0 text-end text-xsm" label="No Registrasi" name="nomor_registrasi" readonly value="{{ $permohonan->nomor_registrasi }}" />
+                    <x-dashboard.input-inline-text class="bg-white p-2 mb-3 text-xsm" class_input="border-0 text-end text-xsm" label="Jenis Perizinan" name="jenis_izin" readonly value="{{ $permohonan->jenisIzin->nama }}" />
+                    <x-dashboard.input-inline-text class="bg-white p-2 mb-3 text-xsm" class_input="border-0 text-end text-xsm" label="Nama" name="nama" readonly value="{{ $permohonan->nama }}" />
+                    <x-dashboard.input-inline-text class="bg-white p-2 mb-3 text-xsm" class_input="border-0 text-end text-xsm" label="Status" name="status" readonly value="{{ $permohonan->status }}" />
+                </div>
             </div>
         @elseif(isset($is_found))
-            <div class="alert alert-danger">
-                <p class="mb-0">Permohonan dengan nomor registrasi <strong>{{ $nomor_registrasi }}</strong> tidak
-                    ditemukan.</p>
-            </div>
+            <div class="sa-track-empty"><i class="isax isax-info-circle"></i><p>Permohonan dengan nomor registrasi <strong>{{ $nomor_registrasi }}</strong> tidak ditemukan.</p></div>
         @endif
-    </div>
+    </section>
+</main>
 @endsection

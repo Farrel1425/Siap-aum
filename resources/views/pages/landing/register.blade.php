@@ -61,7 +61,9 @@
                 <div class="sa-otp-input-wrap"><x-otp-input /></div>
                 <p class="sa-otp-note" id="countdown-container">OTP terakhir dikirim <span id="last_otp_at"></span>. Kirim ulang tersedia dalam <strong id="countdown">-:-</strong>.</p>
                 <p class="sa-otp-note d-none" id="resend-otp-container">Tidak mendapatkan kode? <button type="button" id="resend-otp">Kirim Ulang</button></p>
-                <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
+                @if (config('recaptcha.enabled'))
+                    <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
+                @endif
             </div>
             <div class="modal-footer"><button class="sa-login-submit" id="register" type="button">Verifikasi dan Buat Akun</button></div>
         </div>

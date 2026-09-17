@@ -1,87 +1,45 @@
 @extends('layouts.landing.auth-base')
 
 @section('content')
-    <x-landing.hero showBackButton="true">
-        <div class="content-header">
-            <div class="d-flex align-items-center gap-3 flex-row-reverse">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}">
+<main class="sa-login-page sa-reset-page">
+    <section class="sa-login-visual">
+        <a class="sa-login-back" href="{{ route('login.index') }}" aria-label="Kembali ke halaman login"><i class="isax isax-arrow-left-2"></i></a>
+        <div class="sa-login-visual__wash"></div>
+        <div class="sa-login-visual__content">
+            <div class="sa-register-logos" aria-label="Pemerintah Kabupaten Tabanan dan SIAP AUM">
+                <span><img src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}" alt="Lambang Kabupaten Tabanan"></span>
+                <span><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="Logo SIAP AUM"></span>
             </div>
-            <div class="text-center my-3 w-100 auth-header">
-                <form action="{{ route('password.update', $token) }}"
-                      method="POST">
-                    @csrf
-                    <h3 class="title text-main">Reset Password</h3>
-                    <p class="caption text-main">Masukkan password baru anda untuk akun <span class="fw-bold">{{ $email }}</span></p>
-                    <input name="token"
-                           type="hidden"
-                           value="{{ $token }}">
-                    <input name="email"
-                           type="hidden"
-                           value="{{ $email }}">
-                    <x-landing.input-password :required=True
-                                              name="password"
-                                              placeholder="Password" />
-                    <x-landing.input-password :required=True
-                                              name="password_verify"
-                                              placeholder="Masukkan password kembali" />
-                    <button class="btn btn-danger d-block w-100 fw-bold"
-                            type="submit">Ubah Password</button>
-                </form>
-            </div>
+            <h1>Buat password<br>baru Anda</h1>
+            <p>Gunakan password yang kuat dan mudah Anda ingat untuk menjaga keamanan akun.</p>
         </div>
-    </x-landing.hero>
-
-    <div aria-hidden="true"
-         aria-labelledby="staticBackdropLabel"
-         class="modal fade bg-transparent"
-         data-bs-backdrop="static"
-         data-bs-keyboard="false"
-         id="staticBackdrop"
-         tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered bg-transparent">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5 fw-bold"
-                        id="staticBackdropLabel">Verifikasi Email</h1>
-                    <button aria-label="Close"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            type="button"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">Masukkan kode otp yang dikirimkan ke email anda. Jangan bagikan kode OTP anda
-                        kepada
-                        siapapun.</p>
-                    <div class="mb-3 mt-3">
-                        <x-otp-input />
-                    </div>
-                    <p class="text-center mb-0"
-                       id="countdown-container">(OTP Terakhir <span id="last_otp_at"></span>) Anda dapat melakukan kirim
-                        ulang kode
-                        OTP setelah <span class="fw-bold"
-                              id="countdown">-:-</span></p>
-                    <p class="text-center mb-0 d-none"
-                       id="resend-otp-container">Tidak mendapatkan Kode Verifikasi? <button
-                                class="fw-bold text-decoration-none text-primary bg-transparent border-0"
-                                href="#"
-                                id="resend-otp">Kirim Ulang</button></p>
-                    <div class="form-group mt-3 d-flex justify-content-center">
-                        {!! htmlFormSnippet() !!}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary w-100"
-                            id="register"
-                            type="button">Verifikasi</button>
-                </div>
+    </section>
+    <section class="sa-login-panel">
+        <div class="sa-login-card sa-register-card">
+            <div class="sa-login-card__heading">
+                <span class="sa-eyebrow"><i></i>Keamanan akun</span>
+                <h2>Reset password</h2>
+                <p>Password baru akan digunakan untuk akun <strong>{{ $email }}</strong>.</p>
             </div>
+            <form action="{{ route('password.update', $token) }}" method="POST">
+                @csrf
+                <input name="token" type="hidden" value="{{ $token }}">
+                <input name="email" type="hidden" value="{{ $email }}">
+                <div class="sa-login-field">
+                    <label for="password">Password baru</label>
+                    <div><input id="password" name="password" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password" required><button class="btn-toggle-password isax isax-eye-slash" type="button" aria-label="Tampilkan password"></button></div>
+                    @error('password')<span>{{ $message }}</span>@enderror
+                </div>
+                <div class="sa-login-field">
+                    <label for="password_verify">Konfirmasi password</label>
+                    <div><input id="password_verify" name="password_verify" type="password" placeholder="Masukkan kembali password" autocomplete="new-password" required><button class="btn-toggle-password isax isax-eye-slash" type="button" aria-label="Tampilkan konfirmasi password"></button></div>
+                    @error('password_verify')<span>{{ $message }}</span>@enderror
+                </div>
+                <button class="sa-login-submit" type="submit">Simpan Password Baru</button>
+                <p class="sa-login-register"><a href="{{ route('login.index') }}">Kembali ke Login</a></p>
+                <div class="sa-login-partners"><img src="{{ asset('assets/images/maiharta.png') }}" alt="Maiharta"><img src="{{ asset('assets/images/bsre.png') }}" alt="BSrE"></div>
+            </form>
         </div>
-    </div>
+    </section>
+</main>
 @endsection
-
-@vite(['resources/js/pages/register.js'])

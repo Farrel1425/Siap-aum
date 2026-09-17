@@ -31,8 +31,10 @@
                     @error('email')<span>{{ $message }}</span>@enderror
                 </div>
 
-                <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
-                @error('g-recaptcha-response')<span class="sa-form-error">{{ $message }}</span>@enderror
+                @if (config('recaptcha.enabled'))
+                    <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
+                    @error('g-recaptcha-response')<span class="sa-form-error">{{ $message }}</span>@enderror
+                @endif
 
                 <button class="sa-login-submit" type="submit">Kirim Tautan Pemulihan</button>
                 <p class="sa-login-register">Ingat password Anda? <a href="{{ route('login.index') }}">Kembali ke Login</a></p>
