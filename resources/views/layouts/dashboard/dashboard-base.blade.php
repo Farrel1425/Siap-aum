@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -7,8 +7,8 @@
           name="viewport">
     <meta content="ie=edge"
           http-equiv="X-UA-Compatible">
-    <title>{{ config('app.name') }}</title>
-    <link href="{{ asset('assets/images/logo.png') }}"
+    <title>SIAP AUM - {{ config('app.name') }}</title>
+    <link href="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}"
           rel="shortcut icon"
           type="image/x-icon">
     @vite(['resources/sass/app.scss'])
@@ -40,7 +40,7 @@
     @stack('styles')
 </head>
 
-<body>
+<body class="sa-dashboard-body">
     <div class="loader-container">
         <div class="loader"></div>
     </div>

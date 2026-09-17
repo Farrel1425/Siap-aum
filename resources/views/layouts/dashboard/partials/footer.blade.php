@@ -1,10 +1,10 @@
-<footer class="bg-danger text-white pt-4" id="footer">
-    <div class="footer clearfix mb-0 text-white">
-        <div class="float-start">
-            <p>2024 &copy; {{ config('app.name') }}</p>
-        </div>
-        <div class="float-end">
-            <p>Powered by <a class="text-white text-decoration-underline" href="https://maiharta.com">CV. Maiharta</a></p>
-        </div>
+<footer id="footer" class="sa-dashboard-footer">
+    <div class="sa-dashboard-footer__brand">
+        <img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="SIAP AUM">
+        <div><strong>SIAP AUM</strong><span>Sistem Informasi Administrasi Perizinan Andal, Unggul, Nyaman, dan Gesit</span></div>
+    </div>
+    <div class="sa-dashboard-footer__meta">
+        <span>2026 &copy; Pemerintah Kabupaten Tabanan</span>
+        <span>Powered by <a href="https://www.maiharta.com/home" target="_blank" rel="noopener">Maiharta</a></span>
     </div>
 </footer>

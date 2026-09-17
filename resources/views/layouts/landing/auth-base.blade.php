@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -7,11 +7,11 @@
           name="viewport">
     <meta content="ie=edge"
           http-equiv="X-UA-Compatible">
-    <title>E-Perijinan Buleleng</title>
+    <title>SIAP AUM - Perizinan Kabupaten Tabanan</title>
     @vite(['resources/sass/app.scss'])
     <link href="{{ asset('assets/vendors/iconsax/style.css') }}"
           rel="stylesheet">
-    <link href="{{ asset('assets/images/logo.png') }}"
+    <link href="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}"
           rel="shortcut icon"
           type="image/x-icon">
     {!! ReCaptcha::htmlScriptTagJsApi() !!}

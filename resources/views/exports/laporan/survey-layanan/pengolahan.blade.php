@@ -5,13 +5,13 @@
                 colspan="{{ count($laporan_survey_layanan['data']['nrrUnsur']) ? count($laporan_survey_layanan['data']['nrrUnsur']) + 1 : 4 }}">
                 INDEK KEPUASAN MASYARAKAT (IKM)<br>
                 DINAS PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU<br>
-                KABUPATEN BULELENG<br>
+                KABUPATEN TABANAN<br>
                 PERIODE {{ $tanggal_awal }} - {{ $tanggal_akhir }}
             </td>
         </tr>
         <tr>
             <td colspan="{{ count($laporan_survey_layanan['data']['nrrUnsur']) ? count($laporan_survey_layanan['data']['nrrUnsur']) + 1 : 4 }}">
-                Pengolahan Data Survey {{ $groupLayananSkm?->nama ?? 'Siajaib' }}
+                Pengolahan Data Survey {{ $groupLayananSkm?->nama ?? 'SIAP AUM' }}
             </td>
         </tr>
     </thead>

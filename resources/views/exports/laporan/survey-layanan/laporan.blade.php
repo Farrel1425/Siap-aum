@@ -4,13 +4,13 @@
             <td colspan="4">
                 INDEK KEPUASAN MASYARAKAT (IKM)<br>
                 DINAS PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU<br>
-                KABUPATEN BULELENG<br>
+                KABUPATEN TABANAN<br>
                 PERIODE {{ $tanggal_awal }} - {{ $tanggal_akhir }}
             </td>
         </tr>
         <tr>
             <td colspan="4">
-                Laporan Survey {{ $groupLayananSkm?->nama ?? 'Siajaib' }}
+                Laporan Survey {{ $groupLayananSkm?->nama ?? 'SIAP AUM' }}
             </td>
         </tr>
     </thead>

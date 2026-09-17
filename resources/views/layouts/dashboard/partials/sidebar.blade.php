@@ -1,16 +1,17 @@
 <div class="sidebar-wrapper active">
     <div class="sidebar-header position-relative">
-        <div class="d-flex justify-content-evenly align-items-center">
+        <div class="sa-dashboard-brand d-flex align-items-center">
             <div class="logo">
-                <a href="#">
-                    <img src="{{ asset('assets/images/logo-siajaib.png') }}">
+                <a href="{{ route('dashboard') }}">
+                    <img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="SIAP AUM">
                 </a>
             </div>
+            <div><strong>SIAP AUM</strong><span>Perizinan Tabanan</span></div>
         </div>
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
-            <li class="sidebar-title">Menu</li>
+            <li class="sidebar-title">MENU UTAMA</li>
 
             <li
                 class="sidebar-item {{ (request()->routeIs('dashboard*') || auth()->user()->is_public) && !request()->routeIs('profile*') ? 'active' : '' }}">

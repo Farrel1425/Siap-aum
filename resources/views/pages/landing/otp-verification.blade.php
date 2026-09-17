@@ -6,10 +6,10 @@
             <div class="d-flex align-items-center gap-3 flex-row-reverse">
                 <img alt=""
                      class="img-logo-auth"
-                     src="{{ asset('assets/images/logo-siajaib.png') }}">
+                     src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}">
                 <img alt=""
                      class="img-logo-auth"
-                     src="{{ asset('assets/images/logo-kabupaten.png') }}">
+                     src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}">
             </div>
             <div class="text-center my-3 w-100 auth-header">
                 <h3 class="title text-main">Verifikasi OTP</h3>

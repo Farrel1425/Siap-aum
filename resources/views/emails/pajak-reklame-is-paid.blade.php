@@ -5,5 +5,5 @@
                 color="red">
     Verifikasi Pembayaran
 </x-mail::button>
-<p style="text-align: start;color:#181818;margin: 10px;">Mohon untuk segera melakukan proses verifikasi pembayaran pada aplikasi Si Ajaib agar permohonan tersebut dapat dilanjutkan ke tahap berikutnya</p>
+<p style="text-align: start;color:#181818;margin: 10px;">Mohon untuk segera melakukan proses verifikasi pembayaran pada aplikasi SIAP AUM agar permohonan tersebut dapat dilanjutkan ke tahap berikutnya</p>
 </x-mail::message>

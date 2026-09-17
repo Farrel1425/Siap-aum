@@ -1,92 +1,72 @@
 @extends('layouts.landing.auth-base')
 
 @section('content')
-    <x-landing.hero showBackButton="true">
-        <div class="content-header">
-            <div class="d-flex align-items-center gap-3 flex-row-reverse">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/logo-siajaib.png') }}">
-                <img alt=""
-                     class="img-logo-auth"
-                     src="{{ asset('assets/images/logo-kabupaten.png') }}">
+<main class="sa-login-page sa-register-page">
+    <section class="sa-login-visual">
+        <a class="sa-login-back" href="{{ route('home') }}" aria-label="Kembali ke beranda"><i class="isax isax-arrow-left-2"></i></a>
+        <div class="sa-login-visual__wash"></div>
+        <div class="sa-login-visual__content">
+            <div class="sa-register-logos" aria-label="Pemerintah Kabupaten Tabanan dan SIAP AUM">
+                <span><img src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}" alt="Lambang Kabupaten Tabanan"></span>
+                <span><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="Logo SIAP AUM"></span>
             </div>
-            <div class="text-center my-3 w-100 auth-header">
-                <h3 class="title text-main">Daftar Akun</h3>
-                <p class="caption text-main">Masuk ke akun anda</p>
-                <input id="route_otp"
-                       type="hidden"
-                       value="{{ route('register.otp.generate') }}">
-                <input id="route_register"
-                       type="hidden"
-                       value="{{ route('register.store') }}">
-                <input id="csrf_token"
-                       type="hidden"
-                       value="{{ csrf_token() }}">
-                <x-landing.input-email :required=True
-                                       name="email"
-                                       placeholder="Email" />
-                <x-landing.input-password :required=True
-                                          name="password"
-                                          placeholder="Password" />
-                <x-landing.input-password :required=True
-                                          name="password_verify"
-                                          placeholder="Masukkan password kembali" />
-                <button class="btn btn-danger d-block w-100 fw-bold"
-                        id="generate_otp"
-                        type="button">Daftar</button>
-                <p class="mt-2 text-main">Sudah Punya Akun? <a class="text-danger"
-                       href="{{ route('login.index') }}">Masuk</a></p>
-            </div>
+            <h1>Daftar Akun<br>SIAP AUM</h1>
+            <p>Buat akun untuk mengajukan, memantau, memperbaiki, dan mengunduh izin secara online.</p>
         </div>
-    </x-landing.hero>
+    </section>
 
-    <div aria-hidden="true"
-         aria-labelledby="staticBackdropLabel"
-         class="modal fade bg-transparent"
-         data-bs-backdrop="static"
-         data-bs-keyboard="false"
-         id="staticBackdrop"
-         tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered bg-transparent">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5 fw-bold"
-                        id="staticBackdropLabel">Verifikasi Email</h1>
-                    <button aria-label="Close"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            type="button"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">Masukkan kode otp yang dikirimkan ke email anda. Jangan bagikan kode OTP anda
-                        kepada
-                        siapapun.</p>
-                    <div class="mb-3 mt-3">
-                        <x-otp-input />
-                    </div>
-                    <p class="text-center mb-0"
-                       id="countdown-container">(OTP Terakhir <span id="last_otp_at"></span>) Anda dapat melakukan kirim
-                        ulang kode
-                        OTP setelah <span class="fw-bold"
-                              id="countdown">-:-</span></p>
-                    <p class="text-center mb-0 d-none"
-                       id="resend-otp-container">Tidak mendapatkan Kode Verifikasi? <button
-                                class="fw-bold text-decoration-none text-primary bg-transparent border-0"
-                                href="#"
-                                id="resend-otp">Kirim Ulang</button></p>
-                    <div class="form-group mt-3 d-flex justify-content-center">
-                        {!! htmlFormSnippet() !!}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary w-100"
-                            id="register"
-                            type="button">Verifikasi</button>
-                </div>
+    <section class="sa-login-panel sa-register-panel">
+        <div class="sa-login-card sa-register-card">
+            <div class="sa-login-card__heading">
+                <span class="sa-eyebrow"><i></i>Daftar</span>
+                <h2>Buat akun Anda</h2>
+                <p>Lengkapi data berikut untuk mendapatkan kode verifikasi melalui email.</p>
             </div>
+
+            <input id="route_otp" type="hidden" value="{{ route('register.otp.generate') }}">
+            <input id="route_register" type="hidden" value="{{ route('register.store') }}">
+            <input id="csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+            <div class="sa-login-field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="Masukkan email aktif" autocomplete="email" required>
+                @error('email')<span>{{ $message }}</span>@enderror
+            </div>
+            <div class="sa-login-field">
+                <label for="password">Password</label>
+                <div><input id="password" name="password" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password" required><button class="btn-toggle-password isax isax-eye-slash" type="button" aria-label="Tampilkan password"></button></div>
+                <small>Gunakan huruf besar, huruf kecil, angka, dan karakter khusus.</small>
+            </div>
+            <div class="sa-login-field">
+                <label for="password_verify">Konfirmasi password</label>
+                <div><input id="password_verify" name="password_verify" type="password" placeholder="Masukkan kembali password" autocomplete="new-password" required><button class="btn-toggle-password isax isax-eye-slash" type="button" aria-label="Tampilkan konfirmasi password"></button></div>
+            </div>
+
+            <button class="sa-login-submit" id="generate_otp" type="button">Daftar dan Kirim OTP</button>
+            <p class="sa-login-register">Sudah Punya Akun? <a href="{{ route('login.index') }}">Masuk</a></p>
+            <div class="sa-login-partners"><img src="{{ asset('assets/images/maiharta.png') }}" alt="Maiharta"><img src="{{ asset('assets/images/bsre.png') }}" alt="BSrE"></div>
+        </div>
+    </section>
+</main>
+
+<div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade sa-otp-modal" data-bs-backdrop="static" data-bs-keyboard="false" id="staticBackdrop" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><span class="sa-eyebrow"><i></i>Keamanan</span><h1 class="modal-title" id="staticBackdropLabel">Verifikasi Email</h1></div>
+                <button aria-label="Tutup" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <p>Masukkan kode OTP yang dikirimkan ke email Anda. Jangan membagikan kode tersebut kepada siapa pun.</p>
+                <div class="sa-otp-input-wrap"><x-otp-input /></div>
+                <p class="sa-otp-note" id="countdown-container">OTP terakhir dikirim <span id="last_otp_at"></span>. Kirim ulang tersedia dalam <strong id="countdown">-:-</strong>.</p>
+                <p class="sa-otp-note d-none" id="resend-otp-container">Tidak mendapatkan kode? <button type="button" id="resend-otp">Kirim Ulang</button></p>
+                <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
+            </div>
+            <div class="modal-footer"><button class="sa-login-submit" id="register" type="button">Verifikasi dan Buat Akun</button></div>
         </div>
     </div>
+</div>
 @endsection
 
 @vite(['resources/js/pages/register.js'])

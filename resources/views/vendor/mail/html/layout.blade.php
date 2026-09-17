@@ -40,7 +40,7 @@ width: 100% !important;
 <!-- Body content -->
 <tr>
 <td class="content-cell" style="padding:0!important">
-<img src="{{ asset('assets/images/banner-siajaib-horizontal.png') }}" class="banner" alt="banner siajaib image">
+<img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" class="banner" alt="Logo SIAP AUM">
 {{ Illuminate\Mail\Markdown::parse($slot) }}
 
 {{ $subcopy ?? '' }}

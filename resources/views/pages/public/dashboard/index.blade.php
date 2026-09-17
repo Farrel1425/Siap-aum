@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-12 col-lg-auto gap-0 order-md-1">
                     <a class="btn btn-outline-primary d-block w-100 w-lg-auto fw-bold"
-                       href="https://bit.ly/siajaibbuleleng"
+                       href="#"
                        target="_blank"><i class="isax isax-document-download"></i> Download
                         Contoh Berkas</a>
                 </div>

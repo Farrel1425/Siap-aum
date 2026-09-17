@@ -1,24 +1,16 @@
-<nav class="navbar navbar-expand-md p-4">
-    <a class="navbar-brand me-4"
-        href="/"><img alt=""
-                class="navbar-image"
-                src="{{ asset('assets/images/logo-kabupaten.png') }}"></a>
-
-    <ul class="navbar-nav w-100 mb-2 mb-lg-0 d-flex gap-1">
-        <li class="nav-item fw-bold">
-            <a aria-current="page"
-                class="nav-link active"
-                href="{{ route('home') }}">Home</a>
-        </li>
-        <li class="nav-item fw-bold">
-            <a aria-current="page"
-                class="nav-link active"
-                href="{{ route('user-guide') }}">Panduan Pengguna</a>
-        </li>
-        <li class="nav-item fw-bold">
-            <a aria-current="page"
-                class="nav-link active"
-                href="{{ route('cek-permohonan.index') }}">Cek Permohonan</a>
-        </li>
-    </ul>
+<nav class="sa-navbar" aria-label="Navigasi utama">
+    <a class="sa-brand" href="{{ route('home') }}"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt=""><span>Siap Aum</span></a>
+    <div class="sa-navbar__links">
+        <a class="is-active" href="{{ route('home') }}#home">Home</a>
+        <a href="{{ route('home') }}#tentang">Tentang</a>
+        <a href="{{ route('home') }}#rekap">Rekap</a>
+        <a href="{{ route('home') }}#panduan">Panduan</a>
+        <a href="{{ route('home') }}#kenapa">Kenapa Siap Aum</a>
+        <a href="{{ route('home') }}#kontak">Kontak</a>
+    </div>
+    @auth
+        <a class="sa-navbar__login" href="{{ route('dashboard') }}">Dashboard</a>
+    @else
+        <a class="sa-navbar__login" href="{{ route('login.index') }}">Login</a>
+    @endauth
 </nav>

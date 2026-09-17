@@ -99,7 +99,7 @@ class LaporanController extends Controller
         $start = Carbon::createFromFormat('d/m/Y', $periode[0])->format('Y-m-d');
         $end = Carbon::createFromFormat('d/m/Y', $periode[1])->format('Y-m-d');
 
-        $namaLayanan =  $groupLayananSkm?->nama ?? 'Siajaib';
+        $namaLayanan = $groupLayananSkm?->nama ?? 'SIAP AUM';
         $filename = 'laporan_survey_layanan_' . $namaLayanan . '_' . $start . '_' . $end . '.xlsx';
         return Excel::download(new LaporanExport($groupLayananSkm, $start, $end), $filename);
     }

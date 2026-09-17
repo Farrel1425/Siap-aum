@@ -27,13 +27,13 @@ use App\Models\KelengkapanPermohonan;
 use App\Models\Reklame;
 use App\Models\ValidasiForm;
 
-class SinkronisasiDataSiajaibLegacyService
+class SinkronisasiDataSiapAumLegacyService
 {
     public function __construct()
     {
         // // USERS
         // $start = microtime(true);
-        // Log::info('Start Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
+        // Log::info('Start Sinkronisasi Data SIAP AUM Legacy Pada : ' . date('Y-m-d H:i:s'));
         // Log::info('==================================================================');
         // Log::info('Start Sinkronisasi Data Users');
         // $start = microtime(true);
@@ -153,13 +153,13 @@ class SinkronisasiDataSiajaibLegacyService
         Log::info('================');
 
 
-        Log::info('Finish Sinkronisasi Data Siajaib Legacy Pada : ' . date('Y-m-d H:i:s'));
+        Log::info('Finish Sinkronisasi Data SIAP AUM Legacy Pada : ' . date('Y-m-d H:i:s'));
         Log::info('==================================================================');
     }
 
     private function sinkronRoles()
     {
-        $rolesLegacy = DB::connection('siajaib_legacy')->table('roles')->get();
+        $rolesLegacy = DB::connection('siapaum_legacy')->table('roles')->get();
 
         foreach ($rolesLegacy as $role) {
             $role = [
@@ -175,7 +175,7 @@ class SinkronisasiDataSiajaibLegacyService
     }
     private function sinkronUsers()
     {
-        $usersLegacy = DB::connection('siajaib_legacy')->table('users')->get();
+        $usersLegacy = DB::connection('siapaum_legacy')->table('users')->get();
 
         foreach ($usersLegacy as $user) {
             $user = [
@@ -201,7 +201,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronJenizIzin()
     {
-        $jenisIzinLegacy = DB::connection('siajaib_legacy')->table('jenis_izin')->get();
+        $jenisIzinLegacy = DB::connection('siapaum_legacy')->table('jenis_izin')->get();
 
         foreach ($jenisIzinLegacy as $jenisIzin) {
             // remove base url from template_surat
@@ -224,7 +224,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronFormJenisIzin()
     {
-        $formJenisIzinLegacy = DB::connection('siajaib_legacy')->table('detail_form')->get();
+        $formJenisIzinLegacy = DB::connection('siapaum_legacy')->table('detail_form')->get();
 
         foreach ($formJenisIzinLegacy as $formJenisIzin) {
             // generate urutan based on id, different id, then reset
@@ -248,7 +248,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronBerkasJenisIzin()
     {
-        $berkasJenisIzinLegacy = DB::connection('siajaib_legacy')->table('berkas_jenis_izin')->get();
+        $berkasJenisIzinLegacy = DB::connection('siapaum_legacy')->table('berkas_jenis_izin')->get();
 
         foreach ($berkasJenisIzinLegacy as $berkasJenisIzin) {
             $urutan[$berkasJenisIzin->id_jenis_izin] = $urutan[$berkasJenisIzin->id_jenis_izin] ?? 0;
@@ -270,7 +270,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronAlurJenisIzin()
     {
-        $alurJenisIzinLegacy = DB::connection('siajaib_legacy')->table('alur')->get();
+        $alurJenisIzinLegacy = DB::connection('siapaum_legacy')->table('alur')->get();
 
         foreach ($alurJenisIzinLegacy as $alurJenisIzin) {
             $alurJenisIzin = [
@@ -290,7 +290,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKelengkapanJenisIzin()
     {
-        $kelengkapanJenisIzinLegacy = DB::connection('siajaib_legacy')->table('kelengkapan_izin')->get();
+        $kelengkapanJenisIzinLegacy = DB::connection('siapaum_legacy')->table('kelengkapan_izin')->get();
 
         foreach ($kelengkapanJenisIzinLegacy as $kelengkapanJenisIzin) {
             $urutan[$kelengkapanJenisIzin->id_jenis_izin] = $urutan[$kelengkapanJenisIzin->id_jenis_izin] ?? 0;
@@ -313,7 +313,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronPermohonan()
     {
-        $permohonanLegacy = DB::connection('siajaib_legacy')
+        $permohonanLegacy = DB::connection('siapaum_legacy')
             ->table('permohonan')
             ->whereNotNull('status')
             ->whereNull('deleted_at')
@@ -393,7 +393,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronFormPermohonan()
     {
-        $formPermohonanLegacy = DB::connection('siajaib_legacy')->table('detail_permohonan')
+        $formPermohonanLegacy = DB::connection('siapaum_legacy')->table('detail_permohonan')
             ->selectRaw('detail_permohonan.*')
             ->join('permohonan', 'detail_permohonan.id_permohonan', '=', 'permohonan.id')
             ->whereNotNull('permohonan.status')
@@ -423,7 +423,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronBerkasPermohonan()
     {
-        $berkasPermohonanLegacy = DB::connection('siajaib_legacy')
+        $berkasPermohonanLegacy = DB::connection('siapaum_legacy')
             ->table('berkas_permohonan')
             ->selectRaw('berkas_permohonan.*')
             ->join('permohonan', 'berkas_permohonan.id_permohonan', '=', 'permohonan.id')
@@ -459,7 +459,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronAlurPermohonan()
     {
-        $alurPermohonanLegacy = DB::connection('siajaib_legacy')
+        $alurPermohonanLegacy = DB::connection('siapaum_legacy')
             ->table('alur_permohonan')
             ->selectRaw('alur_permohonan.*')
             ->join('permohonan', 'alur_permohonan.id_permohonan', '=', 'permohonan.id')
@@ -489,7 +489,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronValidasiBerkasPermohonan()
     {
-        $validasiBerkasLegacy = DB::connection('siajaib_legacy')
+        $validasiBerkasLegacy = DB::connection('siapaum_legacy')
             ->table('validasi_berkas', 'a')
             ->selectRaw('a.*, berkas_permohonan.ket_revisi')
             ->join('berkas_permohonan', 'a.id_berkas', '=', 'berkas_permohonan.id')
@@ -523,7 +523,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKelengkapanPermohonan()
     {
-        $kelengkapanPermohonanLegacy = DB::connection('siajaib_legacy')
+        $kelengkapanPermohonanLegacy = DB::connection('siapaum_legacy')
             ->table('kelengkapan_permohonan')
             ->selectRaw('kelengkapan_permohonan.*')
             ->join('permohonan', 'kelengkapan_permohonan.id_permohonan', '=', 'permohonan.id')
@@ -579,7 +579,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKuesioner()
     {
-        $kuesionerLegacy = DB::connection('siajaib_legacy')
+        $kuesionerLegacy = DB::connection('siapaum_legacy')
             ->table('kuisioner')
             ->selectRaw('kuisioner.*, permohonan.id_jenis_izin, users.name as nama_user, users.email as email_user, users.telepon as telepon_user')
             ->whereNull('id_skm')
@@ -613,7 +613,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKuesionerPertanyaan()
     {
-        $kuesionerPertanyaanLegacy = DB::connection('siajaib_legacy')->table('kuisioner_pertanyaan')->get();
+        $kuesionerPertanyaanLegacy = DB::connection('siapaum_legacy')->table('kuisioner_pertanyaan')->get();
 
         foreach ($kuesionerPertanyaanLegacy as $kuesionerPertanyaan) {
             $kuesionerPertanyaan = [
@@ -630,7 +630,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKuesionerOpsi()
     {
-        $kuesionerOpsiLegacy = DB::connection('siajaib_legacy')->table('kuisioner_opsi')->get();
+        $kuesionerOpsiLegacy = DB::connection('siapaum_legacy')->table('kuisioner_opsi')->get();
 
         $remove_char = ['a. ', 'b. ', 'c. ', 'd. ', 'e. '];
 
@@ -651,7 +651,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronKuesionerJawaban()
     {
-        $kuesionerJawabanLegacy = DB::connection('siajaib_legacy')
+        $kuesionerJawabanLegacy = DB::connection('siapaum_legacy')
             ->table('kuisioner_jawaban', 'a')
             ->selectRaw('a.*, kuisioner_pertanyaan.id as id_kuisioner_pertanyaan, kuisioner_pertanyaan.pertanyaan as pertanyaan, kuisioner_opsi.opsi as opsi, kuisioner_opsi.point as point')
             ->join('kuisioner', 'a.id_kuisioner', '=', 'kuisioner.id')
@@ -686,7 +686,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronRegistrasiReklame()
     {
-        $registrasiReklameLegacy = DB::connection('siajaib_legacy')->table('registrasi_reklame')->get();
+        $registrasiReklameLegacy = DB::connection('siapaum_legacy')->table('registrasi_reklame')->get();
 
         foreach ($registrasiReklameLegacy as $registrasiReklame) {
             $registrasiReklame = [
@@ -710,7 +710,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronPembayaranReklame()
     {
-        $pembayaranReklameLegacy = DB::connection('siajaib_legacy')->table('reklame_pembayaran')
+        $pembayaranReklameLegacy = DB::connection('siapaum_legacy')->table('reklame_pembayaran')
             ->select('reklame_pembayaran.*')
             ->join('permohonan', 'reklame_pembayaran.id_permohonan', '=', 'permohonan.id')
             ->whereNotNull('permohonan.status')
@@ -742,7 +742,7 @@ class SinkronisasiDataSiajaibLegacyService
 
     private function sinkronReklame()
     {
-        $reklame_legacy = DB::connection('siajaib_legacy')->table('reklame_pembayaran')
+        $reklame_legacy = DB::connection('siapaum_legacy')->table('reklame_pembayaran')
         ->select('reklame_pembayaran.*')
         ->join('permohonan', 'reklame_pembayaran.id_permohonan', '=', 'permohonan.id')
         ->whereNotNull('permohonan.status')

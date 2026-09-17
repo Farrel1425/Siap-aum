@@ -21,8 +21,8 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Pemerintah Kabupaten Buleleng<br>Mall Pelayanan Publik - Lantai III Pasar Banyuasri, Kelurahan Banyuasri, Kecamatan Buleleng <br><br>
-© 2024 <strong>DPMPTSP Kabupaten Buleleng</strong> | Powered by <strong>CV Mai Harta</strong>
+Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Pemerintah Kabupaten Tabanan<br>Jl. D. Buyan, Delod Peken, Kec. Kediri, Kabupaten Tabanan, Bali 82121<br><br>
+© 2026 <strong>DPMPTSP Kabupaten Tabanan</strong> | Powered by <strong>CV Mai Harta</strong>
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>

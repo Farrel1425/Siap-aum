@@ -63,7 +63,7 @@ return [
             ]) : [],
         ],
 
-        'siajaib_legacy' => [
+        'siapaum_legacy' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL_LEGACY'),
             'host' => env('DB_HOST_LEGACY', '127.0.0.1'),

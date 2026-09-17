@@ -24,7 +24,7 @@
                                 ->mapWithKeys(function ($layanan) {
                                     return [$layanan->id => $layanan->nama];
                                 })
-                                ->prepend('Siajaib', '0')"
+                                ->prepend('SIAP AUM', '0')"
                                                              :required=True
                                                              allowClear
                                                              class="bg-white p-2 mx-1 mb-3 text-xsm"
