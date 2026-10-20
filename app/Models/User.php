@@ -78,11 +78,6 @@ class User extends Authenticatable
         return $this->hasRole(RoleEnum::INPUTER->deskripsi());
     }
 
-    public function getIsAuditorAttribute()
-    {
-        return $this->hasRole(RoleEnum::AUDITOR->deskripsi());
-    }
-
     public function getRoleBadgeAttribute()
     {
         if ($this->is_admin) {
@@ -91,11 +86,7 @@ class User extends Authenticatable
             $badge = '<span class="badge bg-warning">Verifikator</span>';
         } elseif ($this->is_public) {
             $badge = '<span class="badge bg-success">Public</span>';
-        } elseif ($this->is_auditor) {
-            $badge = '<span class="badge bg-info">Auditor</span>';
-        } elseif ($this->is_inputer) {
-            $badge = '<span class="badge bg-dark">Inputer</span>';
-        } else {
+        } else{
             $badge = '<span class="badge bg-secondary">Undefined</span>';
         }
         return $badge;
@@ -103,7 +94,7 @@ class User extends Authenticatable
 
     public function hasRole($role)
     {
-        return $this->role?->nama === $role;
+        return $this->role->nama == $role;
     }
     public function getPhotoProfileAttribute()
     {

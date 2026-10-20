@@ -2,38 +2,6 @@ apt-get install libreoffice --no-install-recommends
 sudo apt-get install libreoffice-java-common default-jre
 export HOME=/tmp
 
-## Menjalankan dengan Docker
-
-Prasyarat: Docker Desktop dengan Docker Compose.
-
-```bash
-docker compose up -d --build
-docker compose exec app php artisan migrate --seed
-```
-
-Akses layanan:
-
-- Aplikasi: http://localhost:8080
-- Vite: http://localhost:5173
-- Mailpit: http://localhost:8025
-- MySQL dari host: `127.0.0.1:3308`
-
-Perintah Laravel dijalankan melalui container aplikasi, misalnya:
-
-```bash
-docker compose exec app php artisan test
-docker compose exec app php artisan migrate
-docker compose exec app php artisan db:seed
-```
-
-Untuk menghentikan container tanpa menghapus database:
-
-```bash
-docker compose down
-```
-
-Gunakan `docker compose down -v` hanya jika ingin sekaligus menghapus seluruh data MySQL Docker.
-
 ## Sebelum Sinkronisasi, Jalankan Query Berikut
 
 ```sql

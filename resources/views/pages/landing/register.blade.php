@@ -42,10 +42,6 @@
                 <div><input id="password_verify" name="password_verify" type="password" placeholder="Masukkan kembali password" autocomplete="new-password" required><button class="btn-toggle-password isax isax-eye-slash" type="button" aria-label="Tampilkan konfirmasi password"></button></div>
             </div>
 
-            @if (config('recaptcha.enabled'))
-                <div class="sa-login-captcha" id="otp-recaptcha">{!! htmlFormSnippet() !!}</div>
-            @endif
-
             <button class="sa-login-submit" id="generate_otp" type="button">Daftar dan Kirim OTP</button>
             <p class="sa-login-register">Sudah Punya Akun? <a href="{{ route('login.index') }}">Masuk</a></p>
             <div class="sa-login-partners"><img src="{{ asset('assets/images/maiharta.png') }}" alt="Maiharta"><img src="{{ asset('assets/images/bsre.png') }}" alt="BSrE"></div>
@@ -66,7 +62,7 @@
                 <p class="sa-otp-note" id="countdown-container">OTP terakhir dikirim <span id="last_otp_at"></span>. Kirim ulang tersedia dalam <strong id="countdown">-:-</strong>.</p>
                 <p class="sa-otp-note d-none" id="resend-otp-container">Tidak mendapatkan kode? <button type="button" id="resend-otp">Kirim Ulang</button></p>
                 @if (config('recaptcha.enabled'))
-                    <div class="sa-login-captcha" id="register-recaptcha">{!! htmlFormSnippet() !!}</div>
+                    <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
                 @endif
             </div>
             <div class="modal-footer"><button class="sa-login-submit" id="register" type="button">Verifikasi dan Buat Akun</button></div>

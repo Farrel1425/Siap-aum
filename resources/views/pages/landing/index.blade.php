@@ -29,7 +29,7 @@
         <div class="sa-about__grid">
             <div class="sa-about__visual">
                 <div class="sa-about__backdrop"></div>
-                <img src="{{ asset('assets/images/siap-aum/figma-raw-4.webp') }}" alt="Gerbang Kabupaten Tabanan" width="1400" height="1867" loading="lazy" decoding="async" fetchpriority="low">
+                <img src="{{ asset('assets/images/siap-aum/figma-raw-4.png') }}" alt="Gerbang Kabupaten Tabanan">
             </div>
             <div class="sa-about__benefits">
                 <div class="sa-soft-card sa-soft-card--intro">Dengan menggunakan SIAP AUM, Anda dapat mengajukan permohonan izin secara mandiri dengan sistem online. Berikut merupakan keunggulan dari SIAP AUM:</div>
@@ -56,7 +56,7 @@
         @endphp
         <div class="sa-stats">
             @foreach ($stats as $stat)
-                <article class="sa-stat-card"><span class="sa-stat-card__icon"><img src="{{ asset('assets/images/siap-aum/'.$stat['icon']) }}" alt="" loading="lazy" decoding="async"></span><strong>{{ number_format($stat['value']) }}</strong><span>{{ $stat['label'] }}</span></article>
+                <article class="sa-stat-card"><span class="sa-stat-card__icon"><img src="{{ asset('assets/images/siap-aum/'.$stat['icon']) }}" alt=""></span><strong>{{ number_format($stat['value']) }}</strong><span>{{ $stat['label'] }}</span></article>
             @endforeach
         </div>
         <details class="sa-survey"><summary>Hasil Survey Kepuasan Masyarakat</summary><div class="sa-survey__body"><div class="sa-survey__score"><strong>{{ number_format((float) min($laporan_survey['persentaseNilaiIKM'], 84), 2, '.', '') }}</strong><span>Sangat Baik · {{ $laporan_survey['totalKuesioner'] }} responden</span></div><div class="sa-survey__bars">@foreach ($laporan_survey['nrrTertbgUnsurPercentage'] as $layanan => $value)<div><span>{{ $layanan }}</span><i style="width: {{ min($value, 84) }}%"></i></div>@endforeach</div></div></details>
@@ -76,7 +76,7 @@
         @endphp
         <div class="sa-guide__layout">
             <div class="sa-guide__column">@foreach (array_slice($steps, 0, 3) as $index => $step)<article class="sa-step-card"><span class="sa-step-icon"><i class="isax isax-{{ $step[0] }}"></i></span><strong>{{ $index + 1 }}</strong><p>{{ $step[1] }}</p></article>@endforeach</div>
-            <div class="sa-guide__brand"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="" loading="lazy" decoding="async"><span>Siap Aum</span></div>
+            <div class="sa-guide__brand"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt=""><span>Siap Aum</span></div>
             <div class="sa-guide__column">@foreach (array_slice($steps, 3, 3) as $index => $step)<article class="sa-step-card"><span class="sa-step-icon"><i class="isax isax-{{ $step[0] }}"></i></span><strong>{{ $index + 4 }}</strong><p>{{ $step[1] }}</p></article>@endforeach</div>
         </div>
     </section>
@@ -91,23 +91,23 @@
         <div class="sa-why__grid">
             <article class="sa-why-card sa-why-card--speed">
                 <div class="sa-speed-lines" aria-hidden="true">
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-bullseye.svg') }}" alt="" loading="lazy" decoding="async">Accuracy</span></div>
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-latency.svg') }}" alt="" loading="lazy" decoding="async">Latency</span></div>
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-shield-label.svg') }}" alt="" loading="lazy" decoding="async">Safety</span></div>
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-fast.svg') }}" alt="" loading="lazy" decoding="async">Fast</span></div>
+                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-bullseye.svg') }}" alt="">Accuracy</span></div>
+                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-latency.svg') }}" alt="">Latency</span></div>
+                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-shield-label.svg') }}" alt="">Safety</span></div>
+                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-fast.svg') }}" alt="">Fast</span></div>
                 </div>
                 <div class="sa-why-card__copy"><h3>Pelayanan Cepat &amp; Efisien</h3><p>Proses perizinan dirancang sederhana dan terintegrasi sehingga pengajuan dapat dilakukan dengan cepat tanpa prosedur yang berbelit.</p></div>
             </article>
             <article class="sa-why-card sa-why-card--access">
-                <div class="sa-checks" aria-hidden="true"><span></span>@for ($i = 0; $i < 3; $i++)<i><img src="{{ asset('assets/images/siap-aum/why-check.svg') }}" alt="" loading="lazy" decoding="async"></i>@endfor</div>
+                <div class="sa-checks" aria-hidden="true"><span></span>@for ($i = 0; $i < 3; $i++)<i><img src="{{ asset('assets/images/siap-aum/why-check.svg') }}" alt=""></i>@endfor</div>
                 <div class="sa-why-card__copy"><h3>Akses Mudah Kapan Saja &amp; Di Mana Saja</h3><p>Masyarakat dapat mengajukan dan mengunduh izin secara online tanpa harus datang ke kantor, cukup melalui perangkat masing-masing.</p></div>
             </article>
             <article class="sa-why-card sa-why-card--secure">
-                <div class="sa-shield" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/why-shield.svg') }}" alt="" loading="lazy" decoding="async"></div>
+                <div class="sa-shield" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/why-shield.svg') }}" alt=""></div>
                 <div class="sa-why-card__copy"><h3>Aman &amp; Terjamin Legalitasnya</h3><p>Dilengkapi dengan sistem keamanan dan Tanda Tangan Elektronik resmi, sehingga dokumen izin memiliki kekuatan hukum dan terjamin keasliannya.</p></div>
             </article>
             <article class="sa-why-card sa-why-card--monitor">
-                <div class="sa-monitor" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/why-monitor.svg') }}" alt="" loading="lazy" decoding="async"></div>
+                <div class="sa-monitor" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/why-monitor.svg') }}" alt=""></div>
                 <div class="sa-why-card__copy"><h3>Transparan &amp; Mudah Dipantau</h3><p>Setiap tahapan permohonan izin dapat dipantau secara real-time, sehingga masyarakat mengetahui status pengajuan dengan jelas.</p></div>
             </article>
         </div>
@@ -126,7 +126,7 @@
             <div class="sa-download__track">
                 @foreach ($service_slides as $index => $slide)
                     <article class="sa-download__slide" aria-hidden="{{ $index === 0 ? 'false' : 'true' }}">
-                        <div class="sa-download__image"><img src="{{ asset('assets/images/siap-aum/'.$slide['image']) }}" alt="{{ $slide['title'] }}" loading="lazy" decoding="async" fetchpriority="low"></div>
+                        <div class="sa-download__image"><img src="{{ asset('assets/images/siap-aum/'.$slide['image']) }}" alt="{{ $slide['title'] }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" decoding="async" @if ($index === 0) fetchpriority="high" @endif></div>
                         <div class="sa-download__copy"><h2>{{ $slide['title'] }}</h2><p>{{ $slide['description'] }}</p></div>
                     </article>
                 @endforeach

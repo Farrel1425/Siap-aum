@@ -22,7 +22,7 @@
         @foreach ($guides as $index => $guide)
             <article class="sa-guide-page-card">
                 <span class="sa-guide-page-number">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                <img src="{{ asset('assets/images/' . $guide[2]) }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                <img src="{{ asset('assets/images/' . $guide[2]) }}" alt="" aria-hidden="true">
                 <div><h2>{{ $guide[0] }}</h2><p>{{ $guide[1] }}</p></div>
             </article>
         @endforeach
