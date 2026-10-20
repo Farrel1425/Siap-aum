@@ -8,6 +8,7 @@ $('.btn-toggle-password').on('click', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
     var navbar = document.querySelector('.sa-navbar-wrap');
+    var navbarHoverZone = document.querySelector('.sa-navbar-hover-zone');
     var mobileNavbar = document.querySelector('.navbar.fixed-bottom');
     var navLinks = Array.from(document.querySelectorAll('.sa-navbar__links a[href*="#"]'));
     var revealTargets = document.querySelectorAll(
@@ -21,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var ticking = false;
 
     if (navbar) {
+        var revealNavbar = function () {
+            navbar.classList.remove('is-hidden');
+        };
+
         var updateNavbar = function () {
             var currentScrollY = Math.max(window.scrollY, 0);
             var movingDown = currentScrollY > lastScrollY;
@@ -38,6 +43,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 ticking = true;
             }
         }, { passive: true });
+
+        // Navbar disembunyikan ketika halaman discroll ke bawah. Arahkan
+        // kursor ke tepi atas layar untuk menampilkannya kembali.
+        document.addEventListener('mousemove', function (event) {
+            if (event.clientY <= 90) revealNavbar();
+        }, { passive: true });
+
+        if (navbarHoverZone) {
+            navbarHoverZone.addEventListener('mouseenter', revealNavbar);
+        }
+
+        navbar.addEventListener('mouseleave', function () {
+            if (window.scrollY > 180) navbar.classList.add('is-hidden');
+        });
     }
 
     if (!reduceMotion && 'IntersectionObserver' in window) {

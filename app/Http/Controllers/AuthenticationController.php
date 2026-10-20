@@ -135,9 +135,15 @@ class AuthenticationController extends Controller
     }
     public function generateOtp(Request $request)
     {
-        $request->validate([
+        $rules = [
             'email' => 'required|email'
-        ]);
+        ];
+
+        if (config('recaptcha.enabled')) {
+            $rules['g-recaptcha-response'] = 'recaptcha';
+        }
+
+        $request->validate($rules);
 
         $user = User::where('email', $request->email)->first();
         if (!$user) {

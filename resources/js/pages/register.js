@@ -1,6 +1,28 @@
 var countdown;
+
+function captchaToken(containerSelector) {
+    return $(containerSelector + ' textarea[name="g-recaptcha-response"]').val() || '';
+}
+
+function validateCaptcha(containerSelector) {
+    if (!document.querySelector(containerSelector + ' .g-recaptcha')) {
+        return true;
+    }
+
+    if (captchaToken(containerSelector)) {
+        return true;
+    }
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Verifikasi CAPTCHA diperlukan',
+        text: 'Silakan centang kotak reCAPTCHA terlebih dahulu.'
+    });
+    return false;
+}
+
 $('#generate_otp').click(function () {
-    if (!validateInput()) {
+    if (!validateInput() || !validateCaptcha('#otp-recaptcha')) {
         return;
     }
 
@@ -19,6 +41,7 @@ $('#generate_otp').click(function () {
         data: {
             _token: csrf_token,
             email: email,
+            'g-recaptcha-response': captchaToken('#otp-recaptcha'),
         },
         beforeSend: function () {
             // Swal loading
@@ -73,7 +96,7 @@ $('#generate_otp').click(function () {
 });
 
 $('#resend-otp').click(function () {
-    if (!validateInput()) {
+    if (!validateInput() || !validateCaptcha('#otp-recaptcha')) {
         return;
     }
     if (countdown) {
@@ -90,6 +113,7 @@ $('#resend-otp').click(function () {
         data: {
             _token: csrf_token,
             email: email,
+            'g-recaptcha-response': captchaToken('#otp-recaptcha'),
         },
         beforeSend: function () {
             // Swal loading
@@ -150,7 +174,7 @@ $('#register').click(function () {
     var email = $('#email').val();
     var password = $('#password').val();
     var password_verify = $('#password_verify').val();
-    var token = $('#g-recaptcha-response').val();
+    var token = captchaToken('#register-recaptcha');
     var otp_code = '';
     document.querySelectorAll('#otp > *[id]').forEach(function (element) {
         otp_code += element.value;

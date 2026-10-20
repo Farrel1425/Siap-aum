@@ -17,6 +17,8 @@ class RoleSeeder extends Seeder
             ['id' => 1,'nama' => 'Admin'],
             ['id' => 2,'nama' => 'Verifikator'],
             ['id' => 3,'nama' => 'Public'],
+            ['id' => 4, 'nama' => 'Auditor'],
+            ['id' => 5, 'nama' => 'Inputer'],
         ];
 
         foreach($roles as $role){

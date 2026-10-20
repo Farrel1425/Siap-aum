@@ -8,6 +8,7 @@
     <meta content="ie=edge"
           http-equiv="X-UA-Compatible">
     <title>SIAP AUM - Perizinan Kabupaten Tabanan</title>
+    <link rel="preload" href="{{ asset('assets/images/siap-aum/figma-raw-2.webp') }}" as="image" type="image/webp" fetchpriority="high">
     @vite(['resources/sass/app.scss'])
     <link href="{{ asset('assets/vendors/iconsax/style.css') }}"
           rel="stylesheet">

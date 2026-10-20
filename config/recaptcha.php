@@ -41,7 +41,7 @@ return [
      * get more info @ https://developers.google.com/recaptcha/docs/versions
      *
      */
-    'version'                      => 'v2',
+    'version'                      => env('RECAPTCHA_VERSION', 'v2'),
 
     /**
      *
@@ -83,7 +83,7 @@ return [
      * @since v3.6.0
      *
      */
-    'default_language'             => null,
+    'default_language'             => env('RECAPTCHA_LANGUAGE', 'id'),
 
     /**
      *
