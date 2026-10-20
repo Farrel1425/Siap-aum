@@ -1,4 +1,5 @@
 /.phpunit.cache
+/.codex-tmp-render
 /node_modules
 /public/build
 /public/hot
