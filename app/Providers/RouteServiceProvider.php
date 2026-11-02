@@ -38,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        if ($this->app->environment('production')) {
+        if (config('app.force_https')) {
             URL::forceScheme('https');
         }
     }
