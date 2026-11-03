@@ -8,6 +8,7 @@ RUN apt-get update \
         curl \
         default-jre-headless \
         git \
+        ghostscript \
         libfreetype6-dev \
         libicu-dev \
         libjpeg62-turbo-dev \

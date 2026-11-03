@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use App\Exceptions\ServiceException;
 use App\Models\LogTte;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Http\Client\ConnectionException;
@@ -259,11 +260,17 @@ class PermohonanService
 
             // Save the Word document to a temporary file
             $filename_encrypt = Str::random(32);
-            $tempWordPath = storage_path('app/temp/' . $filename_encrypt . '.docx');
+            $temporaryDirectory = storage_path('app/temp');
+            $izinTerbitDirectory = storage_path('app/izin_terbit');
+
+            File::ensureDirectoryExists($temporaryDirectory);
+            File::ensureDirectoryExists($izinTerbitDirectory);
+
+            $tempWordPath = $temporaryDirectory . DIRECTORY_SEPARATOR . $filename_encrypt . '.docx';
             $templateProcessor->saveAs($tempWordPath);
 
             $pdfPath = 'izin_terbit/' . $filename_encrypt . '.pdf';
-            $pdfPathStorage = storage_path('app/' . $pdfPath);
+            $pdfPathStorage = $izinTerbitDirectory . DIRECTORY_SEPARATOR . $filename_encrypt . '.pdf';
 
             // Path to LibreOffice soffice executable
             if (config('app.os_server') == 'windows') {
@@ -277,7 +284,7 @@ class PermohonanService
 
             exec($command, $output, $returnVar);
 
-            if ($returnVar !== 0) {
+            if ($returnVar !== 0 || !File::exists($pdfPathStorage)) {
                 throw new \Exception('Error converting document to PDF: ' . implode("\n", $output));
             }
 
@@ -286,13 +293,20 @@ class PermohonanService
 
             if ($permohonan->lampiran_sk_filepath) {
                 $lampiranPdfPath = storage_path('app/' . $permohonan->lampiran_sk_filepath);
+                $normalizedLampiranPdfPath = $temporaryDirectory . DIRECTORY_SEPARATOR . $filename_encrypt . '_lampiran.pdf';
+
+                $this->normalizePdfForFpdi($lampiranPdfPath, $normalizedLampiranPdfPath);
 
                 // Path to the merged PDF file
                 $mergedPdfPath = 'izin_terbit/' . $filename_encrypt . '_merged.pdf';
                 $mergedPdfAbsolutePath = storage_path('app/izin_terbit/' . $filename_encrypt . '_merged.pdf');
 
-                // Merge the generated PDF with the lampiran PDF
-                $this->mergePdfs($pdfPathStorage, $lampiranPdfPath, $mergedPdfAbsolutePath);
+                try {
+                    // Merge the generated PDF with the normalized attachment.
+                    $this->mergePdfs($pdfPathStorage, $normalizedLampiranPdfPath, $mergedPdfAbsolutePath);
+                } finally {
+                    File::delete($normalizedLampiranPdfPath);
+                }
 
                 return $mergedPdfPath;
             }
@@ -366,5 +380,37 @@ class PermohonanService
 
         // Output the merged PDF
         $pdf->Output($outputPath, 'F');
+    }
+
+    /**
+     * Rewrites a PDF to version 1.4 so it can be read by the FPDI free parser.
+     * External PDFs often use compressed cross-reference streams unsupported by FPDI.
+     */
+    private function normalizePdfForFpdi(string $sourcePath, string $outputPath): void
+    {
+        if (!File::exists($sourcePath)) {
+            throw new ServiceException('File lampiran SK tidak ditemukan. Silakan unggah ulang lampiran.');
+        }
+
+        File::ensureDirectoryExists(dirname($outputPath));
+
+        $ghostscript = config('app.ghostscript_path');
+        $command = escapeshellarg($ghostscript)
+            . ' -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dBATCH -dSAFER'
+            . ' -sOutputFile=' . escapeshellarg($outputPath)
+            . ' ' . escapeshellarg($sourcePath)
+            . ' 2>&1';
+
+        exec($command, $output, $returnVar);
+
+        if ($returnVar !== 0 || !File::exists($outputPath)) {
+            Log::error('PDF attachment normalization failed', [
+                'source' => $sourcePath,
+                'exit_code' => $returnVar,
+                'output' => $output,
+            ]);
+
+            throw new ServiceException('Lampiran SK tidak dapat diproses. Mohon unggah ulang PDF yang valid.');
+        }
     }
 }

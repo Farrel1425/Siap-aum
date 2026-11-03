@@ -9,7 +9,8 @@ fi
 
 composer install --no-interaction --prefer-dist
 
-mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
+mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views \
+    storage/app/temp storage/app/izin_terbit bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 
 if [ -f .env ] && grep -q '^APP_KEY=$' .env; then

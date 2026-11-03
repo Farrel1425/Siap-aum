@@ -80,6 +80,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | PDF converter
+    |--------------------------------------------------------------------------
+    |
+    | Ghostscript normalizes uploaded PDF attachments before FPDI merges them.
+    | This avoids unsupported compression formats in PDFs from external sources.
+    |
+    */
+
+    'ghostscript_path' => env('GHOSTSCRIPT_PATH', PHP_OS_FAMILY === 'Windows' ? 'gswin64c.exe' : 'gs'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
