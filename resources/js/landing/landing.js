@@ -1,3 +1,11 @@
+import { initLandingFx } from './fx.js';
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (document.querySelector('.siap-aum-landing')) {
+    document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', initLandingFx, { once: true }) : initLandingFx();
+}
+
 $('.btn-toggle-password').on('click', function () {
     var $this = $(this);
     var $input = $this.closest('.input-group, .sa-login-field').find('input');
@@ -6,75 +14,130 @@ $('.btn-toggle-password').on('click', function () {
     $this.toggleClass('isax-eye-slash isax-eye');
 });
 
+function scrollProgress() {
+    if (!document.querySelector('.siap-aum-landing')) return;
+    const bar = document.createElement('div');
+    bar.className = 'tb-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.append(bar);
+    const update = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+}
+
+function parallax() {
+    const items = Array.from(document.querySelectorAll('[data-parallax]'));
+    if (!items.length || reduceMotion) return;
+    const update = () => {
+        items.forEach((el) => {
+            const r = el.parentElement.getBoundingClientRect();
+            const center = r.top + r.height / 2 - window.innerHeight / 2;
+            el.style.setProperty('--py', `${(-center * Number(el.dataset.parallax)).toFixed(1)}px`);
+        });
+    };
+    window.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    update();
+}
+
+function heroSpotlight() {
+    const hero = document.querySelector('[data-hero-effect]');
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!hero || !finePointer || reduceMotion) return;
+
+    let frame = null;
+    const move = (event) => {
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+            const bounds = hero.getBoundingClientRect();
+            const localX = event.clientX - bounds.left;
+            const localY = event.clientY - bounds.top;
+            const normalizedX = Math.max(-1, Math.min(1, (localX / bounds.width - 0.5) * 2));
+            const normalizedY = Math.max(-1, Math.min(1, (localY / bounds.height - 0.5) * 2));
+
+            hero.style.setProperty('--hero-x', `${localX}px`);
+            hero.style.setProperty('--hero-y', `${localY}px`);
+            hero.style.setProperty('--hero-bg-x', `${50 + normalizedX * 1.4}%`);
+            hero.style.setProperty('--hero-bg-y', `${44 + normalizedY * 1.1}%`);
+            hero.style.setProperty('--hero-shift-x', `${normalizedX * 15}px`);
+            hero.style.setProperty('--hero-shift-y', `${normalizedY * 11}px`);
+            hero.style.setProperty('--hero-shift-x-reverse', `${normalizedX * -13}px`);
+            hero.style.setProperty('--hero-shift-y-reverse', `${normalizedY * -9}px`);
+            hero.style.setProperty('--hero-shift-x-soft', `${normalizedX * 7}px`);
+            hero.style.setProperty('--hero-shift-y-soft', `${normalizedY * 5}px`);
+        });
+    };
+
+    hero.addEventListener('pointermove', move, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+        hero.style.setProperty('--hero-x', '68%');
+        hero.style.setProperty('--hero-y', '34%');
+        hero.style.setProperty('--hero-bg-x', '50%');
+        hero.style.setProperty('--hero-bg-y', '44%');
+        hero.style.setProperty('--hero-shift-x', '0px');
+        hero.style.setProperty('--hero-shift-y', '0px');
+        hero.style.setProperty('--hero-shift-x-reverse', '0px');
+        hero.style.setProperty('--hero-shift-y-reverse', '0px');
+        hero.style.setProperty('--hero-shift-x-soft', '0px');
+        hero.style.setProperty('--hero-shift-y-soft', '0px');
+    });
+}
+
+// Animasi muncul diputar ulang setiap kali elemen masuk/keluar layar.
+function reveals() {
+    const targets = document.querySelectorAll(
+        '.sa-survey, [data-reveal], .fx-heading, .fx-footer__grid > *, .tb-reveal'
+    );
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    targets.forEach((element, index) => {
+        element.classList.add('sa-reveal');
+        element.style.setProperty('--sa-reveal-delay', (index % 4) * 70 + 'ms');
+    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => entry.target.classList.toggle('is-visible', entry.isIntersecting));
+    }, { threshold: 0.1 });
+    targets.forEach((element) => observer.observe(element));
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     var navbar = document.querySelector('.sa-navbar-wrap');
     var navbarHoverZone = document.querySelector('.sa-navbar-hover-zone');
     var mobileNavbar = document.querySelector('.navbar.fixed-bottom');
     var navLinks = Array.from(document.querySelectorAll('.sa-navbar__links a[href*="#"]'));
-    var revealTargets = document.querySelectorAll(
-        '.sa-about > .sa-eyebrow, .sa-about > h2, .sa-about__visual, .sa-soft-card, ' +
-        '.sa-recap .sa-section-heading, .sa-stat-card, .sa-survey, .sa-guide .sa-section-heading, ' +
-        '.sa-step-card, .sa-guide__brand, .sa-check .sa-section-heading, .sa-check__form, ' +
-        '.sa-why .sa-section-heading, .sa-why-card, .sa-download, .sa-footer__content > *, .sa-footer__bottom'
-    );
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var lastScrollY = window.scrollY;
     var ticking = false;
 
-    if (navbar) {
-        var revealNavbar = function () {
-            navbar.classList.remove('is-hidden');
-        };
+    scrollProgress();
+    parallax();
+    heroSpotlight();
+    reveals();
 
+    if (navbar) {
+        var revealNavbar = function () { navbar.classList.remove('is-hidden'); };
         var updateNavbar = function () {
             var currentScrollY = Math.max(window.scrollY, 0);
             var movingDown = currentScrollY > lastScrollY;
-
             navbar.classList.toggle('is-scrolled', currentScrollY > 90);
             navbar.classList.toggle('is-hidden', movingDown && currentScrollY > 180);
             if (mobileNavbar) mobileNavbar.classList.toggle('is-hidden', movingDown && currentScrollY > 180);
             lastScrollY = currentScrollY;
             ticking = false;
         };
-
         window.addEventListener('scroll', function () {
             if (!ticking) {
                 window.requestAnimationFrame(updateNavbar);
                 ticking = true;
             }
         }, { passive: true });
-
-        // Navbar disembunyikan ketika halaman discroll ke bawah. Arahkan
-        // kursor ke tepi atas layar untuk menampilkannya kembali.
         document.addEventListener('mousemove', function (event) {
             if (event.clientY <= 90) revealNavbar();
         }, { passive: true });
-
-        if (navbarHoverZone) {
-            navbarHoverZone.addEventListener('mouseenter', revealNavbar);
-        }
-
+        if (navbarHoverZone) navbarHoverZone.addEventListener('mouseenter', revealNavbar);
         navbar.addEventListener('mouseleave', function () {
             if (window.scrollY > 180) navbar.classList.add('is-hidden');
         });
-    }
-
-    if (!reduceMotion && 'IntersectionObserver' in window) {
-        revealTargets.forEach(function (element, index) {
-            element.classList.add('sa-reveal');
-            element.style.setProperty('--sa-reveal-delay', (index % 4) * 70 + 'ms');
-        });
-
-        var revealObserver = new IntersectionObserver(function (entries, observer) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-
-        revealTargets.forEach(function (element) { revealObserver.observe(element); });
     }
 
     var sections = Array.from(document.querySelectorAll('.siap-aum-landing section[id], .sa-footer[id]'));
@@ -88,13 +151,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }, { rootMargin: '-35% 0px -55% 0px' });
         sections.forEach(function (section) { sectionObserver.observe(section); });
+        window.addEventListener('scroll', function () {
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+                navLinks.forEach(function (link) { link.classList.toggle('is-active', link.hash === '#kontak'); });
+            }
+        }, { passive: true });
     }
 
-    var carousel = document.querySelector('.sa-download');
+    var carousel = document.querySelector('.tb-services');
     if (carousel) {
-        var track = carousel.querySelector('.sa-download__track');
-        var slides = Array.from(carousel.querySelectorAll('.sa-download__slide'));
-        var dots = Array.from(carousel.querySelectorAll('.sa-download__dots button'));
+        var slides = Array.from(carousel.querySelectorAll('.tb-services__slide'));
+        var tabs = Array.from(carousel.querySelectorAll('.tb-services__tab'));
+        var media = carousel.querySelector('[data-services-media]');
+        var counter = carousel.querySelector('[data-services-no]');
         var previousButton = carousel.querySelector('[data-carousel-prev]');
         var nextButton = carousel.querySelector('[data-carousel-next]');
         var activeSlide = 0;
@@ -103,49 +172,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var showSlide = function (index) {
             activeSlide = (index + slides.length) % slides.length;
-            track.style.transform = 'translate3d(-' + (activeSlide * 100) + '%, 0, 0)';
-
-            slides.forEach(function (slide, slideIndex) {
-                slide.setAttribute('aria-hidden', slideIndex === activeSlide ? 'false' : 'true');
+            slides.forEach(function (slide, i) {
+                slide.classList.toggle('is-active', i === activeSlide);
+                slide.setAttribute('aria-hidden', i === activeSlide ? 'false' : 'true');
             });
-            dots.forEach(function (dot, dotIndex) {
-                var isActive = dotIndex === activeSlide;
-                dot.classList.toggle('is-active', isActive);
-                dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            tabs.forEach(function (tab, i) {
+                tab.classList.remove('is-active');
+                tab.setAttribute('aria-selected', i === activeSlide ? 'true' : 'false');
             });
+            void carousel.offsetWidth;
+            tabs[activeSlide].classList.add('is-active');
+            counter.textContent = String(activeSlide + 1).padStart(2, '0');
         };
-
         var stopAutoplay = function () {
             if (autoplayTimer) window.clearInterval(autoplayTimer);
             autoplayTimer = null;
+            carousel.classList.add('is-paused');
         };
         var startAutoplay = function () {
             stopAutoplay();
+            carousel.classList.remove('is-paused');
             if (!reduceMotion && !document.hidden) {
                 autoplayTimer = window.setInterval(function () { showSlide(activeSlide + 1); }, 5600);
             }
         };
 
-        dots.forEach(function (dot, index) {
-            dot.addEventListener('click', function () { showSlide(index); startAutoplay(); });
+        tabs.forEach(function (tab, index) {
+            tab.addEventListener('click', function () { showSlide(index); startAutoplay(); });
         });
         previousButton.addEventListener('click', function () { showSlide(activeSlide - 1); startAutoplay(); });
         nextButton.addEventListener('click', function () { showSlide(activeSlide + 1); startAutoplay(); });
-        carousel.addEventListener('mouseenter', stopAutoplay);
-        carousel.addEventListener('mouseleave', startAutoplay);
-        carousel.addEventListener('focusin', stopAutoplay);
-        carousel.addEventListener('focusout', function (event) {
-            if (!carousel.contains(event.relatedTarget)) startAutoplay();
-        });
-        carousel.addEventListener('pointerdown', function (event) { pointerStartX = event.clientX; });
-        carousel.addEventListener('pointerup', function (event) {
+        media.addEventListener('mouseenter', stopAutoplay);
+        media.addEventListener('mouseleave', function () { showSlide(activeSlide); startAutoplay(); });
+        media.addEventListener('pointerdown', function (event) { pointerStartX = event.clientX; });
+        media.addEventListener('pointerup', function (event) {
             if (pointerStartX === null) return;
             var distance = event.clientX - pointerStartX;
-            if (Math.abs(distance) > 55) showSlide(activeSlide + (distance < 0 ? 1 : -1));
+            if (Math.abs(distance) > 55) { showSlide(activeSlide + (distance < 0 ? 1 : -1)); startAutoplay(); }
             pointerStartX = null;
-            startAutoplay();
         });
-        carousel.addEventListener('pointercancel', function () { pointerStartX = null; });
+        media.addEventListener('pointercancel', function () { pointerStartX = null; });
         document.addEventListener('visibilitychange', function () { document.hidden ? stopAutoplay() : startAutoplay(); });
         showSlide(0);
         startAutoplay();

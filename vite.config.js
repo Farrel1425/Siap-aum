@@ -29,6 +29,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/sass/app.scss',
+                'resources/sass/landing-modern.scss',
                 'resources/js/app.js',
                 'resources/js/landing/landing.js',
                 'resources/js/dashboard/dashboard.js',

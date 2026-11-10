@@ -32,7 +32,7 @@
                 </div>
 
                 @if (config('recaptcha.enabled'))
-                    <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
+                    <div class="sa-login-captcha"><div class="g-recaptcha" data-sitekey="{{ config('recaptcha.api_site_key') }}"></div></div>
                     @error('g-recaptcha-response')<span class="sa-form-error">{{ $message }}</span>@enderror
                 @endif
 

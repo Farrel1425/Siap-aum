@@ -2,50 +2,90 @@
 
 @section('content')
 <main class="siap-aum-landing">
-    <section class="sa-hero" id="home">
+    <section class="sa-hero sa-hero--alive" id="home" data-hero-effect style="background-image: url('{{ asset('assets/images/siap-aum/figma-raw-2.webp') }}')">
         <div class="sa-hero__wash"></div>
+        <div class="sa-hero__effects" aria-hidden="true">
+            <span class="sa-hero__grid"></span>
+            <span class="sa-hero__orb sa-hero__orb--one"></span>
+            <span class="sa-hero__orb sa-hero__orb--two"></span>
+            <span class="sa-hero__ring"></span>
+            <span class="sa-hero__float sa-hero__float--apply">
+                <i class="isax-bold isax-document-upload"></i>
+                <span><small>Lebih praktis</small><strong>Pengajuan Online</strong></span>
+                <b class="isax-bold isax-tick-circle"></b>
+            </span>
+            <span class="sa-hero__float sa-hero__float--tte">
+                <i class="isax-bold isax-shield-tick"></i>
+                <span><small>Dokumen resmi</small><strong>Tanda Tangan Elektronik</strong></span>
+            </span>
+            <span class="sa-hero__flow">
+                <span><i class="isax-bold isax-document-upload"></i>Ajukan</span>
+                <b></b>
+                <span><i class="isax-bold isax-search-status"></i>Verifikasi</span>
+                <b></b>
+                <span><i class="isax-bold isax-document-text"></i>Terbit</span>
+            </span>
+        </div>
         <div class="sa-hero__content">
             <div class="sa-government-badge" aria-label="Pemerintah Kabupaten Tabanan">
-                <img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="Logo SIAP AUM">
-                <img src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}" alt="Lambang Kabupaten Tabanan">
+                <span class="sa-government-badge__logos">
+                    <img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="Logo SIAP AUM">
+                    <img src="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}" alt="Lambang Kabupaten Tabanan">
+                </span>
+                <span>Pemerintah Kabupaten Tabanan</span>
             </div>
+            <span class="sa-hero__eyebrow"><i></i>Layanan Perizinan Online</span>
             <h1>Sistem Informasi Administrasi<br>Perizinan Andal, Unggul, <span class="sa-title-accent" aria-hidden="true"><i></i><i></i></span><br>Nyaman, dan Gesit</h1>
             <p>SIAP AUM adalah portal pelayanan perizinan online berbasis website yang dikembangkan oleh Pemerintah Kabupaten Tabanan yang bertujuan untuk memenuhi kebutuhan masyarakat dalam pengajuan izin yang transparan, inovatif, efektif, dan efisien. Sistem perizinan online ini diperuntukkan bagi pemohon yang ingin mengajukan permohonan perizinan secara online. Masyarakat dapat mengajukan permohonan izin secara mandiri kapan pun dan di mana pun tanpa harus datang langsung ke kantor DPMPTSP Kabupaten Tabanan.</p>
             <div class="sa-hero__actions">
                 @auth
-                    <a class="sa-btn sa-btn--primary" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="sa-btn sa-btn--primary" data-magnetic href="{{ route('dashboard') }}">Dashboard <i class="isax isax-arrow-right-3"></i></a>
                 @else
-                    <a class="sa-btn sa-btn--primary" href="{{ route('login.index') }}">Login</a>
+                    <a class="sa-btn sa-btn--primary" data-magnetic href="{{ route('login.index') }}">Login <i class="isax isax-login-1"></i></a>
                 @endauth
-                <a class="sa-btn sa-btn--light" href="#cek-permohonan">Cek Permohonan</a>
+                <a class="sa-btn sa-btn--light" data-magnetic href="#cek-permohonan"><i class="isax isax-search-normal-1"></i> Cek Permohonan</a>
             </div>
         </div>
-        <a class="sa-scroll-hint" href="#tentang">Scroll for more <span aria-hidden="true">&darr;</span></a>
+        <a class="sa-scroll-hint" href="#tentang">Jelajahi layanan <span aria-hidden="true">&darr;</span></a>
     </section>
-
-    <section class="sa-section sa-about" id="tentang">
-        <span class="sa-eyebrow"><i></i>Tentang</span>
-        <h2>Mari daftarkan permohonan izin anda<br>melalui SIAP AUM</h2>
-        <div class="sa-about__grid">
-            <div class="sa-about__visual">
-                <div class="sa-about__backdrop"></div>
-                <img src="{{ asset('assets/images/siap-aum/figma-raw-4.webp') }}" alt="Gerbang Kabupaten Tabanan" width="1400" height="1867" loading="lazy" decoding="async" fetchpriority="low">
+    <section class="fx-section fx-about" id="tentang">
+        <div class="tb-about__visual" data-reveal data-testid="about-visual">
+            <figure class="tb-frame">
+                <img src="{{ asset('assets/images/siap-aum/figma-raw-4.webp') }}" alt="Gerbang khas Kabupaten Tabanan" width="1500" height="999" loading="lazy" decoding="async" data-parallax="0.12">
+                <figcaption><i class="isax-bold isax-location"></i><span><strong>Tabanan</strong> Bali</span></figcaption>
+            </figure>
+            <svg class="tb-badge" viewBox="0 0 120 120" aria-hidden="true">
+                <defs><path id="tb-badge-path" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs>
+                <text textLength="284" lengthAdjust="spacing"><textPath href="#tb-badge-path">SIAP AUM TABANAN &#8226;</textPath></text>
+            </svg>
+            <span class="tb-badge__core" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt=""></span>
+            <div class="tb-about__card" aria-hidden="true">
+                <span class="tb-about__card-icon"><i class="isax-bold isax-document-text"></i></span>
+                <div><strong>Izin diterbitkan</strong><small>Ditandatangani elektronik</small></div>
+                <b class="isax-bold isax-tick-circle"></b>
             </div>
-            <div class="sa-about__benefits">
-                <div class="sa-soft-card sa-soft-card--intro">Dengan menggunakan SIAP AUM, Anda dapat mengajukan permohonan izin secara mandiri dengan sistem online. Berikut merupakan keunggulan dari SIAP AUM:</div>
-                <div class="sa-soft-card">Memudahkan anda mengajukan permohonan izin tanpa calo</div>
-                <div class="sa-soft-card">Verifikasi berkas oleh petugas DPMPTSP secara online</div>
-                <div class="sa-soft-card">Pemantauan posisi berkas secara online</div>
-                <div class="sa-soft-card">Revisi berkas permohonan izin secara online</div>
-                <div class="sa-soft-card">Revisi berkas permohonan izin secara online</div>
-            </div>
+        </div>
+        <div class="fx-about__copy">
+            <span class="sa-eyebrow"><i></i>Tentang</span>
+            <h2 data-reveal data-split="reveal">Mari daftarkan permohonan izin anda melalui SIAP AUM</h2>
+            <p class="fx-about__intro" data-reveal>Dengan menggunakan SIAP AUM, Anda dapat mengajukan permohonan izin secara mandiri dengan sistem online. Berikut merupakan keunggulan dari SIAP AUM:</p>
+            <ul class="fx-benefits">
+                <li data-reveal data-spot><span><i class="isax-bold isax-user-tick"></i></span>Memudahkan anda mengajukan permohonan izin tanpa calo</li>
+                <li data-reveal data-spot><span><i class="isax-bold isax-shield-search"></i></span>Verifikasi berkas oleh petugas DPMPTSP secara online</li>
+                <li data-reveal data-spot><span><i class="isax-bold isax-location-tick"></i></span>Pemantauan posisi berkas secara online</li>
+                <li data-reveal data-spot><span><i class="isax-bold isax-edit-2"></i></span>Revisi berkas permohonan izin secara online</li>
+            </ul>
         </div>
     </section>
 
-    <section class="sa-recap" id="rekap">
-        <div class="sa-recap__light"></div>
-        <div class="sa-section-heading sa-section-heading--inverse"><span class="sa-eyebrow"><i></i>Rekap</span><h2>Rekapitulasi Izin yang Masuk</h2></div>
-        <form class="sa-year-filter" action="{{ route('home') }}" method="GET"><label for="tahun">Tahun</label><select id="tahun" name="tahun" onchange="this.form.submit()">@foreach ($tahun_options as $tahun_option)<option value="{{ $tahun_option }}" @selected($tahun_option == $tahun)>{{ $tahun_option }}</option>@endforeach</select></form>
+    <section class="fx-recap" id="rekap">
+        <div class="fx-recap__head">
+            <div class="sa-section-heading--inverse">
+                <span class="sa-eyebrow"><i></i>Rekap</span>
+                <h2>Rekapitulasi Izin yang Masuk</h2>
+            </div>
+            <form class="sa-year-filter fx-year" action="{{ route('home') }}" method="GET"><label for="tahun">Tahun</label><select id="tahun" name="tahun" onchange="this.form.submit()">@foreach ($tahun_options as $tahun_option)<option value="{{ $tahun_option }}" @selected($tahun_option == $tahun)>{{ $tahun_option }}</option>@endforeach</select></form>
+        </div>
         @php
             $stats = [
                 ['icon' => 'stat-user.svg', 'value' => $user_count, 'label' => 'Jumlah Pemohon'],
@@ -54,16 +94,20 @@
                 ['icon' => 'stat-printer.svg', 'value' => $permohonan_selesai_count, 'label' => 'Izin Selesai'],
             ];
         @endphp
-        <div class="sa-stats">
+        <div class="fx-stats">
             @foreach ($stats as $stat)
-                <article class="sa-stat-card"><span class="sa-stat-card__icon"><img src="{{ asset('assets/images/siap-aum/'.$stat['icon']) }}" alt="" loading="lazy" decoding="async"></span><strong>{{ number_format($stat['value']) }}</strong><span>{{ $stat['label'] }}</span></article>
+                <article class="fx-stat" data-reveal data-spot data-tilt><span class="fx-stat__icon"><img src="{{ asset('assets/images/siap-aum/'.$stat['icon']) }}" alt="" loading="lazy" decoding="async"></span><span class="fx-stat__label">{{ $stat['label'] }}</span><strong data-count="{{ $stat['value'] }}">{{ number_format($stat['value']) }}</strong></article>
             @endforeach
         </div>
-        <details class="sa-survey"><summary>Hasil Survey Kepuasan Masyarakat</summary><div class="sa-survey__body"><div class="sa-survey__score"><strong>{{ number_format((float) min($laporan_survey['persentaseNilaiIKM'], 84), 2, '.', '') }}</strong><span>Sangat Baik · {{ $laporan_survey['totalKuesioner'] }} responden</span></div><div class="sa-survey__bars">@foreach ($laporan_survey['nrrTertbgUnsurPercentage'] as $layanan => $value)<div><span>{{ $layanan }}</span><i style="width: {{ min($value, 84) }}%"></i></div>@endforeach</div></div></details>
+        <details class="sa-survey fx-survey"><summary><i class="isax isax-medal-star"></i> Hasil Survey Kepuasan Masyarakat <i class="isax isax-arrow-down-1"></i></summary><div class="sa-survey__body"><div class="sa-survey__score"><strong>{{ number_format((float) min($laporan_survey['persentaseNilaiIKM'], 84), 2, '.', '') }}</strong><span>Sangat Baik &middot; {{ $laporan_survey['totalKuesioner'] }} responden</span></div><div class="sa-survey__bars">@foreach ($laporan_survey['nrrTertbgUnsurPercentage'] as $layanan => $value)<div><span>{{ $layanan }}</span><i style="width: {{ min($value, 84) }}%"></i></div>@endforeach</div></div></details>
     </section>
 
-    <section class="sa-section sa-guide" id="panduan">
-        <div class="sa-section-heading"><span class="sa-eyebrow"><i></i>Panduan</span><h2>Panduan Pengajuan</h2></div>
+    <section class="fx-section fx-guide" id="panduan">
+        <div class="fx-heading">
+            <span class="sa-eyebrow"><i></i>Panduan</span>
+            <h2 data-split="reveal">Panduan Pengajuan</h2>
+            <p>Enam langkah sederhana dari pendaftaran akun hingga izin Anda disetujui.</p>
+        </div>
         @php
             $steps = [
                 ['user-add', 'Daftarkan akun anda untuk mengakses halaman permohonan'],
@@ -74,69 +118,111 @@
                 ['tick-circle', 'Tunggulah hingga pengajuan Anda disetujui.'],
             ];
         @endphp
-        <div class="sa-guide__layout">
-            <div class="sa-guide__column">@foreach (array_slice($steps, 0, 3) as $index => $step)<article class="sa-step-card"><span class="sa-step-icon"><i class="isax isax-{{ $step[0] }}"></i></span><strong>{{ $index + 1 }}</strong><p>{{ $step[1] }}</p></article>@endforeach</div>
-            <div class="sa-guide__brand"><img src="{{ asset('assets/images/siap-aum/siap-aum-mark.svg') }}" alt="" loading="lazy" decoding="async"><span>Siap Aum</span></div>
-            <div class="sa-guide__column">@foreach (array_slice($steps, 3, 3) as $index => $step)<article class="sa-step-card"><span class="sa-step-icon"><i class="isax isax-{{ $step[0] }}"></i></span><strong>{{ $index + 4 }}</strong><p>{{ $step[1] }}</p></article>@endforeach</div>
+        <div class="fx-steps">
+            @foreach ($steps as $index => $step)
+                <a class="fx-step" href="{{ route('user-guide') }}" data-reveal data-spot data-tilt data-testid="guide-step-{{ $index + 1 }}">
+                    <div class="fx-step__top"><span class="fx-step__icon"><i class="isax isax-{{ $step[0] }}"></i></span><b>{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</b></div>
+                    <p>{{ $step[1] }}</p>
+                </a>
+            @endforeach
         </div>
     </section>
 
-    <section class="sa-section sa-check" id="cek-permohonan">
-        <div class="sa-section-heading"><span class="sa-eyebrow"><i></i>Cek Permohonan</span><h2>Cek Permohonan</h2></div>
-        <form class="sa-check__form" action="{{ route('cek-permohonan.store') }}" method="POST">@csrf<label class="visually-hidden" for="nomor_registrasi">Nomor permohonan</label><input id="nomor_registrasi" name="nomor_registrasi" type="text" required placeholder="cek Nomor Permohonan"><button type="submit" aria-label="Cari nomor permohonan"><i class="isax isax-search-normal-1"></i></button></form>
+    <section class="fx-section fx-check" id="cek-permohonan">
+        <div class="fx-check__card" data-reveal data-spot>
+            <div>
+                <span class="sa-eyebrow"><i></i>Cek Permohonan</span>
+                <h2>Cek Permohonan</h2>
+                <p>Masukkan nomor permohonan untuk melihat posisi berkas dan riwayat prosesnya.</p>
+            </div>
+            <form class="fx-check__form" action="{{ route('cek-permohonan.store') }}" method="POST">@csrf<label class="visually-hidden" for="nomor_registrasi">Nomor permohonan</label><i class="isax isax-receipt-search"></i><input data-testid="check-permohonan-input" id="nomor_registrasi" name="nomor_registrasi" type="text" required placeholder="cek Nomor Permohonan"><button type="submit" data-magnetic data-testid="check-permohonan-submit" aria-label="Cari nomor permohonan"><span>Cari</span><i class="isax isax-search-normal-1"></i></button></form>
+        </div>
     </section>
 
-    <section class="sa-section sa-why" id="kenapa">
-        <div class="sa-section-heading"><span class="sa-eyebrow"><i></i>Kenapa Siap Aum</span><h2>Kenapa SIAP AUM?</h2></div>
-        <div class="sa-why__grid">
-            <article class="sa-why-card sa-why-card--speed">
-                <div class="sa-speed-lines" aria-hidden="true">
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-bullseye.svg') }}" alt="" loading="lazy" decoding="async">Accuracy</span></div>
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-latency.svg') }}" alt="" loading="lazy" decoding="async">Latency</span></div>
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-shield-label.svg') }}" alt="" loading="lazy" decoding="async">Safety</span></div>
-                    <div><i></i><span><img src="{{ asset('assets/images/siap-aum/why-fast.svg') }}" alt="" loading="lazy" decoding="async">Fast</span></div>
+    <section class="fx-section fx-why" id="kenapa">
+        <div class="fx-heading">
+            <span class="sa-eyebrow"><i></i>Kenapa Siap Aum</span>
+            <h2 data-split="reveal">Kenapa SIAP AUM?</h2>
+        </div>
+        <div class="tb-bento" data-testid="why-bento">
+            <article data-spot class="tb-card tb-card--wide" data-reveal data-testid="why-card-fast">
+                <div class="tb-art tb-art--speed" aria-hidden="true">
+                    <div class="tb-speed__chips"><span><i class="isax-bold isax-flash-1"></i>Cepat</span><span><i class="isax-bold isax-gps"></i>Akurat</span><span><i class="isax-bold isax-shield-tick"></i>Aman</span><span><i class="isax-bold isax-timer-1"></i>Real-time</span></div>
+                    <div class="tb-speed__bars">
+                        <div><span>Pengajuan</span><i style="--w: 92%"></i></div>
+                        <div><span>Verifikasi</span><i style="--w: 74%"></i></div>
+                        <div><span>Penerbitan</span><i style="--w: 58%"></i></div>
+                    </div>
                 </div>
-                <div class="sa-why-card__copy"><h3>Pelayanan Cepat &amp; Efisien</h3><p>Proses perizinan dirancang sederhana dan terintegrasi sehingga pengajuan dapat dilakukan dengan cepat tanpa prosedur yang berbelit.</p></div>
+                <div class="tb-card__copy"><span class="tb-card__no">01</span><h3>Pelayanan Cepat &amp; Efisien</h3><p>Proses perizinan dirancang sederhana dan terintegrasi sehingga pengajuan dapat dilakukan dengan cepat tanpa prosedur yang berbelit.</p></div>
             </article>
-            <article class="sa-why-card sa-why-card--access">
-                <div class="sa-checks" aria-hidden="true"><span></span>@for ($i = 0; $i < 3; $i++)<i><img src="{{ asset('assets/images/siap-aum/why-check.svg') }}" alt="" loading="lazy" decoding="async"></i>@endfor</div>
-                <div class="sa-why-card__copy"><h3>Akses Mudah Kapan Saja &amp; Di Mana Saja</h3><p>Masyarakat dapat mengajukan dan mengunduh izin secara online tanpa harus datang ke kantor, cukup melalui perangkat masing-masing.</p></div>
+            <article data-spot class="tb-card tb-card--red" data-reveal data-testid="why-card-access">
+                <div class="tb-art tb-art--phone" aria-hidden="true">
+                    <div class="tb-phone"><span class="tb-phone__notch"></span><div class="tb-phone__screen"><span class="tb-phone__bar"></span><span class="tb-phone__bar tb-phone__bar--s"></span><div class="tb-phone__toast"><i class="isax-bold isax-notification-bing"></i><span><strong>Izin terbit</strong><small>Siap diunduh</small></span></div><span class="tb-phone__btn"><i class="isax isax-document-download"></i></span></div></div>
+                </div>
+                <div class="tb-card__copy"><span class="tb-card__no">02</span><h3>Akses Mudah Kapan Saja &amp; Di Mana Saja</h3><p>Masyarakat dapat mengajukan dan mengunduh izin secara online tanpa harus datang ke kantor, cukup melalui perangkat masing-masing.</p></div>
             </article>
-            <article class="sa-why-card sa-why-card--secure">
-                <div class="sa-shield" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/why-shield.svg') }}" alt="" loading="lazy" decoding="async"></div>
-                <div class="sa-why-card__copy"><h3>Aman &amp; Terjamin Legalitasnya</h3><p>Dilengkapi dengan sistem keamanan dan Tanda Tangan Elektronik resmi, sehingga dokumen izin memiliki kekuatan hukum dan terjamin keasliannya.</p></div>
+            <article data-spot class="tb-card" data-reveal data-testid="why-card-secure">
+                <div class="tb-art tb-art--doc" aria-hidden="true">
+                    <div class="tb-doc"><span class="tb-doc__head"></span><span></span><span></span><span class="tb-doc__s"></span><span></span><span class="tb-doc__s"></span><div class="tb-doc__sign"><em></em></div></div>
+                    <div class="tb-seal"><i class="isax-bold isax-verify"></i><b>TTE</b></div>
+                </div>
+                <div class="tb-card__copy"><span class="tb-card__no">03</span><h3>Aman &amp; Terjamin Legalitasnya</h3><p>Dilengkapi dengan sistem keamanan dan Tanda Tangan Elektronik resmi, sehingga dokumen izin memiliki kekuatan hukum dan terjamin keasliannya.</p></div>
             </article>
-            <article class="sa-why-card sa-why-card--monitor">
-                <div class="sa-monitor" aria-hidden="true"><img src="{{ asset('assets/images/siap-aum/why-monitor.svg') }}" alt="" loading="lazy" decoding="async"></div>
-                <div class="sa-why-card__copy"><h3>Transparan &amp; Mudah Dipantau</h3><p>Setiap tahapan permohonan izin dapat dipantau secara real-time, sehingga masyarakat mengetahui status pengajuan dengan jelas.</p></div>
+            <article data-spot class="tb-card tb-card--wide" data-reveal data-testid="why-card-track">
+                <div class="tb-art tb-art--track" aria-hidden="true">
+                    <div class="tb-track__head"><span class="lx-live"><i></i>Live</span><strong>REG/2026/&bull;&bull;&bull;&bull;</strong></div>
+                    <div class="tb-track__line"><span class="tb-track__fill"></span>
+                        <div class="tb-track__node is-done"><i class="isax-bold isax-document-upload"></i><small>Diajukan</small></div>
+                        <div class="tb-track__node is-done"><i class="isax-bold isax-search-status"></i><small>Diperiksa</small></div>
+                        <div class="tb-track__node is-now"><i class="isax-bold isax-shield-search"></i><small>Verifikasi</small></div>
+                        <div class="tb-track__node"><i class="isax-bold isax-document-text"></i><small>Terbit</small></div>
+                    </div>
+                </div>
+                <div class="tb-card__copy"><span class="tb-card__no">04</span><h3>Transparan &amp; Mudah Dipantau</h3><p>Setiap tahapan permohonan izin dapat dipantau secara real-time, sehingga masyarakat mengetahui status pengajuan dengan jelas.</p></div>
             </article>
         </div>
     </section>
 
-    <section class="sa-section sa-download" aria-roledescription="carousel" aria-label="Tahapan layanan SIAP AUM">
+    <section class="fx-section tb-services" aria-roledescription="carousel" aria-label="Tahapan layanan SIAP AUM" data-testid="services-carousel">
         @php
             $service_slides = [
-                ['image' => 'service-apply.jpg', 'title' => 'Ajukan izin secara online', 'description' => 'Ajukan permohonan izin dari mana saja tanpa harus datang ke kantor. Pilih layanan, isi data, dan unggah dokumen secara praktis melalui SIAP AUM.'],
-                ['image' => 'service-track.jpg', 'title' => 'Pantau proses permohonan', 'description' => 'Ketahui perkembangan permohonan secara transparan. Setiap proses verifikasi dan perubahan status dapat dipantau langsung melalui akun Anda.'],
-                ['image' => 'service-revise.jpg', 'title' => 'Perbaiki dokumen dengan mudah', 'description' => 'Jika terdapat dokumen yang perlu diperbaiki, petugas akan memberikan catatan revisi. Perbarui dan kirim kembali berkas tanpa harus datang ke kantor.'],
-                ['image' => 'service-download.jpg', 'title' => 'Unduh izin resmi Anda', 'description' => 'Setelah disetujui, dokumen izin resmi dapat diunduh langsung melalui akun SIAP AUM dan dilengkapi Tanda Tangan Elektronik untuk menjamin keasliannya.'],
+                ['image' => 'service-apply.jpg', 'icon' => 'document-upload', 'title' => 'Ajukan izin secara online', 'description' => 'Ajukan permohonan izin dari mana saja tanpa harus datang ke kantor. Pilih layanan, isi data, dan unggah dokumen secara praktis melalui SIAP AUM.'],
+                ['image' => 'service-track.jpg', 'icon' => 'location-tick', 'title' => 'Pantau proses permohonan', 'description' => 'Ketahui perkembangan permohonan secara transparan. Setiap proses verifikasi dan perubahan status dapat dipantau langsung melalui akun Anda.'],
+                ['image' => 'service-revise.jpg', 'icon' => 'edit-2', 'title' => 'Perbaiki dokumen dengan mudah', 'description' => 'Jika terdapat dokumen yang perlu diperbaiki, petugas akan memberikan catatan revisi. Perbarui dan kirim kembali berkas tanpa harus datang ke kantor.'],
+                ['image' => 'service-download.jpg', 'icon' => 'document-download', 'title' => 'Unduh izin resmi Anda', 'description' => 'Setelah disetujui, dokumen izin resmi dapat diunduh langsung melalui akun SIAP AUM dan dilengkapi Tanda Tangan Elektronik untuk menjamin keasliannya.'],
             ];
         @endphp
-        <div class="sa-download__viewport">
-            <div class="sa-download__track">
+        <div class="fx-heading">
+            <span class="sa-eyebrow"><i></i>Layanan</span>
+            <h2 data-split="reveal">Semua urusan izin dalam satu portal</h2>
+        </div>
+        <div class="tb-services__wrap" data-reveal>
+            <div class="tb-services__media" data-services-media>
                 @foreach ($service_slides as $index => $slide)
-                    <article class="sa-download__slide" aria-hidden="{{ $index === 0 ? 'false' : 'true' }}">
-                        <div class="sa-download__image"><img src="{{ asset('assets/images/siap-aum/'.$slide['image']) }}" alt="{{ $slide['title'] }}" loading="lazy" decoding="async" fetchpriority="low"></div>
-                        <div class="sa-download__copy"><h2>{{ $slide['title'] }}</h2><p>{{ $slide['description'] }}</p></div>
-                    </article>
+                    <figure class="tb-services__slide {{ $index === 0 ? 'is-active' : '' }}" aria-hidden="{{ $index === 0 ? 'false' : 'true' }}">
+                        <img src="{{ asset('assets/images/siap-aum/'.$slide['image']) }}" alt="{{ $slide['title'] }}" loading="lazy" decoding="async">
+                    </figure>
+                @endforeach
+                <div class="tb-services__count" aria-hidden="true"><b data-services-no>01</b><span>/ {{ str_pad(count($service_slides), 2, '0', STR_PAD_LEFT) }}</span></div>
+                <div class="tb-services__nav">
+                    <button type="button" data-carousel-prev aria-label="Slide sebelumnya" data-testid="services-prev-btn"><i class="isax isax-arrow-left-2"></i></button>
+                    <button type="button" data-carousel-next aria-label="Slide berikutnya" data-testid="services-next-btn"><i class="isax isax-arrow-right-3"></i></button>
+                </div>
+            </div>
+            <div class="tb-services__list" role="tablist" aria-label="Pilih tahapan layanan">
+                @foreach ($service_slides as $index => $slide)
+                    <button type="button" role="tab" class="tb-services__tab {{ $index === 0 ? 'is-active' : '' }}" aria-selected="{{ $index === 0 ? 'true' : 'false' }}" data-testid="services-tab-{{ $index + 1 }}">
+                        <span class="tb-services__icon"><i class="isax isax-{{ $slide['icon'] }}"></i></span>
+                        <span class="tb-services__text">
+                            <small>{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</small>
+                            <strong>{{ $slide['title'] }}</strong>
+                            <span class="tb-services__desc"><span>{{ $slide['description'] }}</span></span>
+                        </span>
+                        <i class="tb-services__bar" aria-hidden="true"></i>
+                    </button>
                 @endforeach
             </div>
-        </div>
-        <div class="sa-download__controls">
-            <div class="sa-download__dots" role="tablist" aria-label="Pilih tahapan layanan">
-                @foreach ($service_slides as $index => $slide)<button type="button" class="{{ $index === 0 ? 'is-active' : '' }}" aria-label="Tampilkan slide {{ $index + 1 }}: {{ $slide['title'] }}" aria-selected="{{ $index === 0 ? 'true' : 'false' }}"></button>@endforeach
-            </div>
-            <div class="sa-download__arrows"><button type="button" data-carousel-prev aria-label="Slide sebelumnya">&larr;</button><button type="button" data-carousel-next aria-label="Slide berikutnya">&rarr;</button></div>
         </div>
     </section>
 </main>

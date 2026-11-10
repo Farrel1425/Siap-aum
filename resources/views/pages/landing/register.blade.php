@@ -43,7 +43,7 @@
             </div>
 
             @if (config('recaptcha.enabled'))
-                <div class="sa-login-captcha" id="otp-recaptcha">{!! htmlFormSnippet() !!}</div>
+                <div class="sa-login-captcha" id="otp-recaptcha"><div class="g-recaptcha" data-sitekey="{{ config('recaptcha.api_site_key') }}"></div></div>
             @endif
 
             <button class="sa-login-submit" id="generate_otp" type="button">Daftar dan Kirim OTP</button>
@@ -66,7 +66,7 @@
                 <p class="sa-otp-note" id="countdown-container">OTP terakhir dikirim <span id="last_otp_at"></span>. Kirim ulang tersedia dalam <strong id="countdown">-:-</strong>.</p>
                 <p class="sa-otp-note d-none" id="resend-otp-container">Tidak mendapatkan kode? <button type="button" id="resend-otp">Kirim Ulang</button></p>
                 @if (config('recaptcha.enabled'))
-                    <div class="sa-login-captcha" id="register-recaptcha">{!! htmlFormSnippet() !!}</div>
+                    <div class="sa-login-captcha" id="register-recaptcha"><div class="g-recaptcha" data-sitekey="{{ config('recaptcha.api_site_key') }}"></div></div>
                 @endif
             </div>
             <div class="modal-footer"><button class="sa-login-submit" id="register" type="button">Verifikasi dan Buat Akun</button></div>

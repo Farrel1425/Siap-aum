@@ -16,7 +16,7 @@
           rel="shortcut icon"
           type="image/x-icon">
     @if (config('recaptcha.enabled'))
-        {!! ReCaptcha::htmlScriptTagJsApi() !!}
+        <script src="https://{{ config('recaptcha.api_domain', 'www.google.com') }}/recaptcha/api.js?hl={{ config('recaptcha.default_language', 'id') }}" async defer></script>
     @endif
     @stack('styles')
 </head>

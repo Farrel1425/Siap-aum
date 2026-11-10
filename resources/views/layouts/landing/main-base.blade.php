@@ -7,7 +7,7 @@
     <meta name="description" content="SIAP AUM, layanan perizinan online Pemerintah Kabupaten Tabanan">
     <title>SIAP AUM - Perizinan Kabupaten Tabanan</title>
     <link rel="preload" href="{{ asset('assets/images/siap-aum/figma-raw-2.webp') }}" as="image" type="image/webp" fetchpriority="high">
-    @vite(['resources/sass/app.scss'])
+    @vite(['resources/sass/app.scss', 'resources/sass/landing-modern.scss', 'resources/js/app.js', 'resources/js/landing/landing.js'])
     <link href="{{ asset('assets/vendors/iconsax/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/images/siap-aum/figma-raw-3.png') }}" rel="shortcut icon" type="image/png">
     @stack('styles')
@@ -23,7 +23,6 @@
         <div class="mt-auto">@include('layouts.landing.partials.footer')</div>
     </div>
     <script src="{{ asset('assets/vendors/jquery/jquery-3.4.1.min.js') }}"></script>
-    @vite(['resources/js/app.js', 'resources/js/landing/landing.js'])
     @include('components.toastr')
 </body>
 </html>

@@ -19,7 +19,7 @@
                 <div class="sa-login-field"><label for="email">Email</label><input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="Masukkan email" autocomplete="email" required>@error('email')<span>{{ $message }}</span>@enderror</div>
                 <div class="sa-login-field"><label for="password">Password</label><div><input id="password" name="password" type="password" placeholder="Masukkan password" autocomplete="current-password" required><button class="btn-toggle-password isax isax-eye-slash" type="button" aria-label="Tampilkan password"></button></div></div>
                 @if (config('recaptcha.enabled'))
-                    <div class="sa-login-captcha">{!! htmlFormSnippet() !!}</div>
+                    <div class="sa-login-captcha"><div class="g-recaptcha" data-sitekey="{{ config('recaptcha.api_site_key') }}"></div></div>
                 @endif
                 <a class="sa-login-forgot" href="{{ route('forgot-password.index') }}">Lupa Password?</a>
                 <button class="sa-login-submit" type="submit">Masuk</button>
