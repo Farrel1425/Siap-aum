@@ -11,6 +11,8 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
 
 class OtpRegisterEmail extends Mailable implements ShouldQueue
 {
@@ -34,6 +36,29 @@ class OtpRegisterEmail extends Mailable implements ShouldQueue
     {
         return new Envelope(
             subject: 'Kode OTP Register Email',
+            using: [[self::class, 'embedBrandImages']],
+        );
+    }
+
+    /**
+     * Embed brand images so email clients do not need to fetch local asset URLs.
+     */
+    public static function embedBrandImages(Email $message): void
+    {
+        $message->addPart(
+            DataPart::fromPath(
+                public_path('assets/images/logo-siajaib.png'),
+                'logo-siajaib.png',
+                'image/png',
+            )->asInline()->setContentId('siap-aum-logo@siap-aum')
+        );
+
+        $message->addPart(
+            DataPart::fromPath(
+                public_path('assets/images/banner-siajaib-horizontal.png'),
+                'banner-siajaib-horizontal.png',
+                'image/png',
+            )->asInline()->setContentId('siap-aum-banner@siap-aum')
         );
     }
 
