@@ -47,18 +47,10 @@ class OtpRegisterEmail extends Mailable implements ShouldQueue
     {
         $message->addPart(
             DataPart::fromPath(
-                public_path('assets/images/logo-siajaib.png'),
-                'logo-siajaib.png',
+                public_path('assets/images/siap-aum/siap-aum-email.png'),
+                'siap-aum-email.png',
                 'image/png',
             )->asInline()->setContentId('siap-aum-logo@siap-aum')
-        );
-
-        $message->addPart(
-            DataPart::fromPath(
-                public_path('assets/images/banner-siajaib-horizontal.png'),
-                'banner-siajaib-horizontal.png',
-                'image/png',
-            )->asInline()->setContentId('siap-aum-banner@siap-aum')
         );
     }
 

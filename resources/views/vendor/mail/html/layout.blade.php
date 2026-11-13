@@ -40,7 +40,6 @@ width: 100% !important;
 <!-- Body content -->
 <tr>
 <td class="content-cell" style="padding:0!important">
-<img src="cid:siap-aum-banner@siap-aum" class="banner" alt="Banner SIAP AUM">
 {{ Illuminate\Mail\Markdown::parse($slot) }}
 
 {{ $subcopy ?? '' }}
